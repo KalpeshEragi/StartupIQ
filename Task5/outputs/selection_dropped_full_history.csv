@@ -1,0 +1,17 @@
+feature,action,reason,detail,feature_set
+has_crowdfunding,dropped,near-constant,top value share 0.999,full_history
+has_post_ipo,dropped,near-constant,top value share 0.998,full_history
+log_seed,dropped,redundant,|spearman|=0.99 with has_seed,full_history
+log_angel,dropped,redundant,|spearman|=1.00 with has_angel,full_history
+avg_funding_per_round_log,dropped,redundant,|spearman|=0.96 with log_funding_total,full_history
+funding_rounds,dropped,redundant,|spearman|=0.97 with funding_span_years,full_history
+n_named_rounds,dropped,redundant,|spearman|=0.97 with max_named_round,full_history
+has_angel,dropped,low permutation importance,0.0005 AUC,full_history
+has_convertible_note,dropped,low permutation importance,0.0006 AUC,full_history
+has_grant,dropped,low permutation importance,0.0001 AUC,full_history
+has_venture,dropped,low permutation importance,0.0005 AUC,full_history
+has_private_equity,dropped,low permutation importance,0.0005 AUC,full_history
+has_debt_financing,dropped,low permutation importance,0.0004 AUC,full_history
+max_named_round,dropped,low permutation importance,0.0008 AUC,full_history
+venture_share,dropped,low permutation importance,-0.0001 AUC,full_history
+rounds_per_year,dropped,low permutation importance,0.0008 AUC,full_history

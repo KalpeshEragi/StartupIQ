@@ -1,0 +1,6 @@
+feature,action,reason,detail,feature_set
+has_crowdfunding,dropped,near-constant,top value share 0.999,early_safe
+log_seed,dropped,redundant,|spearman|=0.99 with has_seed,early_safe
+log_angel,dropped,redundant,|spearman|=1.00 with has_angel,early_safe
+has_convertible_note,dropped,low permutation importance,0.0010 AUC,early_safe
+has_grant,dropped,low permutation importance,0.0008 AUC,early_safe

@@ -1,0 +1,29 @@
+feature,tier,kind,source_columns,calculation,reason,available_at_early_evaluation
+market,profile,cat,market,as is (rare values grouped at encoding),industry,True
+country_code,profile,cat,country_code,as is (rare values grouped),geography,True
+region,profile,cat,region,as is (rare values grouped),startup hub / local ecosystem; city is too high-cardinality,True
+n_categories,profile,num,category_list,number of tags in category_list,breadth of business description,True
+age_at_first_funding,profile,num,"founded_at, first_funding_at","(first_funding - founded)/365.25; < -1y -> missing (invalid), -1..0 -> 0; capped at 40",how quickly the company raised its first round,True
+has_seed,early,num,seed,seed > 0,raised a seed round,True
+has_angel,early,num,angel,angel > 0,angel investor backing,True
+has_convertible_note,early,num,convertible_note,> 0,early instrument,True
+has_grant,early,num,grant,> 0,non-dilutive early funding,True
+has_crowdfunding,early,num,"equity_crowdfunding, product_crowdfunding",either > 0,crowd validation,True
+log_seed,early,num,seed,log1p(seed),size of seed funding (skewed),True
+log_angel,early,num,angel,log1p(angel),size of angel funding (skewed),True
+log_funding_total,full,num,funding_total_usd,log1p(total),cumulative funding incl. all later rounds,False
+funding_rounds,full,num,funding_rounds,as is,count includes rounds after the outcome-relevant period,False
+has_venture,full,num,venture,venture > 0,venture rounds are usually later than seed,False
+log_venture,full,num,venture,log1p(venture),later-stage funding size,False
+has_private_equity,full,num,private_equity,> 0,late-stage funding,False
+has_debt_financing,full,num,debt_financing,> 0,later financing,False
+has_post_ipo,full,num,"post_ipo_equity, post_ipo_debt",either > 0,exists only after an IPO,False
+n_named_rounds,full,num,round_A..round_H,number of named rounds with money,progression through A-H,False
+max_named_round,full,num,round_A..round_H,highest letter round reached (0-8),stage reached,False
+avg_funding_per_round_log,full,num,"funding_total_usd, funding_rounds",log1p(total / rounds),round size,False
+venture_share,full,num,"venture, funding_total_usd",venture / total,funding mix,False
+funding_span_years,full,num,"first_funding_at, last_funding_at",(last - first)/365.25,uses the last funding date,False
+rounds_per_year,full,num,"funding_rounds, funding_span","rounds / max(span, 1)",funding velocity,False
+years_since_last_funding,full,num,last_funding_at,(2015-01-01 - last)/365.25,"closed/acquired companies stop raising, so this encodes the outcome",False
+founded_year,calendar,num,founded_year,as is,cohort effect: acquired share falls from ~85% (1990s) to ~45% (2010s),False
+first_funding_year,calendar,num,first_funding_at,year,cohort / observation-window effect,False

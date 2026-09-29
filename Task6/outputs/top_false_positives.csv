@@ -1,0 +1,13 @@
+name,market,country_code,status,proba,age_at_first_funding,has_seed,has_angel
+PlumTV,Media,USA,closed,0.944,7.666,0.0,0.0
+Etelos,Web Development,USA,closed,0.933,9.615,1.0,0.0
+OpVista,Software,USA,closed,0.916,6.472,0.0,0.0
+Netbyte Hosting,Web Hosting,USA,closed,0.899,4.167,0.0,0.0
+Glam .fr France,Social Network Media,FRA,closed,0.897,8.0,,
+nivio,Cloud Data Services,IND,closed,0.889,7.154,0.0,0.0
+Nomadica Brainstorming,Software,ESP,closed,0.885,20.419,1.0,0.0
+PeerPong,Social Search,USA,closed,0.884,4.107,0.0,0.0
+R-Health,Software,USA,closed,0.875,15.444,,
+LilLuxe,Flash Sales,USA,closed,0.868,0.482,1.0,0.0
+Zume Life,iPhone,USA,closed,0.868,0.438,1.0,0.0
+BigString,Security,USA,closed,0.852,5.717,0.0,0.0

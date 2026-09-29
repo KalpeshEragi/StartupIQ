@@ -1,0 +1,11 @@
+{
+  "train_founded<=2007": 2860,
+  "test_founded>=2008": 2107,
+  "acquired_share_train": 0.707,
+  "acquired_share_test": 0.451,
+  "precision": 0.6754,
+  "recall": 0.4074,
+  "macro_f1": 0.6149,
+  "roc_auc": 0.711,
+  "pr_auc": 0.6561
+}

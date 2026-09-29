@@ -1,0 +1,6 @@
+{
+  "profile_only": "random_forest",
+  "early_safe": "hist_gradient_boosting",
+  "early_safe_plus_calendar": "random_forest",
+  "full_history": "hist_gradient_boosting"
+}

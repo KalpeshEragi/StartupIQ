@@ -1,0 +1,9 @@
+market,n,error_rate,fp_rate,fn_rate,acquired_share
+Software,164,0.366,0.14,0.226,0.689
+Curated Web,89,0.472,0.079,0.393,0.483
+Mobile,63,0.365,0.206,0.159,0.444
+Biotechnology,61,0.459,0.131,0.328,0.574
+Enterprise Software,49,0.122,0.102,0.02,0.857
+Games,48,0.292,0.104,0.188,0.396
+E-Commerce,43,0.302,0.047,0.256,0.465
+,40,0.325,0.05,0.275,0.725

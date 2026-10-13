@@ -1,0 +1,174 @@
+{
+  "dataset": "yc_companies",
+  "steps": [
+    {
+      "rule": "raw_records",
+      "kind": "info",
+      "value": 6288,
+      "note": ""
+    },
+    {
+      "rule": "dropped_columns",
+      "kind": "info",
+      "value": [
+        "small_logo_thumb_url",
+        "tags_highlighted",
+        "app_answers",
+        "question_answers",
+        "app_video_public",
+        "demo_day_video_public",
+        "api",
+        "url",
+        "slug"
+      ],
+      "note": "uninformative or almost entirely empty (intake report)"
+    },
+    {
+      "rule": "duplicate_id",
+      "kind": "rows",
+      "rows_before": 6288,
+      "rows_after": 6288,
+      "rows_removed": 0,
+      "note": ""
+    },
+    {
+      "rule": "no_usable_text",
+      "kind": "values",
+      "affected": 55,
+      "of_total": 6288,
+      "note": "both one_liner and long_description empty; flagged usable_text=False, excluded from text models later"
+    },
+    {
+      "rule": "long_description_missing_fallback_to_one_liner",
+      "kind": "values",
+      "affected": 370,
+      "of_total": 6288,
+      "note": ""
+    },
+    {
+      "rule": "team_size_nonpositive_to_missing",
+      "kind": "values",
+      "affected": 137,
+      "of_total": 6288,
+      "note": "0 and -1 are not real team sizes (one record holds -1)"
+    },
+    {
+      "rule": "team_size_missing_total",
+      "kind": "values",
+      "affected": 247,
+      "of_total": 6288,
+      "note": ""
+    },
+    {
+      "rule": "industry_unspecified_to_missing",
+      "kind": "values",
+      "affected": 18,
+      "of_total": 6288,
+      "note": "treated as unlabelled, not as a class"
+    },
+    {
+      "rule": "no_tags",
+      "kind": "values",
+      "affected": 863,
+      "of_total": 6288,
+      "note": ""
+    },
+    {
+      "rule": "status_not_in_expected_set",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 6288,
+      "note": "expected ['Acquired', 'Active', 'Inactive', 'Public']"
+    },
+    {
+      "rule": "stage_not_in_expected_set",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 6288,
+      "note": "expected ['Early', 'Growth']"
+    },
+    {
+      "rule": "subindustry_parent_differs_from_industry",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 6288,
+      "note": "kept as-is, flagged for Phase 3"
+    },
+    {
+      "rule": "batch_unparseable",
+      "kind": "values",
+      "affected": 1,
+      "of_total": 6288,
+      "note": "batch name not 'Season YYYY'"
+    },
+    {
+      "rule": "launched_year_out_of_range",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 6288,
+      "note": ""
+    },
+    {
+      "rule": "launched_year_differs_from_batch_year_by_more_than_2",
+      "kind": "values",
+      "affected": 199,
+      "of_total": 6288,
+      "note": "reported only"
+    },
+    {
+      "rule": "duplicate_website_domain_keep_most_recent_batch",
+      "kind": "rows",
+      "rows_before": 6288,
+      "rows_after": 6288,
+      "rows_removed": 0,
+      "note": "same non-platform domain means same company; the most recent batch row is kept"
+    },
+    {
+      "rule": "repeated_company_names_kept",
+      "kind": "values",
+      "affected": 196,
+      "of_total": 6288,
+      "note": "different companies often share a name; never deduplicated by name"
+    },
+    {
+      "rule": "identical_one_liner_different_company_kept",
+      "kind": "values",
+      "affected": 18,
+      "of_total": 6288,
+      "note": "short generic one-liners repeat across distinct companies; the full text differs, so rows are kept"
+    },
+    {
+      "rule": "near_duplicate_text_rows_grouped",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 6288,
+      "note": "word-3-gram Jaccard >= 0.8; kept, share one dup_group id"
+    },
+    {
+      "rule": "team_size_extreme_outlier_log_iqr3",
+      "kind": "values",
+      "affected": 13,
+      "of_total": 6288,
+      "note": "log1p scale fences [-3.59, 8.02]"
+    },
+    {
+      "rule": "long_description_above_p99_words",
+      "kind": "values",
+      "affected": 63,
+      "of_total": 6288,
+      "note": "p99 = 268 words"
+    },
+    {
+      "rule": "scaling",
+      "kind": "info",
+      "value": "log1p(team_size) provided; z-scoring deferred to Phase 3 pipelines (fit on training data only)",
+      "note": ""
+    },
+    {
+      "rule": "final_records",
+      "kind": "info",
+      "value": 6288,
+      "note": ""
+    }
+  ]
+}

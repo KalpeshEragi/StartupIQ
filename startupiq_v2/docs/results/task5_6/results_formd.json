@@ -1,0 +1,119 @@
+{
+ "n_rows": 10321,
+ "n_issuers": 8207,
+ "features": [
+  "industry_group",
+  "revenue_range",
+  "entity_type",
+  "state_or_country",
+  "issuer_age",
+  "n_related_persons",
+  "filing_quarter",
+  "issuer_filing_count",
+  "issuer_n_amendments",
+  "is_equity",
+  "is_debt",
+  "incorporated_within_5y"
+ ],
+ "excluded": {
+  "amount_sold, n_investors, min_investment": "same event / post-outcome",
+  "log10_offering*": "target"
+ },
+ "split": {
+  "train": 6611,
+  "val": 1657,
+  "test": 2053
+ },
+ "regression_val": {
+  "segment-median baseline": {
+   "MAE_log10": 0.59,
+   "RMSE_log10": 0.822,
+   "R2": 0.032,
+   "median_APE": 0.8
+  },
+  "global median": {
+   "MAE_log10": 0.608,
+   "RMSE_log10": 0.839,
+   "R2": -0.007,
+   "median_APE": 0.79
+  },
+  "linear regression": {
+   "MAE_log10": 0.522,
+   "RMSE_log10": 0.756,
+   "R2": 0.183,
+   "median_APE": 0.698
+  },
+  "ridge": {
+   "MAE_log10": 0.522,
+   "RMSE_log10": 0.755,
+   "R2": 0.184,
+   "median_APE": 0.694
+  },
+  "random forest": {
+   "MAE_log10": 0.511,
+   "RMSE_log10": 0.745,
+   "R2": 0.205,
+   "median_APE": 0.705
+  },
+  "gradient boosting": {
+   "MAE_log10": 0.507,
+   "RMSE_log10": 0.738,
+   "R2": 0.221,
+   "median_APE": 0.691
+  }
+ },
+ "regression_chosen": "gradient boosting",
+ "regression_test": {
+  "gradient boosting": {
+   "MAE_log10": 0.546,
+   "RMSE_log10": 0.785,
+   "R2": 0.249,
+   "median_APE": 0.743
+  },
+  "segment-median baseline": {
+   "MAE_log10": 0.642,
+   "RMSE_log10": 0.888,
+   "R2": 0.041,
+   "median_APE": 0.848
+  }
+ },
+ "band_edges_usd": [
+  1905044,
+  6743445
+ ],
+ "band_val": {
+  "majority": {
+   "acc": 0.347,
+   "macro_f1": 0.172
+  },
+  "logistic regression": {
+   "acc": 0.52,
+   "macro_f1": 0.513
+  },
+  "decision tree": {
+   "acc": 0.523,
+   "macro_f1": 0.507
+  },
+  "random forest": {
+   "acc": 0.549,
+   "macro_f1": 0.542
+  },
+  "hist gradient boosting": {
+   "acc": 0.546,
+   "macro_f1": 0.543
+  }
+ },
+ "band_chosen": "hist gradient boosting",
+ "band_test": {
+  "model": "hist gradient boosting",
+  "acc": 0.537,
+  "macro_f1": 0.53
+ },
+ "band_test_majority": 0.351,
+ "band_test_within_one": 0.901,
+ "quantile_range_test": {
+  "coverage_10_90": 0.76,
+  "nominal": 0.8,
+  "median_width_log10": 1.46
+ }
+}

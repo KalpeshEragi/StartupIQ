@@ -1,0 +1,138 @@
+{
+  "dataset": "sec_form_d",
+  "steps": [
+    {
+      "rule": "input_filings",
+      "kind": "info",
+      "value": 107709,
+      "note": "filings across all loaded quarters, one row per accession number"
+    },
+    {
+      "rule": "drop_test_filings",
+      "kind": "rows",
+      "rows_before": 107709,
+      "rows_after": 107709,
+      "rows_removed": 0,
+      "note": ""
+    },
+    {
+      "rule": "duplicate_accession_number",
+      "kind": "rows",
+      "rows_before": 107709,
+      "rows_after": 107709,
+      "rows_removed": 0,
+      "note": ""
+    },
+    {
+      "rule": "filing_date_unparseable",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 107709,
+      "note": ""
+    },
+    {
+      "rule": "drop_amendments_D/A",
+      "kind": "rows",
+      "rows_before": 107709,
+      "rows_after": 64594,
+      "rows_removed": 43115,
+      "note": "amendments restate an earlier filing; counted per issuer, not analysed"
+    },
+    {
+      "rule": "drop_pooled_investment_funds",
+      "kind": "rows",
+      "rows_before": 64594,
+      "rows_after": 32206,
+      "rows_removed": 32388,
+      "note": "funds raise money to invest, not to operate"
+    },
+    {
+      "rule": "offering_amount_indefinite",
+      "kind": "values",
+      "affected": 2843,
+      "of_total": 32206,
+      "note": "the string 'Indefinite' becomes missing"
+    },
+    {
+      "rule": "offering_amount_nonpositive_to_missing",
+      "kind": "values",
+      "affected": 25,
+      "of_total": 32206,
+      "note": ""
+    },
+    {
+      "rule": "amount_sold_zero",
+      "kind": "values",
+      "affected": 5846,
+      "of_total": 32206,
+      "note": "kept; zero sold is real for a new offering"
+    },
+    {
+      "rule": "offering_amount_ge_10bn_implausible",
+      "kind": "values",
+      "affected": 6,
+      "of_total": 32206,
+      "note": "flagged and excluded from amount modelling; kept in the table"
+    },
+    {
+      "rule": "winsorise_log10_offering",
+      "kind": "info",
+      "value": "[4.16, 8.30]",
+      "note": "1st and 99th percentile of this dataset, for plots only; Phase 3 recomputes from training data"
+    },
+    {
+      "rule": "amount_sold_exceeds_offering",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 32206,
+      "note": "flag only"
+    },
+    {
+      "rule": "year_of_inc_out_of_range",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 32206,
+      "note": "set to missing"
+    },
+    {
+      "rule": "issuer_age_unknown",
+      "kind": "values",
+      "affected": 8233,
+      "of_total": 32206,
+      "note": ""
+    },
+    {
+      "rule": "industry_group_missing",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 32206,
+      "note": ""
+    },
+    {
+      "rule": "revenue_decline_to_disclose",
+      "kind": "values",
+      "affected": 25713,
+      "of_total": 32206,
+      "note": "kept as its own category"
+    },
+    {
+      "rule": "cik_missing",
+      "kind": "values",
+      "affected": 0,
+      "of_total": 32206,
+      "note": ""
+    },
+    {
+      "rule": "usable_for_amount_models",
+      "kind": "info",
+      "value": 10321,
+      "note": "start-up-like group with a finite, plausible offering amount"
+    },
+    {
+      "rule": "output_shape",
+      "kind": "info",
+      "value": "32206x33",
+      "note": ""
+    }
+  ]
+}

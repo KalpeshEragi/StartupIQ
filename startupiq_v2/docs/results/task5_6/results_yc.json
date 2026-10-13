@@ -1,0 +1,192 @@
+{
+ "merged_small_classes": [
+  "Government"
+ ],
+ "n_rows": 6215,
+ "classes": {
+  "B2B": 3179,
+  "Consumer": 870,
+  "Healthcare": 699,
+  "Fintech": 658,
+  "Industrials": 481,
+  "Real Estate and Construction": 160,
+  "Education": 125,
+  "Other (merged)": 43
+ },
+ "excluded_inputs": {
+  "tags": "five tags are literally industry names",
+  "subindustry/industries": "restate the label",
+  "status, isHiring": "crawl-time snapshots",
+  "founder flags": "audit only",
+  "name": "identifier",
+  "website/domain": "identifier"
+ },
+ "split_sizes": {
+  "train": 4349,
+  "val": 933,
+  "test": 933
+ },
+ "temporal_split": {
+  "train": 4846,
+  "test": 1369
+ },
+ "feature_ablation": {
+  "word": {
+   "val_macro_f1": 0.741,
+   "val_acc": 0.803,
+   "n_features": 24569
+  },
+  "word+char": {
+   "val_macro_f1": 0.729,
+   "val_acc": 0.8,
+   "n_features": 74186
+  },
+  "word+struct": {
+   "val_macro_f1": 0.724,
+   "val_acc": 0.795,
+   "n_features": 24572
+  },
+  "word+char+struct": {
+   "val_macro_f1": 0.702,
+   "val_acc": 0.793,
+   "n_features": 74189
+  }
+ },
+ "best_feature_set": "word",
+ "chi2_selection_val_macro_f1": {
+  "500": 0.664,
+  "1000": 0.699,
+  "2000": 0.74,
+  "5000": 0.76,
+  "10000": 0.748,
+  "24569": 0.741
+ },
+ "l1_selection": {
+  "nonzero_features": 3829,
+  "val_macro_f1": 0.657
+ },
+ "selection_used": 5000,
+ "model_validation": {
+  "majority baseline": {
+   "val_acc": 0.511,
+   "val_macro_f1": 0.085,
+   "fit_sec": 0.0
+  },
+  "logistic regression (TF-IDF)": {
+   "val_acc": 0.793,
+   "val_macro_f1": 0.76,
+   "fit_sec": 1.1
+  },
+  "linear SVM (TF-IDF)": {
+   "val_acc": 0.796,
+   "val_macro_f1": 0.754,
+   "fit_sec": 0.1
+  },
+  "complement naive Bayes": {
+   "val_acc": 0.781,
+   "val_macro_f1": 0.699,
+   "fit_sec": 0.0
+  },
+  "random forest (SVD-200)": {
+   "val_acc": 0.725,
+   "val_macro_f1": 0.542,
+   "fit_sec": 15.8
+  },
+  "soft-voting (LR + NB)": {
+   "val_acc": 0.804,
+   "val_macro_f1": 0.765,
+   "fit_sec": 0
+  }
+ },
+ "chosen_model": "soft-voting (LR + NB)",
+ "test_chosen": {
+  "acc": 0.801,
+  "acc_ci": [
+   0.777,
+   0.823
+  ],
+  "macro_f1": 0.696,
+  "macro_f1_ci": [
+   0.624,
+   0.754
+  ],
+  "top3_acc": 0.982
+ },
+ "test_baseline": {
+  "acc": 0.511,
+  "acc_ci": [
+   0.479,
+   0.548
+  ],
+  "macro_f1": 0.085,
+  "macro_f1_ci": [
+   0.081,
+   0.088
+  ],
+  "top3_acc": 0.543
+ },
+ "val_top3_calibrated_svm": 0.982,
+ "test_calibrated_svm": {
+  "acc": 0.8,
+  "top3_acc": 0.988
+ },
+ "abstain_at_0.5": {
+  "coverage": 0.935,
+  "acc_on_answered": 0.82
+ },
+ "abstain_at_0.6": {
+  "coverage": 0.821,
+  "acc_on_answered": 0.864
+ },
+ "abstain_at_0.7": {
+  "coverage": 0.702,
+  "acc_on_answered": 0.895
+ },
+ "temporal_holdout_lr": {
+  "acc": 0.832,
+  "macro_f1": 0.744,
+  "n_test": 1369
+ },
+ "clustering": {
+  "kmeans_k6": {
+   "silhouette": 0.029,
+   "NMI_vs_industry": 0.279,
+   "ARI_vs_industry": 0.153
+  },
+  "ward_k6": {
+   "silhouette": 0.014,
+   "NMI_vs_industry": 0.236,
+   "ARI_vs_industry": 0.179
+  },
+  "kmeans_k9": {
+   "silhouette": 0.035,
+   "NMI_vs_industry": 0.264,
+   "ARI_vs_industry": 0.123
+  },
+  "ward_k9": {
+   "silhouette": 0.013,
+   "NMI_vs_industry": 0.22,
+   "ARI_vs_industry": 0.137
+  },
+  "kmeans_k12": {
+   "silhouette": 0.037,
+   "NMI_vs_industry": 0.237,
+   "ARI_vs_industry": 0.099
+  },
+  "ward_k12": {
+   "silhouette": 0.015,
+   "NMI_vs_industry": 0.221,
+   "ARI_vs_industry": 0.085
+  },
+  "kmeans_k20": {
+   "silhouette": 0.05,
+   "NMI_vs_industry": 0.252,
+   "ARI_vs_industry": 0.079
+  },
+  "ward_k20": {
+   "silhouette": 0.023,
+   "NMI_vs_industry": 0.227,
+   "ARI_vs_industry": 0.064
+  }
+ }
+}

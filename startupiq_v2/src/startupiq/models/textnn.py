@@ -94,3 +94,41 @@ def train(model, Xtr, ytr, Xva, yva, class_w, seed, lr=2e-3, wd=1e-2, epochs=20,
             if bad >= patience: break
     model.load_state_dict(state)
     return best
+
+
+# ---------- multi-label (tags) + embeddings, used by the competitor finder ----------
+def predict_sigmoid(model, X, bs=256):
+    model.eval()
+    with torch.no_grad():
+        return torch.cat([torch.sigmoid(model(X[i:i + bs])) for i in range(0, len(X), bs)]).numpy()
+
+
+def embed(model, X, bs=256):
+    """Pooled CNN features (what the classifier sees just before its last layer)."""
+    model.eval()
+    with torch.no_grad():
+        return torch.cat([model.pooled(model.emb(X[i:i + bs])) for i in range(0, len(X), bs)]).numpy()
+
+
+def train_multilabel(model, Xtr, Ytr, Xva, Yva, pos_w, seed, lr=2e-3, wd=1e-2, epochs=20, patience=4, bs=128):
+    """AdamW + weighted BCE; early stopping on validation micro average precision."""
+    from sklearn.metrics import average_precision_score
+    g = torch.Generator().manual_seed(seed)
+    opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
+    lossf = nn.BCEWithLogitsLoss(pos_weight=pos_w)
+    best, state, bad = -1.0, None, 0
+    for _ in range(epochs):
+        model.train()
+        perm = torch.randperm(len(Xtr), generator=g)
+        for i in range(0, len(perm), bs):
+            b = perm[i:i + bs]
+            opt.zero_grad(); lossf(model(Xtr[b]), Ytr[b]).backward(); opt.step()
+        f = average_precision_score(Yva.numpy(), predict_sigmoid(model, Xva), average="micro")
+        if f > best:
+            best, bad = f, 0
+            state = {k: v.clone() for k, v in model.state_dict().items()}
+        else:
+            bad += 1
+            if bad >= patience: break
+    model.load_state_dict(state)
+    return best

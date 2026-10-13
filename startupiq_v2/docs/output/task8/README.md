@@ -1,86 +1,67 @@
-# Task 8: Interpretability and reliability (YC industry models)
+# Task 8: Interpretability and reliability, for the Competitor Finder
 
-## What we did, in plain words
-- Task 7 gave us three models. Task 8 asks: **can we explain their answers, and can we trust them?**
-- Four checks:
-  1. **Explain**: which words push a prediction? (LR top terms, CNN saliency, BiLSTM attention)
-  2. **Do the explanations hold up?** Compare "highlighted words" with a simple test: delete each word and see how much confidence drops (token erasure).
-  3. **Break it on purpose**: typos, remove industry words, keep only the first sentence, mask the top 3 words.
-  4. **Reliability**: is confidence honest (calibration), is it worse for short texts, and does it admit uncertainty on off-topic text?
-- Result: LR is easiest to explain, best calibrated and most accurate. Attention heatmaps barely agree with erasure (0.07), so we do not use them as explanations.
+## Why this task exists in StartupIQ (plain words)
+- The founder sees a list of competitors. Two questions decide whether they can trust it:
+  1. **Why is this company on my list?** (explanation)
+  2. **When should I NOT trust the list?** (reliability)
+- Task 8 answers both for the shipped finder (LSA), and also explains the CNN to compare.
 
 ## Where the code is
 | What | File |
 |---|---|
-| All checks | `src/startupiq/pipelines/task8_yc.py` |
-| Images | `src/startupiq/pipelines/output_figures_78.py` |
-| Numbers | `docs/results/task8/results_task8.json` |
-| 30 explanations to rate by hand | `docs/results/task8/explanations_to_rate.csv` |
+| All checks | `src/startupiq/pipelines/task8_competitors.py` |
+| Images | `src/startupiq/pipelines/output_figures_comp.py` |
+| Numbers | `docs/results/task8_competitors/results_task8_competitors.json` |
+| Readable examples (10 startups x 5 competitors, with "matched on" words) | `docs/results/task8_competitors/worked_examples.md` |
+| 150 pairs for hand rating | `docs/results/task8_competitors/explanations_to_rate.csv` |
+
+## Example of what the founder sees
+> **MySivi** (AI English speaking app) -> Toko (shared tag: AI-Enhanced Learning; matched on: app, English), Edwin (matched on: learning, Tutor, AI-powered), Speak (matched on: AI-powered, Tutor, AI)
+
+## Images
+1. `1_explanation_faithfulness.png`: delete the 3 "matched on" words from the query and similarity to the top competitor drops 0.265 (LSA); deleting 3 random words drops only 0.013, about 20 times less. Say: "the words we show really are the reason."
+2. `2_robustness.png`: top-10 list that stays after changing the description: typos 83%, 30% of words removed 62%, first sentence only 32%. Say: "short, one-line descriptions give a very different list, so ask founders for a full description."
+3. `3_confidence_vs_precision.png`: precision@10 rises from 0.30 (lowest-similarity fifth) to 0.49 (highest). Similarity is a usable confidence signal.
+4. `4_quality_by_industry.png`: precision@10 is highest for Real Estate (0.51), Industrials (0.48), B2B (0.44) and lowest for Fintech (0.32) and Education (0.32).
 
 ## Code snippets (copied from the real files)
 
-**1. LR top terms per industry**
+**1. "Why" words = delete one word at a time, see how much the match falls**
 ```python
-fn = np.array(tf.get_feature_names_out())
-out["lr_top_terms"] = {c: fn[np.argsort(-lr.coef_[i])[:8]].tolist() for i, c in enumerate(classes)}
+def occlusion(enc_name, text, nb_vec):
+    w = text.split()[:100]; base = float(ENC[enc_name]([" ".join(w)])[0] @ nb_vec)
+    alts = [" ".join(w[:i] + w[i + 1:]) for i in range(len(w))]
+    return w, base, base - (ENC[enc_name](alts) @ nb_vec)     # big drop = matched on this word
 ```
 
-**2. Token erasure: delete one word at a time, see how much the predicted class drops**
+**2. Faithfulness test: top-3 "why" words vs 3 random words**
 ```python
-def erasure(model_key, text):
-    toks = tokenize(text)[:100]; base = P[model_key]([text])[0]; k = int(base.argmax())
-    alts = [" ".join(toks[:i] + toks[i + 1:]) for i in range(len(toks))]
-    return base[k] - P[model_key](alts)[:, k]          # big drop = important word
+top3 = set(np.argsort(-drop)[:3]); rnd = [set(rng.choice(len(w), 3, replace=False)) for _ in range(3)]
+dr_top.append(base - sim(top3)); dr_rand.append(np.mean([base - sim(r) for r in rnd]))
 ```
 
-**3. CNN saliency (gradient x input) and the agreement test**
+**3. Robustness: how much of the list survives a perturbation**
 ```python
-e = cnn.emb(x).detach().requires_grad_(True)
-lg = cnn(x, e=e); k = int(lg.argmax()); lg[0, k].backward()
-s = (e.grad * e).sum(-1).abs()[0]                      # importance per word
-r = spearmanr(a[0, :n].numpy(), erasure_scores).statistic   # attention vs erasure
+ov = np.mean([len(set(a) & set(b)) / 10 for a, b in zip(base_top, top2)])
 ```
 
-**4. Perturbation test (image 1)**
+**4. Abstain when the best match is weak (threshold from VALIDATION only)**
 ```python
-def drop_sector(t): return " ".join(w for w in t.split() if clean(w) not in sector)
-row[name] = round(mf1(sy, P[m](mk(m)).argmax(1)), 3)   # macro-F1 after the change
+thr = float(np.quantile(Sv.max(1), 0.2))        # 20th percentile of best-match similarity on val
+keep = top1 >= thr                              # test: coverage 0.855, precision@10 0.423 kept vs 0.308 abstained
 ```
 
-**5. Calibration error (image 2)**
-```python
-def ece(p, y, bins=10):
-    conf, pred = p.max(1), p.argmax(1); e = 0
-    for lo in np.linspace(0, 1, bins + 1)[:-1]:
-        m = (conf > lo) & (conf <= lo + 1 / bins)
-        if m.any(): e += m.mean() * abs((pred[m] == y[m]).mean() - conf[m].mean())
-    return e                                            # 0 = confidence matches accuracy
-```
+## Other results
+- By description length precision@10: short 0.37, medium 0.43, long 0.42. By era: before 2025 0.39, 2025 on 0.47.
+- Abstaining on the weakest 20% of cases lifts precision@10 on the kept ones to 0.42.
 
-**6. Abstain when unsure**
-```python
-keep = probs[m].max(1) >= 0.6      # LR: keeps 73% of texts at 87.7% accuracy
-```
-
----
-
-Question: can we trust and explain the models? Computed on test texts with the Task 7 models.
-
-## Images
-1. `1_perturbation.png`: macro-F1 on 300 test texts after changes. Typos change little (LR 0.69 to 0.70). Removing sector words drops LR to 0.40, CNN 0.32, BiLSTM 0.26; masking the top-3 words drops LR to 0.45. Say: "models depend on obvious domain words, which is expected, but they are fragile without them."
-2. `2_calibration.png`: confidence vs accuracy. ECE (lower is better): LR 0.062, BiLSTM 0.072, CNN 0.098. Say: "LR's confidence is the most honest."
-3. `3_accuracy_by_length.png`: LR short 0.75, medium 0.83, long 0.82. Short descriptions are the weak spot for every model.
-4. `4_explanation_agreement.png`: agreement between highlighted words and token erasure (Spearman): BiLSTM attention 0.07, CNN saliency 0.13. Say: "attention heatmaps are not a reliable explanation here, so we explain with LR terms."
-
-## Other results (in the JSON)
-- LR top terms per industry look sensible (Education: students, school, teachers; Fintech: payments, banking, insurance).
-- Abstaining below 0.6 confidence: LR keeps 73% of texts at 87.7% accuracy.
-- Out-of-domain texts (garage, bakery, poem, yoga): LR stayed under 0.6 confidence on all four; the CNN gave 0.83 on one.
-- Accuracy before 2025 vs 2025 on: LR 0.793 / 0.816.
+## Honest weak spot
+- **The finder does not know when text is off-topic.** Four non-startup sentences (garage, bakery, poem, yoga) got best-match similarity 0.58, 0.58, 0.85 and 0.50 against a normal median of 0.57, and none fell below the abstain threshold. A separate "is this a startup description?" check is needed before launch.
 
 ## Likely questions
-- Why trust LR? It is the best scorer, best calibrated, and its terms can be read directly.
-- Are the explanations verified by people? Not yet: `docs/results/task8/explanations_to_rate.csv` has 30 examples waiting for a human rating.
+- **Is the explanation causal?** It is a deletion test on the similarity score itself, so it explains the finder, not the real world.
+- **Why not attention or gradients?** The earlier industry-classifier experiment showed attention agreed with deletion only 0.07 (archived in `docs/output/_archive_industry_classifier/`).
+- **Has a human checked the explanations?** Not yet. `explanations_to_rate.csv` is waiting for ratings.
 
 ## Limits
-Out-of-domain test is only 4 sentences. No subgroup analysis by region or founder flags yet. Perturbations use a 300-text sample.
+Relevance is judged by shared tags only; the off-topic test uses 4 sentences; robustness uses 300 queries; no subgroup analysis by region or founder flags yet.

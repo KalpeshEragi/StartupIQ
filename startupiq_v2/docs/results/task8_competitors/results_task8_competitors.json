@@ -1,0 +1,100 @@
+{
+  "faithfulness": {
+    "LSA": {
+      "n": 115,
+      "drop_top3_why_words": 0.265,
+      "drop_3_random_words": 0.013,
+      "ratio": 19.9
+    },
+    "CNN": {
+      "n": 116,
+      "drop_top3_why_words": 0.239,
+      "drop_3_random_words": 0.008,
+      "ratio": 30.8
+    }
+  },
+  "robustness": {
+    "typos (10% of words)": {
+      "top10_overlap_with_original": 0.831,
+      "p10": 0.388
+    },
+    "first sentence only": {
+      "top10_overlap_with_original": 0.319,
+      "p10": 0.309
+    },
+    "random 30% of words removed": {
+      "top10_overlap_with_original": 0.616,
+      "p10": 0.368
+    },
+    "unperturbed_p10": 0.392
+  },
+  "p10_by_length": {
+    "short": 0.374,
+    "medium": 0.43,
+    "long": 0.416
+  },
+  "p10_by_industry": {
+    "B2B": {
+      "p10": 0.435,
+      "n": 408
+    },
+    "Consumer": {
+      "p10": 0.357,
+      "n": 108
+    },
+    "Education": {
+      "p10": 0.324,
+      "n": 17
+    },
+    "Fintech": {
+      "p10": 0.321,
+      "n": 71
+    },
+    "Healthcare": {
+      "p10": 0.355,
+      "n": 89
+    },
+    "Industrials": {
+      "p10": 0.479,
+      "n": 58
+    },
+    "Real Estate and Construction": {
+      "p10": 0.514,
+      "n": 22
+    }
+  },
+  "p10_by_era": {
+    "before_2025": 0.393,
+    "2025_on": 0.466
+  },
+  "p10_by_top1_similarity_quintile": {
+    "Q1": 0.298,
+    "Q2": 0.368,
+    "Q3": 0.415,
+    "Q4": 0.457,
+    "Q5": 0.494
+  },
+  "abstain": {
+    "threshold_from_val_20th_pct": 0.491,
+    "coverage": 0.855,
+    "p10_on_kept": 0.423,
+    "p10_on_abstained": 0.308
+  },
+  "off_topic_top1_similarity": {
+    "texts": [
+      0.58,
+      0.58,
+      0.85,
+      0.5
+    ],
+    "in_domain_median": 0.57,
+    "below_threshold": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "latency_ms_per_query_LSA": 15.7,
+  "latency_ms_per_query_CNN": 4.6
+}

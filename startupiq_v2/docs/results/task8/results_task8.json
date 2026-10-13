@@ -1,0 +1,219 @@
+{
+  "lr_top_terms": {
+    "B2B": [
+      "teams",
+      "code",
+      "agent",
+      "companies",
+      "agents",
+      "sales",
+      "security",
+      "customer"
+    ],
+    "Consumer": [
+      "games",
+      "food",
+      "friends",
+      "video",
+      "travel",
+      "share",
+      "delivery",
+      "sharing"
+    ],
+    "Education": [
+      "students",
+      "education",
+      "school",
+      "learning",
+      "teachers",
+      "student",
+      "online",
+      "courses"
+    ],
+    "Fintech": [
+      "financial",
+      "insurance",
+      "payments",
+      "banking",
+      "bank",
+      "loans",
+      "credit",
+      "trading"
+    ],
+    "Healthcare": [
+      "healthcare",
+      "health",
+      "care",
+      "medical",
+      "patient",
+      "patients",
+      "cancer",
+      "clinical"
+    ],
+    "Industrials": [
+      "robots",
+      "robotics",
+      "energy",
+      "autonomous",
+      "robotic",
+      "manufacturing",
+      "satellites",
+      "drone"
+    ],
+    "Other (merged)": [
+      "government",
+      "governments",
+      "cities",
+      "turning infrastructure",
+      "political",
+      "voting",
+      "police",
+      "law enforcement"
+    ],
+    "Real Estate and Construction": [
+      "construction",
+      "real estate",
+      "estate",
+      "property",
+      "home",
+      "rental",
+      "apartment",
+      "real"
+    ]
+  },
+  "attention_vs_erasure_spearman": {
+    "mean": 0.072,
+    "median": 0.062,
+    "n": 148
+  },
+  "cnn_saliency_vs_erasure_spearman": {
+    "mean": 0.127,
+    "median": 0.131,
+    "n": 148
+  },
+  "explanations_file": "explanations_to_rate.csv (30 rows, rating column left empty for a human)",
+  "perturbation_macro_f1": {
+    "LR": {
+      "unperturbed": 0.691,
+      "typos (10% of words)": 0.699,
+      "first sentence only": 0.615,
+      "remove sector words": 0.399,
+      "mask top-3 words": 0.447
+    },
+    "CNN": {
+      "unperturbed": 0.622,
+      "typos (10% of words)": 0.604,
+      "first sentence only": 0.568,
+      "remove sector words": 0.322,
+      "mask top-3 words": 0.346
+    },
+    "BiLSTM": {
+      "unperturbed": 0.529,
+      "typos (10% of words)": 0.534,
+      "first sentence only": 0.494,
+      "remove sector words": 0.255,
+      "mask top-3 words": 0.332
+    }
+  },
+  "ece": {
+    "LR": 0.062,
+    "CNN": 0.098,
+    "BiLSTM": 0.072
+  },
+  "accuracy_by_length": {
+    "LR": {
+      "short": 0.749,
+      "medium": 0.827,
+      "long": 0.819
+    },
+    "CNN": {
+      "short": 0.678,
+      "medium": 0.779,
+      "long": 0.765
+    },
+    "BiLSTM": {
+      "short": 0.633,
+      "medium": 0.655,
+      "long": 0.66
+    }
+  },
+  "accuracy_by_batch_era": {
+    "LR": {
+      "before_2025": 0.793,
+      "2025_on": 0.816
+    },
+    "CNN": {
+      "before_2025": 0.734,
+      "2025_on": 0.764
+    },
+    "BiLSTM": {
+      "before_2025": 0.631,
+      "2025_on": 0.712
+    }
+  },
+  "out_of_domain_max_confidence": {
+    "LR": [
+      0.47,
+      0.28,
+      0.57,
+      0.38
+    ],
+    "CNN": [
+      0.83,
+      0.6,
+      0.45,
+      0.28
+    ],
+    "BiLSTM": [
+      0.41,
+      0.41,
+      0.49,
+      0.33
+    ]
+  },
+  "in_domain_mean_max_confidence": {
+    "LR": 0.737,
+    "CNN": 0.835,
+    "BiLSTM": 0.684
+  },
+  "abstain_at_0.6": {
+    "LR": {
+      "coverage": 0.731,
+      "accuracy_on_kept": 0.877
+    },
+    "CNN": {
+      "coverage": 0.853,
+      "accuracy_on_kept": 0.8
+    },
+    "BiLSTM": {
+      "coverage": 0.643,
+      "accuracy_on_kept": 0.743
+    }
+  },
+  "comparison": {
+    "LR": {
+      "test_macro_f1": 0.689,
+      "test_acc": 0.798,
+      "params": 196552,
+      "fit_s": 4.5,
+      "ece": 0.062,
+      "typo_macro_f1": 0.699
+    },
+    "CNN": {
+      "test_macro_f1": 0.649,
+      "test_acc": 0.741,
+      "params": 1285964,
+      "fit_s": 92.3,
+      "ece": 0.098,
+      "typo_macro_f1": 0.604
+    },
+    "BiLSTM": {
+      "test_macro_f1": 0.552,
+      "test_acc": 0.65,
+      "params": 1261644,
+      "fit_s": 49.1,
+      "ece": 0.072,
+      "typo_macro_f1": 0.534
+    }
+  }
+}

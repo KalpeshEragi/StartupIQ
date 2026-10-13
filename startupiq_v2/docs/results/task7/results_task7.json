@@ -1,0 +1,147 @@
+{
+  "vocab_size": 11673,
+  "n_classes": 8,
+  "classes": [
+    "B2B",
+    "Consumer",
+    "Education",
+    "Fintech",
+    "Healthcare",
+    "Industrials",
+    "Other (merged)",
+    "Real Estate and Construction"
+  ],
+  "sizes": {
+    "train": 4349,
+    "val": 933,
+    "test": 933
+  },
+  "embeddings": "learned from scratch (pretrained vectors not available offline)",
+  "decision_rule": "simplest model whose validation macro-F1 >= lower 95% bootstrap bound of the best validation macro-F1",
+  "cnn_random_search": [
+    {
+      "emb": 50,
+      "nf": 128,
+      "drop": 0.5,
+      "lr": 0.002,
+      "wd": 0.01,
+      "val_f1": 0.5894
+    },
+    {
+      "emb": 200,
+      "nf": 32,
+      "drop": 0.5,
+      "lr": 0.001,
+      "wd": 0.01,
+      "val_f1": 0.6258
+    },
+    {
+      "emb": 100,
+      "nf": 128,
+      "drop": 0.5,
+      "lr": 0.005,
+      "wd": 0.1,
+      "val_f1": 0.6954
+    },
+    {
+      "emb": 200,
+      "nf": 64,
+      "drop": 0.3,
+      "lr": 0.005,
+      "wd": 0.01,
+      "val_f1": 0.6586
+    }
+  ],
+  "cnn_best_cfg": {
+    "emb": 100,
+    "nf": 128,
+    "drop": 0.5,
+    "lr": 0.005,
+    "wd": 0.1,
+    "val_f1": 0.6954
+  },
+  "decision": {
+    "val_macro_f1": {
+      "LR": 0.7408,
+      "CNN": 0.6954,
+      "BiLSTM": 0.6148
+    },
+    "best_on_val": "LR",
+    "lower_bound": 0.671,
+    "shipped": "LR"
+  },
+  "test": {
+    "LR": {
+      "accuracy": 0.798,
+      "macro_f1": 0.689,
+      "macro_f1_ci": [
+        0.621,
+        0.748
+      ],
+      "acc_ci": [
+        0.775,
+        0.822
+      ],
+      "val_f1": 0.741,
+      "fit_s": 4.5,
+      "params": 196552
+    },
+    "CNN": {
+      "accuracy": 0.741,
+      "macro_f1": 0.649,
+      "macro_f1_ci": [
+        0.581,
+        0.706
+      ],
+      "acc_ci": [
+        0.714,
+        0.767
+      ],
+      "val_f1": 0.695,
+      "fit_s": 92.3,
+      "params": 1285964
+    },
+    "BiLSTM": {
+      "accuracy": 0.65,
+      "macro_f1": 0.552,
+      "macro_f1_ci": [
+        0.493,
+        0.602
+      ],
+      "acc_ci": [
+        0.622,
+        0.68
+      ],
+      "val_f1": 0.615,
+      "fit_s": 49.1,
+      "params": 1261644
+    }
+  },
+  "cnn_seed_spread": {
+    "CNN": {
+      "val_f1": 0.695378296814035,
+      "val_f1_seeds": [
+        0.6954,
+        0.6895,
+        0.6669
+      ],
+      "val_f1_mean": 0.6839086862291307,
+      "val_f1_sd": 0.012278046665885755,
+      "best_seed": 0,
+      "fit_s": 92.3,
+      "params": 1285964
+    },
+    "BiLSTM": {
+      "val_f1": 0.6147774001048723,
+      "val_f1_seeds": [
+        0.6148,
+        0.6081
+      ],
+      "val_f1_mean": 0.6114583932000375,
+      "val_f1_sd": 0.003319006904834776,
+      "best_seed": 1,
+      "fit_s": 49.1,
+      "params": 1261644
+    }
+  }
+}

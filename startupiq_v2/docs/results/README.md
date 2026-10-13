@@ -12,3 +12,10 @@ Raw data is git-ignored; see data/raw/MANIFEST.md and src/startupiq/ingest/downl
 
 Limits: Form D filing metadata carries little signal about raise size, so exact-band accuracy stays near 54%.
 Clusters in YC text are weak (silhouette ~0.03), so the market map is a rough guide.
+
+## Readiness check (new)
+
+Data: data/labels/readiness_labels.csv (400 YC descriptions, 6 gaps, labelled by one person against a rubric).
+Train and evaluate: `PYTHONPATH=src python -m startupiq.pipelines.readiness_export`, then `build_app`. Page: app/startupiq_readiness.html.
+Method: logistic regression on TF-IDF + length features for customer / problem / differentiation (cross-validated AUC 0.77-0.83); transparent rules for traction / business model / team.
+Limit: labels are single-annotator; accuracy sits near the majority baseline because gaps are imbalanced, so AUC and balanced accuracy are the honest measures.

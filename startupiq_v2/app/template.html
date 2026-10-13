@@ -1,0 +1,169 @@
+<title>StartupIQ Readiness</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one narrow reading column. Input on top, a six-card checklist below, method notes last. */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --ink:#131a2b; --ink2:#4a5468; --ink3:#7b8497; --line:#e1e4eb;
+  --accent:#2447d6; --accent-ink:#ffffff; --ok:#17794a; --okbg:#e5f4ec; --gap:#b4501a; --gapbg:#fbece2; --maybe:#7a6410; --maybebg:#f6f0d8;
+  --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif; --body:'Instrument Sans','Segoe UI',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1420; --surface:#171e2e; --ink:#eaeef7; --ink2:#a9b3c7; --ink3:#7f8aa1; --line:#27304a;
+  --accent:#7f9bff; --accent-ink:#0d1226; --ok:#6fd49f; --okbg:#143225; --gap:#f0a06e; --gapbg:#3a2316; --maybe:#e3cd73; --maybebg:#352d11; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1420; --surface:#171e2e; --ink:#eaeef7; --ink2:#a9b3c7; --ink3:#7f8aa1; --line:#27304a;
+  --accent:#7f9bff; --accent-ink:#0d1226; --ok:#6fd49f; --okbg:#143225; --gap:#f0a06e; --gapbg:#3a2316; --maybe:#e3cd73; --maybebg:#352d11; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:28px 56px}
+.wrap{max-width:860px;margin-inline:auto}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.brand{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em}
+.brand span{color:var(--accent)}
+.tag{font-family:var(--mono);font-size:12px;color:var(--ink3);letter-spacing:.02em}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,5vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+.lede{color:var(--ink2);max-width:60ch;margin:0 0 24px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+label.l{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+textarea{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;padding:12px 14px;line-height:1.55}
+textarea:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;justify-content:space-between}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips small{color:var(--ink3);font-size:13px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink2);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--ink)}
+.go{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 20px;font:inherit;font-weight:600;cursor:pointer}
+.go:hover{filter:brightness(1.08)}
+.count{font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.sum{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:28px 0 14px}
+.score{font-family:var(--display);font-weight:700;font-size:44px;line-height:1;letter-spacing:-.02em}
+.score small{font-size:18px;color:var(--ink3);font-weight:500}
+.sumtxt{color:var(--ink2);max-width:46ch}
+.pips{display:flex;gap:5px}
+.pip{width:26px;height:8px;border-radius:4px;background:var(--line)}
+.pip.ok{background:var(--ok)}.pip.gap{background:var(--gap)}.pip.maybe{background:var(--maybe)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card h3{font-family:var(--display);font-size:18px;font-weight:700;margin:0;letter-spacing:-.01em}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.badge{font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.badge.ok{background:var(--okbg);color:var(--ok)}.badge.gap{background:var(--gapbg);color:var(--gap)}.badge.maybe{background:var(--maybebg);color:var(--maybe)}
+.q{margin:0;color:var(--ink2);font-size:14px}
+.fix{margin:0;font-size:14px;border-left:3px solid var(--gap);padding-left:10px}
+.found{margin:0;font-size:14px;border-left:3px solid var(--ok);padding-left:10px;color:var(--ink2)}
+.found mark{background:var(--okbg);color:var(--ok);padding:0 3px;border-radius:3px;font-family:var(--mono);font-size:13px}
+.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ink3)}
+.src{font-family:var(--mono);font-size:11.5px;color:var(--ink3);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:auto}
+.note{margin-top:18px;color:var(--ink3);font-size:13.5px;max-width:70ch}
+details{margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+summary{cursor:pointer;font-weight:600}
+.tw{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);font-weight:500}
+p.m{color:var(--ink2);font-size:14px;max-width:70ch}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">Startup<span>IQ</span></div>
+    <div class="tag">READINESS CHECK · EXPERIMENT</div>
+  </header>
+
+  <h1>What is missing from your startup story?</h1>
+  <p class="lede">Describe your startup the way you would to an investor or an incubator. StartupIQ reads it and lists what a reviewer would still ask you.</p>
+
+  <div class="box">
+    <label class="l" for="inp">Your startup description</label>
+    <textarea id="inp" spellcheck="true"></textarea>
+    <div class="row">
+      <div class="chips"><small>Try an example:</small>
+        <button class="chip" data-ex="0">Vague</button>
+        <button class="chip" data-ex="1">Detailed</button>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center"><span class="count" id="cnt"></span><button class="go" id="go">Check my startup</button></div>
+    </div>
+  </div>
+
+  <div class="sum" id="sum" aria-live="polite"></div>
+  <div class="grid" id="grid"></div>
+  <p class="note">The check only sees what you wrote. A gap means "not stated in this text", not "your startup lacks it". The three model-based checks are estimates, and the three rule checks look for plain evidence in your words.</p>
+
+  <details>
+    <summary>How reliable is this?</summary>
+    <p class="m">Trained on 400 public Y Combinator company descriptions that I labelled against a six-point rubric, then tested with cross-validation (each description scored by a model that never saw it). The labels are one person's judgement, so scores measure agreement with that rubric, not startup outcomes. Descriptions you write may be longer or shorter than YC blurbs, which can shift results.</p>
+    <div class="tw"><table id="tbl"></table></div>
+  </details>
+</div>
+
+<script>
+const MODEL = __MODEL__;
+const STATS = __STATS__;
+const GAPS = [
+ {k:'customer_unclear', t:'Who it is for', kind:'ml', q:'Does the text name a specific customer or user?', fix:'Name one customer type and one job they hire you for, for example "independent roofing contractors".'},
+ {k:'problem_unclear', t:'The problem', kind:'ml', q:'Does it say what pain or need you solve?', fix:'State the problem in one sentence before the solution: who loses time or money today, and how.'},
+ {k:'differentiation_missing', t:'Why you, not others', kind:'ml', q:'Does it say what is different or hard to copy?', fix:'Add the one thing you do differently: a method, data advantage, price point or distribution edge.'},
+ {k:'traction_not_stated', t:'Proof it works', kind:'rule', q:'Are there numbers, customers, revenue or backers?', fix:'Add one concrete signal: users, paying customers, revenue, pilots, a named customer, or funding.'},
+ {k:'business_model_unclear', t:'How you earn', kind:'rule', q:'Is there a hint of how money comes in?', fix:'Say who pays and how: subscription, per-transaction fee, licence, marketplace commission.'},
+ {k:'team_not_stated', t:'Why this team', kind:'rule', q:'Is anyone\'s background or experience mentioned?', fix:'Add one line on founder background that makes this believable for this problem.'}
+];
+const TOK = /[\p{L}\p{N}_]{2,}/gu;
+function tokens(t){return (t.toLowerCase().match(TOK)||[])}
+function vec(text){
+  const tk=tokens(text), grams=[...tk];
+  for(let i=0;i<tk.length-1;i++) grams.push(tk[i]+' '+tk[i+1]);
+  const tf={}; for(const g of grams){const e=MODEL.vocab[g]; if(e) tf[e[0]]=(tf[e[0]]||0)+1}
+  const x={}; let n=0;
+  for(const i in tf){const idf=MODEL.vocab_idf[i]; const v=(1+Math.log(tf[i]))*idf; x[i]=v; n+=v*v}
+  n=Math.sqrt(n)||1; for(const i in x) x[i]/=n;
+  const wc=text.trim()?text.trim().split(/\s+/).length:0;
+  const raw=[Math.log1p(wc), /\d/.test(text)?1:0, /[$€£]\s?\d/.test(text)?1:0];
+  const hand=raw.map((v,j)=>(v-MODEL.hand_mu[j])/MODEL.hand_sd[j]);
+  return {x,hand,wc};
+}
+const V=Object.keys(MODEL.vocab).length;
+function mlScore(g,v){
+  const m=MODEL.gaps[g]; let s=m.intercept; const parts=[];
+  for(const i in v.x){const c=m.coef[i]*v.x[i]; s+=c; parts.push([i,c])}
+  for(let j=0;j<3;j++) s+=m.coef[V+j]*v.hand[j];
+  return {p:1/(1+Math.exp(-s)),parts};
+}
+function analyse(text){
+  const v=vec(text), out=[];
+  for(const G of GAPS){
+    if(G.kind==='ml'){const r=mlScore(G.k,v); out.push({G,p:r.p,status:r.p>=.62?'gap':r.p>=.4?'maybe':'ok'})}
+    else{const m=text.match(new RegExp(MODEL.rules[G.k],'i')); out.push({G,hit:m?m[0].trim():null,status:m?'ok':'gap'})}
+  }
+  return {out,wc:v.wc};
+}
+const LAB={ok:'Covered',gap:'Not stated',maybe:'Unclear'};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){
+  const text=document.getElementById('inp').value, a=analyse(text);
+  document.getElementById('cnt').textContent=a.wc+' words';
+  const ok=a.out.filter(r=>r.status==='ok').length;
+  const sum=document.getElementById('sum');
+  if(a.wc<4){sum.innerHTML='<div class="sumtxt">Write at least a sentence to run the check.</div>';document.getElementById('grid').innerHTML='';return}
+  const todo=6-ok;
+  sum.innerHTML=`<div class="score">${ok}<small> / 6 covered</small></div><div><div class="pips">${a.out.map(r=>`<span class="pip ${r.status}"></span>`).join('')}</div><div class="sumtxt" style="margin-top:8px">${todo===0?'A reviewer will find every basic point answered.':todo===1?'One point left to add before you send this to anyone.':todo+' points a reviewer would still ask about.'}</div></div>`;
+  document.getElementById('grid').innerHTML=a.out.map(r=>{
+    const G=r.G; let body='';
+    if(G.kind==='rule') body = r.hit ? `<p class="found">Found: <mark>${esc(r.hit)}</mark></p>` : `<p class="fix">${G.fix}</p>`;
+    else body = r.status==='ok' ? `<p class="found">This reads as covered.</p>` : `<p class="fix">${G.fix}</p>`;
+    const meter = G.kind==='ml' ? `<div class="meter" title="likelihood this is missing"><i style="width:${Math.round(r.p*100)}%"></i></div>` : '';
+    return `<article class="card"><div class="top"><h3>${G.t}</h3><span class="badge ${r.status}">${LAB[r.status]}</span></div><p class="q">${G.q}</p>${meter}${body}<div class="src"><span>${G.kind==='ml'?'Trained model':'Rule check'}</span><span>${G.kind==='ml'?'gap likelihood '+Math.round(r.p*100)+'%':'pattern search'}</span></div></article>`}).join('');
+}
+const EX=[
+ 'We build an AI tool that makes work easier for teams.',
+ 'Roofline helps independent roofing contractors send accurate quotes in minutes. Contractors lose about a day per quote driving to sites and measuring by hand. We turn satellite imagery into a measured proposal, priced from the contractor\'s own rate card. 340 contractors pay $99 a month, up 18% month over month. Founded by two former Lowe\'s engineers who built its in-store estimator.'
+];
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.getElementById('inp').value=EX[+b.dataset.ex];render()});
+document.getElementById('go').onclick=render;
+document.getElementById('inp').addEventListener('input',()=>{clearTimeout(window._t);window._t=setTimeout(render,250)});
+document.getElementById('inp').value=EX[1];
+const names={customer_unclear:'Who it is for',problem_unclear:'The problem',differentiation_missing:'Why you',traction_not_stated:'Proof it works',business_model_unclear:'How you earn',team_not_stated:'Why this team'};
+document.getElementById('tbl').innerHTML='<tr><th>Check</th><th>Method</th><th>Share of YC texts with the gap</th><th>AUC</th><th>Balanced accuracy</th><th>Recall of gaps</th></tr>'+
+ Object.entries(STATS).map(([k,s])=>`<tr><td>${names[k]}</td><td>${s.auc!=null?'Trained model':'Rule check'}</td><td>${Math.round(s.prevalence*100)}%</td><td>${s.auc!=null?s.auc.toFixed(2):'n/a'}</td><td>${s.balanced_acc.toFixed(2)}</td><td>${s.recall.toFixed(2)}</td></tr>`).join('');
+render();
+</script>

@@ -1,0 +1,57 @@
+{
+ "rules": {
+  "traction_not_stated": {
+   "prevalence": 0.818,
+   "accuracy": 0.738,
+   "balanced_acc": 0.722,
+   "recall_of_gaps": 0.746,
+   "precision_of_gaps": 0.917,
+   "majority_baseline": 0.818
+  },
+  "business_model_unclear": {
+   "prevalence": 0.912,
+   "accuracy": 0.802,
+   "balanced_acc": 0.763,
+   "recall_of_gaps": 0.811,
+   "precision_of_gaps": 0.967,
+   "majority_baseline": 0.912
+  },
+  "team_not_stated": {
+   "prevalence": 0.943,
+   "accuracy": 0.89,
+   "balanced_acc": 0.738,
+   "recall_of_gaps": 0.91,
+   "precision_of_gaps": 0.972,
+   "majority_baseline": 0.942
+  }
+ },
+ "ml": {
+  "customer_unclear": {
+   "prevalence": 0.087,
+   "AUC": 0.83,
+   "recall_of_gaps": 0.514,
+   "precision_of_gaps": 0.45,
+   "balanced_acc": 0.727,
+   "accuracy": 0.902,
+   "majority_baseline": 0.912
+  },
+  "problem_unclear": {
+   "prevalence": 0.185,
+   "AUC": 0.831,
+   "recall_of_gaps": 0.635,
+   "precision_of_gaps": 0.505,
+   "balanced_acc": 0.747,
+   "accuracy": 0.818,
+   "majority_baseline": 0.815
+  },
+  "differentiation_missing": {
+   "prevalence": 0.16,
+   "AUC": 0.774,
+   "recall_of_gaps": 0.531,
+   "precision_of_gaps": 0.493,
+   "balanced_acc": 0.714,
+   "accuracy": 0.838,
+   "majority_baseline": 0.84
+  }
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "customer_unclear": {
+  "prevalence": 0.087,
+  "AUC": 0.824,
+  "F1_gap": 0.468,
+  "F1_all_gap_baseline": 0.161,
+  "balanced_acc": 0.724,
+  "accuracy": 0.897,
+  "accuracy_majority_baseline": 0.912
+ },
+ "problem_unclear": {
+  "prevalence": 0.185,
+  "AUC": 0.823,
+  "F1_gap": 0.54,
+  "F1_all_gap_baseline": 0.312,
+  "balanced_acc": 0.736,
+  "accuracy": 0.8,
+  "accuracy_majority_baseline": 0.815
+ },
+ "traction_not_stated": {
+  "prevalence": 0.818,
+  "AUC": 0.751,
+  "F1_gap": 0.839,
+  "F1_all_gap_baseline": 0.9,
+  "balanced_acc": 0.707,
+  "accuracy": 0.755,
+  "accuracy_majority_baseline": 0.818
+ },
+ "differentiation_missing": {
+  "prevalence": 0.16,
+  "AUC": 0.77,
+  "F1_gap": 0.454,
+  "F1_all_gap_baseline": 0.276,
+  "balanced_acc": 0.683,
+  "accuracy": 0.807,
+  "accuracy_majority_baseline": 0.84
+ },
+ "business_model_unclear": {
+  "prevalence": 0.912,
+  "AUC": 0.632,
+  "F1_gap": 0.932,
+  "F1_all_gap_baseline": 0.954,
+  "balanced_acc": 0.478,
+  "accuracy": 0.873,
+  "accuracy_majority_baseline": 0.912
+ },
+ "team_not_stated": {
+  "prevalence": 0.943,
+  "AUC": 0.74,
+  "F1_gap": 0.945,
+  "F1_all_gap_baseline": 0.97,
+  "balanced_acc": 0.578,
+  "accuracy": 0.897,
+  "accuracy_majority_baseline": 0.942
+ }
+}

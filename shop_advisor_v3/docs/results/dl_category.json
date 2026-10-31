@@ -1,0 +1,293 @@
+{
+  "validation": [
+    {
+      "model": "Category seasonal shape (true type)",
+      "MASE": 1.1274,
+      "MASE_sd": 0.0,
+      "WAPE": 0.1142,
+      "range coverage": NaN
+    },
+    {
+      "model": "1D CNN (TCN), knows the type",
+      "MASE": 1.1712,
+      "MASE_sd": 0.0199,
+      "WAPE": 0.1169,
+      "range coverage": 0.8604
+    },
+    {
+      "model": "MLP, knows the type",
+      "MASE": 1.248,
+      "MASE_sd": 0.0255,
+      "WAPE": 0.1224,
+      "range coverage": 0.8682
+    },
+    {
+      "model": "1D CNN (TCN), type-blind",
+      "MASE": 1.3068,
+      "MASE_sd": 0.0376,
+      "WAPE": 0.1301,
+      "range coverage": 0.8529
+    },
+    {
+      "model": "LSTM + attention, knows the type",
+      "MASE": 1.3166,
+      "MASE_sd": 0.0626,
+      "WAPE": 0.1311,
+      "range coverage": 0.878
+    },
+    {
+      "model": "LSTM + attention, type-blind",
+      "MASE": 1.4166,
+      "MASE_sd": 0.0327,
+      "WAPE": 0.1423,
+      "range coverage": 0.8636
+    },
+    {
+      "model": "MLP, type-blind",
+      "MASE": 1.474,
+      "MASE_sd": 0.0815,
+      "WAPE": 0.145,
+      "range coverage": 0.8739
+    },
+    {
+      "model": "Moving average (4 weeks)",
+      "MASE": 1.5224,
+      "MASE_sd": 0.0,
+      "WAPE": 0.1546,
+      "range coverage": NaN
+    },
+    {
+      "model": "Statistical Auto",
+      "MASE": 1.5239,
+      "MASE_sd": 0.0,
+      "WAPE": 0.1532,
+      "range coverage": NaN
+    }
+  ],
+  "test": [
+    {
+      "model": "Category seasonal shape (true type)",
+      "MASE": 1.1365,
+      "MASE_sd": 0.0,
+      "WAPE": 0.1167,
+      "range coverage": NaN
+    },
+    {
+      "model": "1D CNN (TCN), knows the type",
+      "MASE": 1.1378,
+      "MASE_sd": 0.0182,
+      "WAPE": 0.1149,
+      "range coverage": 0.8641
+    },
+    {
+      "model": "1D CNN (TCN), knows the type (true type)",
+      "MASE": 1.1394,
+      "MASE_sd": 0.0173,
+      "WAPE": 0.115,
+      "range coverage": 0.8628
+    },
+    {
+      "model": "MLP, knows the type",
+      "MASE": 1.2142,
+      "MASE_sd": 0.0187,
+      "WAPE": 0.1204,
+      "range coverage": 0.8688
+    },
+    {
+      "model": "MLP, knows the type (true type)",
+      "MASE": 1.217,
+      "MASE_sd": 0.0194,
+      "WAPE": 0.1206,
+      "range coverage": 0.8672
+    },
+    {
+      "model": "LSTM + attention, knows the type",
+      "MASE": 1.2673,
+      "MASE_sd": 0.0594,
+      "WAPE": 0.1277,
+      "range coverage": 0.8805
+    },
+    {
+      "model": "LSTM + attention, knows the type (true type)",
+      "MASE": 1.268,
+      "MASE_sd": 0.0596,
+      "WAPE": 0.1277,
+      "range coverage": 0.8799
+    },
+    {
+      "model": "1D CNN (TCN), type-blind",
+      "MASE": 1.2782,
+      "MASE_sd": 0.0337,
+      "WAPE": 0.1285,
+      "range coverage": 0.8537
+    },
+    {
+      "model": "LSTM + attention, type-blind",
+      "MASE": 1.3717,
+      "MASE_sd": 0.0384,
+      "WAPE": 0.1393,
+      "range coverage": 0.8668
+    },
+    {
+      "model": "MLP, type-blind",
+      "MASE": 1.4489,
+      "MASE_sd": 0.0737,
+      "WAPE": 0.1436,
+      "range coverage": 0.8753
+    },
+    {
+      "model": "Statistical Auto",
+      "MASE": 1.4548,
+      "MASE_sd": 0.0,
+      "WAPE": 0.151,
+      "range coverage": NaN
+    },
+    {
+      "model": "Moving average (4 weeks)",
+      "MASE": 1.4964,
+      "MASE_sd": 0.0,
+      "WAPE": 0.1561,
+      "range coverage": NaN
+    }
+  ],
+  "chosen": "1D CNN (TCN), knows the type",
+  "classifier_test_accuracy": 0.983,
+  "by_history": [
+    {
+      "model": "1D CNN (TCN), knows the type",
+      "38-63 weeks (no last year)": 1.16,
+      "64+ weeks (has last year)": 1.124
+    },
+    {
+      "model": "1D CNN (TCN), type-blind",
+      "38-63 weeks (no last year)": 1.323,
+      "64+ weeks (has last year)": 1.251
+    },
+    {
+      "model": "Statistical Auto",
+      "38-63 weeks (no last year)": 1.564,
+      "64+ weeks (has last year)": 1.389
+    },
+    {
+      "model": "Category seasonal shape (true type)",
+      "38-63 weeks (no last year)": 1.138,
+      "64+ weeks (has last year)": 1.136
+    }
+  ],
+  "runs": [
+    {
+      "model": "MLP, knows the type",
+      "seed": 0,
+      "epochs": 17,
+      "seconds": 6
+    },
+    {
+      "model": "MLP, knows the type",
+      "seed": 1,
+      "epochs": 20,
+      "seconds": 6
+    },
+    {
+      "model": "MLP, knows the type",
+      "seed": 2,
+      "epochs": 18,
+      "seconds": 5
+    },
+    {
+      "model": "MLP, type-blind",
+      "seed": 0,
+      "epochs": 6,
+      "seconds": 2
+    },
+    {
+      "model": "MLP, type-blind",
+      "seed": 1,
+      "epochs": 6,
+      "seconds": 2
+    },
+    {
+      "model": "MLP, type-blind",
+      "seed": 2,
+      "epochs": 18,
+      "seconds": 4
+    },
+    {
+      "model": "LSTM + attention, knows the type",
+      "seed": 0,
+      "epochs": 25,
+      "seconds": 10
+    },
+    {
+      "model": "LSTM + attention, knows the type",
+      "seed": 1,
+      "epochs": 25,
+      "seconds": 9
+    },
+    {
+      "model": "LSTM + attention, knows the type",
+      "seed": 2,
+      "epochs": 18,
+      "seconds": 7
+    },
+    {
+      "model": "LSTM + attention, type-blind",
+      "seed": 0,
+      "epochs": 25,
+      "seconds": 9
+    },
+    {
+      "model": "LSTM + attention, type-blind",
+      "seed": 1,
+      "epochs": 25,
+      "seconds": 9
+    },
+    {
+      "model": "LSTM + attention, type-blind",
+      "seed": 2,
+      "epochs": 11,
+      "seconds": 4
+    },
+    {
+      "model": "1D CNN (TCN), knows the type",
+      "seed": 0,
+      "epochs": 25,
+      "seconds": 26
+    },
+    {
+      "model": "1D CNN (TCN), knows the type",
+      "seed": 1,
+      "epochs": 25,
+      "seconds": 26
+    },
+    {
+      "model": "1D CNN (TCN), knows the type",
+      "seed": 2,
+      "epochs": 25,
+      "seconds": 26
+    },
+    {
+      "model": "1D CNN (TCN), type-blind",
+      "seed": 0,
+      "epochs": 18,
+      "seconds": 18
+    },
+    {
+      "model": "1D CNN (TCN), type-blind",
+      "seed": 1,
+      "epochs": 25,
+      "seconds": 25
+    },
+    {
+      "model": "1D CNN (TCN), type-blind",
+      "seed": 2,
+      "epochs": 25,
+      "seconds": 25
+    }
+  ],
+  "shops": {
+    "train": 1817,
+    "val": 591,
+    "test": 587
+  },
+  "seconds": 610
+}

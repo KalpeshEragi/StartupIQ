@@ -1,0 +1,80 @@
+{
+  "rows": [
+    {
+      "model": "mlp h128 l1 do0.1 lr0.002 wd0.0001",
+      "RMSPE": "0.1453 \u00b1 0.0044",
+      "P10-P90 coverage": "0.8524 \u00b1 0.0162",
+      "store-days scored": 37472,
+      "epochs": 8,
+      "seconds per run": 17,
+      "params": 121307
+    },
+    {
+      "model": "lstm+attention h64 l1 do0.1 lr0.002 wd0.0001",
+      "RMSPE": "0.1590 \u00b1 0.0020",
+      "P10-P90 coverage": "0.8452 \u00b1 0.0010",
+      "store-days scored": 37472,
+      "epochs": 8,
+      "seconds per run": 23,
+      "params": 42715
+    },
+    {
+      "model": "tcn h32 l6 do0.1 lr0.002 wd0.0001",
+      "RMSPE": "0.1307 \u00b1 0.0031",
+      "P10-P90 coverage": "0.8196 \u00b1 0.0356",
+      "store-days scored": 37472,
+      "epochs": 25,
+      "seconds per run": 122,
+      "params": 49499
+    }
+  ],
+  "step5": {
+    "Store mean": 0.29948275287445725,
+    "Same weekday, last 4 weeks": 0.22797384009055752,
+    "Same day last year (rows with history only)": 0.181371751941562,
+    "Same day last year, else same weekday 4 weeks": 0.19481699804980881,
+    "Ridge (alpha=0.1)": 0.1509659686820235,
+    "Random forest (300,000 rows)": 0.1190579222713433,
+    "LightGBM (127 leaves, 600 trees)": 0.13345052965100865
+  },
+  "verdict": "Best deep model tcn h32 l6 do0.1 lr0.002 wd0.0001: RMSPE 0.1307 \u00b1 0.0031 vs random forest 0.1191. Does not beat the forest by more than one sd.",
+  "configs": {
+    "mlp": {
+      "arch": "mlp",
+      "hidden": 128,
+      "layers": 1,
+      "dropout": 0.1,
+      "lr": 0.002,
+      "weight_decay": 0.0001,
+      "attention": true,
+      "batch": 512,
+      "max_epochs": 25,
+      "patience": 4
+    },
+    "lstm": {
+      "arch": "lstm",
+      "hidden": 64,
+      "layers": 1,
+      "dropout": 0.1,
+      "lr": 0.002,
+      "weight_decay": 0.0001,
+      "attention": true,
+      "batch": 512,
+      "max_epochs": 25,
+      "patience": 4
+    },
+    "tcn": {
+      "arch": "tcn",
+      "hidden": 32,
+      "layers": 6,
+      "dropout": 0.1,
+      "lr": 0.002,
+      "weight_decay": 0.0001,
+      "attention": true,
+      "batch": 512,
+      "max_epochs": 25,
+      "patience": 4
+    }
+  },
+  "seconds": 502
+}

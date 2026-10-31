@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Data: never commit downloaded or derived data (YC data has no stated licence)
+data/raw/*
+data/interim/*
+data/processed/*
+data/synthetic/*
+!data/**/.gitkeep
+!data/raw/MANIFEST.md
+
+# Models and large artifacts
+*.pt
+*.pkl
+*.joblib
+data/models/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.env

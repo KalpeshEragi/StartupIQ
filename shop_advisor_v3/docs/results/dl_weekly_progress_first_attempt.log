@@ -1,0 +1,7 @@
+15:35:39 70278 training windows, 2539 evaluation series
+15:37:23 mlp h64 l2 do0.3 lr0.003 wd0.0 seed 0: pooled MASE 0.757, coverage 0.648, 30 epochs, 97s
+15:38:21 mlp h32 l2 do0.3 lr0.001 wd0.0 seed 0: pooled MASE 0.753, coverage 0.752, 30 epochs, 58s
+15:40:45 mlp h128 l1 do0.0 lr0.003 wd0.0 seed 0: pooled MASE 0.859, coverage 0.509, 30 epochs, 143s
+15:42:53 mlp h64 l2 do0.1 lr0.001 wd0.0 seed 0: pooled MASE 0.786, coverage 0.641, 23 epochs, 128s
+15:45:17 mlp h128 l2 do0.3 lr0.003 wd0.001 seed 0: pooled MASE 0.791, coverage 0.682, 30 epochs, 143s
+18:13:03 lstm+attention h128 l1 do0.0 lr0.001 wd0.0001 seed 0: pooled MASE 0.800, coverage 0.615, 30 epochs, 8865s

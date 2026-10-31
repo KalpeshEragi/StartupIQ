@@ -1,0 +1,59 @@
+# Task 1 validation: 8 SYNTHETIC businesses with proposed moves. 4 are consistent, 4 each break
+# one constraint on purpose. expect_violations lists the constraint names the checker must report
+# (exactly these, no more).
+
+valid_healthy_cafe:
+  business: {cash: 300000, monthly_fixed_costs: 80000, gross_margin: 0.45, weekly_sales: 60000, stock_value: 150000, supplier_lead_time_weeks: 1}
+  category: food
+  rivals: {cafe_bliss: food}
+  moves: [promotion, channel_expansion, loyalty_offer]
+  expect_violations: []
+
+valid_lean_reseller:
+  business: {cash: 50000, monthly_fixed_costs: 20000, gross_margin: 0.25, weekly_sales: 15000, stock_value: 30000, supplier_lead_time_weeks: 2}
+  category: electronics
+  rivals: {}
+  moves: [restock, cost_reduction, hold]
+  expect_violations: []
+
+valid_price_cut_with_room:
+  business: {cash: 100000, monthly_fixed_costs: 30000, gross_margin: 0.40, min_margin: 0.15, weekly_sales: 20000, stock_value: 50000, supplier_lead_time_weeks: 2}
+  category: apparel
+  rivals: {trendy_threads: apparel}
+  moves: [price_cut]
+  expect_violations: []
+
+valid_inherits_defaults:   # no margin, no lead time given: defaults (30%, 2 weeks) come from the class frame
+  business: {cash: 200000, monthly_fixed_costs: 40000, weekly_sales: 30000, stock_value: 60000}
+  category: home
+  rivals: {}
+  moves: [loyalty_offer, hold]
+  expect_violations: []
+
+invalid_cash_short_expansion:
+  business: {cash: 40000, monthly_fixed_costs: 80000, gross_margin: 0.30, weekly_sales: 25000, stock_value: 100000, supplier_lead_time_weeks: 1}
+  category: food
+  rivals: {}
+  moves: [channel_expansion]
+  expect_violations: [runway_at_least_6_months]
+
+invalid_price_cut_below_floor:
+  business: {cash: 100000, monthly_fixed_costs: 30000, gross_margin: 0.15, min_margin: 0.10, weekly_sales: 20000, stock_value: 50000, supplier_lead_time_weeks: 2}
+  category: apparel
+  rivals: {}
+  moves: [price_cut]
+  expect_violations: [margin_stays_above_floor]
+
+invalid_promotion_without_stock:
+  business: {cash: 100000, monthly_fixed_costs: 30000, gross_margin: 0.40, weekly_sales: 50000, stock_value: 20000, supplier_lead_time_weeks: 1}
+  category: snacks
+  rivals: {}
+  moves: [promotion]
+  expect_violations: [stock_covers_promotion]
+
+invalid_price_coordination_and_wrong_rival:
+  business: {cash: 100000, monthly_fixed_costs: 30000, gross_margin: 0.40, weekly_sales: 20000, stock_value: 50000, supplier_lead_time_weeks: 2}
+  category: snacks
+  rivals: {steel_works: metals}
+  moves: [price_coordination]
+  expect_violations: [legal, competitor_same_category]

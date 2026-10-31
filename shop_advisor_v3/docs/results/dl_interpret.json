@@ -1,0 +1,45 @@
+{
+  "findings": {
+    "mlp": {
+      "share_last_4_weeks": 0.13637380301952362,
+      "share_seasonal_feature": 0.18180839717388153,
+      "share_52_weeks_back_window": 0.07366993278265,
+      "rossmann_last_4": 0.16642053425312042,
+      "uci_last_4": 0.10632705688476562
+    },
+    "lstm": {
+      "share_last_4_weeks": 0.22492235898971558,
+      "share_seasonal_feature": 0.11952364444732666,
+      "share_52_weeks_back_window": 0.030103404074907303,
+      "rossmann_last_4": 0.30204787850379944,
+      "uci_last_4": 0.1477968543767929
+    },
+    "tcn": {
+      "share_last_4_weeks": 0.2875467538833618,
+      "share_seasonal_feature": 0.16067880392074585,
+      "share_52_weeks_back_window": 0.05663536861538887,
+      "rossmann_last_4": 0.42669475078582764,
+      "uci_last_4": 0.1483987420797348
+    }
+  },
+  "attention_vs_occlusion": {
+    "median_spearman": -0.114382676069284,
+    "mean_curve_spearman": -0.00495176299837787,
+    "top5_overlap": 0.035,
+    "saliency_vs_occlusion_median": 0.6319474088619483
+  },
+  "filters": {
+    "17": "fires on a sudden spike in the latest week",
+    "18": "fires on a sudden spike in the latest week",
+    "23": "fires on a sudden spike in the latest week",
+    "27": "fires on a sudden spike in the latest week",
+    "24": "mixed / level pattern",
+    "5": "mixed / level pattern"
+  },
+  "speed_ms": {
+    "mlp": 0.00391620592415544,
+    "lstm": 0.006407440624259597,
+    "tcn": 0.029495730555963686
+  },
+  "seconds": 26
+}

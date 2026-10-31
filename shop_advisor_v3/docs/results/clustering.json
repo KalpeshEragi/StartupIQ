@@ -1,0 +1,170 @@
+{
+  "table": [
+    {
+      "method": "K-means",
+      "k": 2,
+      "silhouette": 0.216,
+      "davies_bouldin": 1.6466,
+      "stability_ARI": 0.9893,
+      "ARI_vs_StoreType": 0.0371,
+      "NMI_vs_StoreType": 0.0438
+    },
+    {
+      "method": "Ward",
+      "k": 2,
+      "silhouette": 0.1836,
+      "davies_bouldin": 1.8758,
+      "stability_ARI": 0.4242,
+      "ARI_vs_StoreType": 0.0706,
+      "NMI_vs_StoreType": 0.0505
+    },
+    {
+      "method": "K-means",
+      "k": 3,
+      "silhouette": 0.1869,
+      "davies_bouldin": 1.6767,
+      "stability_ARI": 0.9916,
+      "ARI_vs_StoreType": 0.0765,
+      "NMI_vs_StoreType": 0.0624
+    },
+    {
+      "method": "Ward",
+      "k": 3,
+      "silhouette": 0.168,
+      "davies_bouldin": 1.7931,
+      "stability_ARI": 0.3724,
+      "ARI_vs_StoreType": 0.109,
+      "NMI_vs_StoreType": 0.0573
+    },
+    {
+      "method": "K-means",
+      "k": 4,
+      "silhouette": 0.1714,
+      "davies_bouldin": 1.6169,
+      "stability_ARI": 0.9627,
+      "ARI_vs_StoreType": 0.0668,
+      "NMI_vs_StoreType": 0.0606
+    },
+    {
+      "method": "Ward",
+      "k": 4,
+      "silhouette": 0.1384,
+      "davies_bouldin": 1.7247,
+      "stability_ARI": 0.3213,
+      "ARI_vs_StoreType": 0.0584,
+      "NMI_vs_StoreType": 0.056
+    },
+    {
+      "method": "K-means",
+      "k": 5,
+      "silhouette": 0.1691,
+      "davies_bouldin": 1.5489,
+      "stability_ARI": 0.961,
+      "ARI_vs_StoreType": 0.0466,
+      "NMI_vs_StoreType": 0.0587
+    },
+    {
+      "method": "Ward",
+      "k": 5,
+      "silhouette": 0.1401,
+      "davies_bouldin": 1.5419,
+      "stability_ARI": 0.337,
+      "ARI_vs_StoreType": 0.0638,
+      "NMI_vs_StoreType": 0.0603
+    },
+    {
+      "method": "K-means",
+      "k": 6,
+      "silhouette": 0.1722,
+      "davies_bouldin": 1.5017,
+      "stability_ARI": 0.7846,
+      "ARI_vs_StoreType": 0.0428,
+      "NMI_vs_StoreType": 0.0712
+    },
+    {
+      "method": "Ward",
+      "k": 6,
+      "silhouette": 0.1449,
+      "davies_bouldin": 1.5892,
+      "stability_ARI": 0.3043,
+      "ARI_vs_StoreType": 0.0432,
+      "NMI_vs_StoreType": 0.0566
+    },
+    {
+      "method": "K-means",
+      "k": 7,
+      "silhouette": 0.1696,
+      "davies_bouldin": 1.5044,
+      "stability_ARI": 0.7094,
+      "ARI_vs_StoreType": 0.048,
+      "NMI_vs_StoreType": 0.0717
+    },
+    {
+      "method": "Ward",
+      "k": 7,
+      "silhouette": 0.1316,
+      "davies_bouldin": 1.5895,
+      "stability_ARI": 0.329,
+      "ARI_vs_StoreType": 0.0169,
+      "NMI_vs_StoreType": 0.0667
+    },
+    {
+      "method": "K-means",
+      "k": 8,
+      "silhouette": 0.1706,
+      "davies_bouldin": 1.4238,
+      "stability_ARI": 0.8469,
+      "ARI_vs_StoreType": 0.0447,
+      "NMI_vs_StoreType": 0.0846
+    },
+    {
+      "method": "Ward",
+      "k": 8,
+      "silhouette": 0.1253,
+      "davies_bouldin": 1.5995,
+      "stability_ARI": 0.3281,
+      "ARI_vs_StoreType": 0.0269,
+      "NMI_vs_StoreType": 0.0843
+    }
+  ],
+  "chosen": {
+    "method": "K-means",
+    "k": 3
+  },
+  "profile": [
+    {
+      "cluster": 0,
+      "stores": 320,
+      "log_weekly_sales": 10.474,
+      "weekly_cv": 0.211,
+      "promo_lift": 1.335,
+      "december_ratio": 1.315,
+      "saturday_share": 0.163,
+      "trend_ratio": 0.17,
+      "weekly_sales": 35383.0
+    },
+    {
+      "cluster": 1,
+      "stores": 412,
+      "log_weekly_sales": 10.462,
+      "weekly_cv": 0.22,
+      "promo_lift": 1.587,
+      "december_ratio": 1.257,
+      "saturday_share": 0.113,
+      "trend_ratio": 0.025,
+      "weekly_sales": 34961.0
+    },
+    {
+      "cluster": 2,
+      "stores": 383,
+      "log_weekly_sales": 10.707,
+      "weekly_cv": 0.165,
+      "promo_lift": 1.288,
+      "december_ratio": 1.204,
+      "saturday_share": 0.161,
+      "trend_ratio": 0.026,
+      "weekly_sales": 44667.0
+    }
+  ],
+  "seconds": 15
+}

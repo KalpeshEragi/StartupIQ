@@ -1,0 +1,62 @@
+{
+  "table": [
+    {
+      "model": "Store mean",
+      "rmspe": 0.3305379939331022,
+      "sd": NaN,
+      "rows_scored": 40282,
+      "rmspe \u00b1 sd": "0.3305"
+    },
+    {
+      "model": "Same weekday, last 4 weeks",
+      "rmspe": 0.2640060254690234,
+      "sd": NaN,
+      "rows_scored": 40282,
+      "rmspe \u00b1 sd": "0.2640"
+    },
+    {
+      "model": "Same day last year (rows with history only)",
+      "rmspe": 0.16042643002299378,
+      "sd": NaN,
+      "rows_scored": 35077,
+      "rmspe \u00b1 sd": "0.1604"
+    },
+    {
+      "model": "Same day last year, else same weekday 4 weeks",
+      "rmspe": 0.17411207741026344,
+      "sd": NaN,
+      "rows_scored": 40282,
+      "rmspe \u00b1 sd": "0.1741"
+    },
+    {
+      "model": "Ridge (alpha=0.1)",
+      "rmspe": 0.1725046828548936,
+      "sd": NaN,
+      "rows_scored": 40282,
+      "rmspe \u00b1 sd": "0.1725"
+    },
+    {
+      "model": "Random forest (300,000 rows)",
+      "rmspe": 0.12997205541875057,
+      "sd": 8.275320929078274e-05,
+      "rows_scored": 40282,
+      "rmspe \u00b1 sd": "0.1300 \u00b1 0.0001"
+    },
+    {
+      "model": "LightGBM (127 leaves, 600 trees)",
+      "rmspe": 0.1281569197678107,
+      "sd": 0.0009508018421597148,
+      "rows_scored": 40282,
+      "rmspe \u00b1 sd": "0.1282 \u00b1 0.0010"
+    }
+  ],
+  "p10_p90_coverage": 0.6543369246809989,
+  "settings": {
+    "lightgbm": {
+      "num_leaves": 127,
+      "n_estimators": 600
+    },
+    "ridge_alpha": 0.1
+  },
+  "seconds": 768
+}

@@ -1,0 +1,82 @@
+{
+  "selection": [
+    {
+      "k": 3,
+      "silhouette": 0.4422902191712449,
+      "stability_ari": 0.9991206031974519
+    },
+    {
+      "k": 4,
+      "silhouette": 0.4520551266435666,
+      "stability_ari": 0.9960027868380299
+    },
+    {
+      "k": 5,
+      "silhouette": 0.44550084359822206,
+      "stability_ari": 0.9916285086557373
+    },
+    {
+      "k": 6,
+      "silhouette": 0.44040750579865673,
+      "stability_ari": 0.9797634342829031
+    }
+  ],
+  "segments": [
+    {
+      "segment": "Declining seller",
+      "series": 311,
+      "auto_mase": 0.727,
+      "tcn_mase": 0.629,
+      "tcn_wins": 0.553,
+      "volatility": 1.9137,
+      "intermittency": 0.2982,
+      "peak_ratio": 4.7194,
+      "season_concentration": 0.6406,
+      "trend": -1.6014,
+      "momentum": 0.3054,
+      "change_rate": 1.075
+    },
+    {
+      "segment": "Steady seller",
+      "series": 938,
+      "auto_mase": 0.468,
+      "tcn_mase": 0.829,
+      "tcn_wins": 0.087,
+      "volatility": 0.1957,
+      "intermittency": 0.0009,
+      "peak_ratio": 1.3027,
+      "season_concentration": 0.1997,
+      "trend": 0.0404,
+      "momentum": -0.3184,
+      "change_rate": 0.2817
+    },
+    {
+      "segment": "Moderate seller",
+      "series": 811,
+      "auto_mase": 0.701,
+      "tcn_mase": 0.6,
+      "tcn_wins": 0.589,
+      "volatility": 0.9667,
+      "intermittency": 0.097,
+      "peak_ratio": 2.5094,
+      "season_concentration": 0.4257,
+      "trend": -0.4356,
+      "momentum": 0.2302,
+      "change_rate": 0.8073
+    },
+    {
+      "segment": "Intermittent seller",
+      "series": 479,
+      "auto_mase": 0.688,
+      "tcn_mase": 0.573,
+      "tcn_wins": 0.576,
+      "volatility": 1.5901,
+      "intermittency": 0.341,
+      "peak_ratio": 3.5818,
+      "season_concentration": 0.5952,
+      "trend": 0.1518,
+      "momentum": 0.1603,
+      "change_rate": 1.1836
+    }
+  ]
+}

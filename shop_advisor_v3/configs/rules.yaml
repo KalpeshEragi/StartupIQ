@@ -1,0 +1,656 @@
+# Startup IQ rule base (Task 2). Format and semantics: src/startupiq/rules/loader.py and engine.py.
+# Input facts and where they come from: src/startupiq/rules/facts.py (FACTS registry).
+# Conclusion kinds: assert (a fact), warn, diagnose, recommend, forbid, risk (pre-mortem).
+# Every rule carries a firing example (fires_when) and a non-firing example (not_when); tests/test_rules.py runs both.
+# Thresholds are judgement calls written down here so they can be argued with; see devdocs/decisions/0013-rule-base.md.
+
+# ---------------- data quality ----------------
+- id: R01
+  name: Short history
+  group: data
+  priority: 95
+  cf: 1.0
+  when:
+    - [history_weeks, "<", 26]
+  then:
+    - assert: {forecast_trust: low}
+    - warn: short_history
+      text: "Only {history_weeks:.0f} weeks of sales: the forecast is basic and seasonal patterns cannot be seen yet."
+  fires_when: {history_weeks: 12}
+  not_when: {history_weeks: 60}
+
+- id: R02
+  name: Wide forecast range
+  group: data
+  priority: 94
+  cf: 0.9
+  when:
+    - [band_width, ">", 0.6]
+  then:
+    - assert: {forecast_trust: low}
+    - warn: wide_range
+      text: "Your sales swing a lot, so the forecast range is wide ({band_width:.0%} of the expected value). Treat the middle number as a rough guide."
+  fires_when: {band_width: 0.9}
+  not_when: {band_width: 0.2}
+
+- id: R03
+  name: Runway cannot be computed
+  group: data
+  priority: 93
+  when:
+    - [runway_months, missing]
+  then:
+    - warn: no_cash_inputs
+      text: "Add your cash on hand, monthly fixed costs and margin to see how long your money lasts."
+  fires_when: {history_weeks: 40}
+  not_when: {runway_months: 8.0}
+
+- id: R04
+  name: Stock unknown
+  group: data
+  priority: 92
+  when:
+    - [stock_cover_weeks, missing]
+  then:
+    - warn: no_stock_input
+      text: "Add the value of the stock you hold to get stock-out warnings."
+  fires_when: {history_weeks: 40}
+  not_when: {stock_cover_weeks: 4.0}
+
+- id: R05
+  name: Very volatile sales
+  group: data
+  priority: 91
+  cf: 0.8
+  when:
+    - [sales_volatility, ">", 0.6]
+  then:
+    - assert: {forecast_trust: low}
+    - warn: volatile
+      text: "Week-to-week sales vary by {sales_volatility:.0%} on average: plan with the low end of the range."
+  fires_when: {sales_volatility: 0.9}
+  not_when: {sales_volatility: 0.2}
+
+# ---------------- cash ----------------
+- id: R10
+  name: Runway critical
+  group: cash
+  priority: 90
+  cf: 1.0
+  when:
+    - [runway_months, "<", 3]
+  then:
+    - assert: {cash_risk: high}
+    - warn: runway_critical
+      text: "At today's sales and costs your cash lasts about {runway_months:.1f} months."
+  fires_when: {runway_months: 2.0}
+  not_when: {runway_months: 9.0}
+
+- id: R11
+  name: Runway tight
+  group: cash
+  priority: 89
+  cf: 1.0
+  when:
+    - [runway_months, between, [3, 6]]
+  then:
+    - assert: {cash_risk: medium}
+  fires_when: {runway_months: 4.5}
+  not_when: {runway_months: 12.0}
+
+- id: R12
+  name: Runway comfortable
+  group: cash
+  priority: 88
+  cf: 1.0
+  when:
+    - [runway_months, ">=", 6]
+  then:
+    - assert: {cash_risk: low}
+  fires_when: {runway_months: 18.0}
+  not_when: {runway_months: 2.0}
+
+- id: R13
+  name: No big bets while cash is short
+  group: cash
+  priority: 80
+  cf: 1.0
+  when:
+    - [cash_risk, "==", high]
+  then:
+    - forbid: new_product
+      text: "Not now: a new product ties up cash you need to stay open."
+    - forbid: channel_expansion
+      text: "Not now: a new channel ties up cash you need to stay open."
+  fires_when: {cash_risk: high}
+  not_when: {cash_risk: low}
+
+- id: R14
+  name: Cut costs when cash is short
+  group: cash
+  priority: 70
+  cf: 0.8
+  when:
+    - [cash_risk, in, [high, medium]]
+  then:
+    - recommend: cost_reduction
+      text: "Cut one fixed cost: each 10% off fixed costs adds runway directly ({runway_months:.1f} months now)."
+  fires_when: {cash_risk: medium, runway_months: 4.0}
+  not_when: {cash_risk: low}
+
+- id: R15
+  name: Margin already below the floor
+  group: cash
+  priority: 85
+  cf: 1.0
+  when:
+    - [gross_margin, "<", "$min_margin"]
+  then:
+    - assert: {margin_risk: true}
+    - warn: thin_margin
+      text: "Your margin ({gross_margin:.0%}) is below your floor ({min_margin:.0%}): every discount loses money."
+    - forbid: price_cut
+      text: "Do not cut prices: margin is already below your floor."
+  fires_when: {gross_margin: 0.08, min_margin: 0.10}
+  not_when: {gross_margin: 0.35, min_margin: 0.10}
+
+# ---------------- stock ----------------
+- id: R20
+  name: Stock runs out before the supplier can deliver
+  group: stock
+  priority: 90
+  cf: 0.9
+  when:
+    - [stock_cover_weeks, "<", "$supplier_lead_time_weeks"]
+  then:
+    - assert: {stockout_risk: true}
+    - warn: stockout
+      text: "Stock lasts about {stock_cover_weeks:.1f} weeks but your supplier needs {supplier_lead_time_weeks:.0f} weeks: you will run out."
+  fires_when: {stock_cover_weeks: 1.0, supplier_lead_time_weeks: 2}
+  not_when: {stock_cover_weeks: 6.0, supplier_lead_time_weeks: 2}
+
+- id: R21
+  name: Reorder now
+  group: stock
+  priority: 75
+  cf: 0.9
+  when:
+    - [stockout_risk, "==", true]
+  then:
+    - recommend: restock
+      text: "Order stock now: at the current pace you run out before a new order arrives."
+  fires_when: {stockout_risk: true}
+  not_when: {stockout_risk: false}
+
+- id: R22
+  name: Too much stock for falling demand
+  group: stock
+  priority: 70
+  cf: 0.8
+  when:
+    - [stock_cover_weeks, ">", 12]
+    - [forecast_growth, "<", 0]
+  then:
+    - assert: {overstock: true}
+    - warn: overstock
+      text: "You hold about {stock_cover_weeks:.0f} weeks of stock while sales are expected to fall: cash is sitting on shelves."
+  fires_when: {stock_cover_weeks: 20.0, forecast_growth: -0.1}
+  not_when: {stock_cover_weeks: 20.0, forecast_growth: 0.1}
+
+- id: R23
+  name: Stock up before the busy season
+  group: stock
+  priority: 74
+  cf: 0.85
+  when:
+    - [peak_ahead, "==", true]
+    - [stock_cover_weeks, "<", "$weeks_to_peak"]
+  then:
+    - recommend: restock
+      text: "Busy season starts in about {weeks_to_peak:.0f} weeks and your stock lasts {stock_cover_weeks:.1f}: order before the rush."
+  fires_when: {peak_ahead: true, stock_cover_weeks: 2.0, weeks_to_peak: 5}
+  not_when: {peak_ahead: true, stock_cover_weeks: 9.0, weeks_to_peak: 5}
+
+- id: R24
+  name: Sell-out during the peak
+  group: premortem
+  priority: 40
+  cf: 0.8
+  when:
+    - [stockout_risk, "==", true]
+    - [peak_ahead, "==", true]
+  then:
+    - risk: sellout_in_peak
+      text: "You sell out during your busiest weeks and lose the sales that pay for the slow months."
+  fires_when: {stockout_risk: true, peak_ahead: true}
+  not_when: {stockout_risk: true, peak_ahead: false}
+
+# ---------------- demand and forecast ----------------
+- id: R30
+  name: Sales falling
+  group: demand
+  priority: 60
+  cf: 0.9
+  when:
+    - [growth_recent, "<", -0.10]
+  then:
+    - assert: {demand_trend: falling}
+  fires_when: {growth_recent: -0.2}
+  not_when: {growth_recent: 0.0}
+
+- id: R31
+  name: Sales rising
+  group: demand
+  priority: 60
+  cf: 0.9
+  when:
+    - [growth_recent, ">", 0.10]
+  then:
+    - assert: {demand_trend: rising}
+  fires_when: {growth_recent: 0.25}
+  not_when: {growth_recent: 0.0}
+
+- id: R32
+  name: Forecast drop
+  group: demand
+  priority: 60
+  cf: 0.9
+  when:
+    - [forecast_growth, "<", -0.10]
+  then:
+    - assert: {outlook: down}
+    - warn: forecast_drop
+      text: "Expect about {forecast_growth:.0%} sales in the next 3 months compared with the last 3."
+  fires_when: {forecast_growth: -0.2}
+  not_when: {forecast_growth: 0.05}
+
+- id: R33
+  name: Forecast rise
+  group: demand
+  priority: 60
+  cf: 0.9
+  when:
+    - [forecast_growth, ">", 0.10]
+  then:
+    - assert: {outlook: up}
+  fires_when: {forecast_growth: 0.3}
+  not_when: {forecast_growth: 0.0}
+
+- id: R34
+  name: Busy season ahead
+  group: demand
+  priority: 65
+  cf: 0.9
+  when:
+    - [weeks_to_peak, "<=", 8]
+  then:
+    - assert: {peak_ahead: true}
+    - warn: peak_ahead
+      text: "Your busiest stretch is about {weeks_to_peak:.0f} week(s) away (about {peak_ratio:.1f}x a normal week)."
+  fires_when: {weeks_to_peak: 4, peak_ratio: 1.6}
+  not_when: {weeks_to_peak: 11, peak_ratio: 1.6}
+
+# ---------------- market ----------------
+- id: R40
+  name: Losing ground in a rising market
+  group: market
+  priority: 55
+  cf: 0.8
+  when:
+    - [outlook, "==", down]
+    - [market_pulse, "==", rising]
+  then:
+    - diagnose: losing_ground
+      text: "Your sales are heading down while the same weeks last year went up: you are losing ground, not just riding a season."
+  fires_when: {outlook: down, market_pulse: rising}
+  not_when: {outlook: up, market_pulse: rising}
+
+- id: R41
+  name: Riding a rising market
+  group: market
+  priority: 55
+  cf: 0.8
+  when:
+    - [outlook, "==", up]
+    - [market_pulse, "==", rising]
+  then:
+    - diagnose: riding_the_season
+      text: "Sales are rising with the season, as they did in the same weeks last year."
+  fires_when: {outlook: up, market_pulse: rising}
+  not_when: {outlook: up, market_pulse: falling}
+
+- id: R42
+  name: Falling season or market
+  group: market
+  priority: 55
+  cf: 0.8
+  when:
+    - [market_pulse, "==", falling]
+  then:
+    - assert: {market_risk: high}
+    - warn: market_falling
+      text: "The coming weeks were weak last year too: expect a slow season and keep costs flexible."
+  fires_when: {market_pulse: falling}
+  not_when: {market_pulse: rising}
+
+- id: R43
+  name: Market share slipping
+  group: market
+  priority: 55
+  cf: 0.7
+  when:
+    - [share_change_expected, "<", -0.02]   # 2 points: about the share model's test error (MAE 1.55); 69% of such alerts were right on test
+  then:
+    - diagnose: losing_share
+      text: "Your share of the category is expected to slip by {share_change_expected:.1%} points next month (estimate)."
+  fires_when: {share_change_expected: -0.04}
+  not_when: {share_change_expected: -0.01}
+
+# ---------------- rivals ----------------
+- id: R50
+  name: A rival is likely to expand
+  group: rivals
+  priority: 50
+  cf: 0.7
+  when:
+    - [rival_p_expansion, ">", 0.35]
+  then:
+    - assert: {rival_threat: expansion}
+    - warn: rival_expanding
+      text: "{rival_expanding_name} looks likely to grow next month (about {rival_p_expansion:.0%}, an estimate from public signals)."
+  fires_when: {rival_p_expansion: 0.5, rival_expanding_name: "Rival A"}
+  not_when: {rival_p_expansion: 0.1}
+
+- id: R51
+  name: A rival may be leaving
+  group: rivals
+  priority: 50
+  cf: 0.7
+  when:
+    - [rival_p_exit, ">", 0.35]
+  then:
+    - assert: {opportunity: rival_exit}
+    - recommend: loyalty_offer
+      text: "{rival_exit_name} may be winding down (about {rival_p_exit:.0%}): a loyalty offer can win over its customers."
+  fires_when: {rival_p_exit: 0.5, rival_exit_name: "Rival B"}
+  not_when: {rival_p_exit: 0.1}
+
+- id: R52
+  name: A rival has cut prices
+  group: rivals
+  priority: 52
+  cf: 0.9
+  when:
+    - [rival_price_cut_seen, "==", true]
+  then:
+    - assert: {rival_threat: price_war}
+  fires_when: {rival_price_cut_seen: true}
+  not_when: {rival_price_cut_seen: false}
+
+- id: R53
+  name: Do not join a price war on a thin margin
+  group: rivals
+  priority: 82
+  cf: 0.9
+  when:
+    - [rival_threat, "==", price_war]
+    - [gross_margin, "<", 0.30]
+  then:
+    - forbid: price_cut
+      text: "Do not match the rival's price cut: at a {gross_margin:.0%} margin you cannot win a price war."
+    - recommend: loyalty_offer
+      text: "Answer the rival's price cut with a loyalty offer for repeat customers instead of a discount for everyone."
+  fires_when: {rival_threat: price_war, gross_margin: 0.2}
+  not_when: {rival_threat: price_war, gross_margin: 0.5}
+
+- id: R54
+  name: Price cuts by rivals are not predictable
+  group: rivals
+  priority: 30
+  cf: 1.0
+  when:
+    - [rival_count, ">", 0]
+    - [rival_price_cut_seen, missing]
+  then:
+    - assert: {price_cut_unpredictable: true}
+  fires_when: {rival_count: 3}
+  not_when: {rival_count: 3, rival_price_cut_seen: false}
+
+- id: R55
+  name: No rivals given
+  group: rivals
+  priority: 30
+  when:
+    - [rival_count, missing]
+  then:
+    - warn: no_rivals
+      text: "Name your main competitors to see what they are likely to do."
+  fires_when: {history_weeks: 40}
+  not_when: {rival_count: 2}
+
+# ---------------- dependence ----------------
+- id: R60
+  name: One product carries the business
+  group: dependence
+  priority: 58
+  cf: 0.9
+  when:
+    - [top_product_share, ">", 0.5]
+  then:
+    - assert: {dependence_risk: high}
+    - warn: dependence
+      text: "{top_product} makes {top_product_share:.0%} of your sales: one supplier problem or rival could hit hard."
+  fires_when: {top_product_share: 0.7, top_product: "Masala tea"}
+  not_when: {top_product_share: 0.2}
+
+- id: R61
+  name: Add a product when one dominates and cash allows
+  group: dependence
+  priority: 45
+  cf: 0.7
+  when:
+    - [dependence_risk, "==", high]
+    - [cash_risk, "==", low]
+  then:
+    - recommend: new_product
+      text: "Add a second product line to reduce the dependence on {top_product}."
+  fires_when: {dependence_risk: high, cash_risk: low}
+  not_when: {dependence_risk: high, cash_risk: high}
+
+# ---------------- diagnosis ----------------
+- id: R70
+  name: Growing but cash-starved
+  group: diagnosis
+  priority: 50
+  cf: 0.9
+  when:
+    - [demand_trend, "==", rising]
+    - [cash_risk, "==", high]
+  then:
+    - diagnose: growing_but_cash_starved
+      text: "Sales are growing but cash is short: growth itself is eating your cash (stock and costs come before income)."
+  fires_when: {demand_trend: rising, cash_risk: high}
+  not_when: {demand_trend: rising, cash_risk: low}
+
+- id: R71
+  name: Declining with little cash
+  group: diagnosis
+  priority: 50
+  cf: 0.9
+  when:
+    - [demand_trend, "==", falling]
+    - [cash_risk, in, [high, medium]]
+  then:
+    - diagnose: declining_with_little_cash
+      text: "Sales are falling and cash is limited: protect cash first, then work on demand."
+  fires_when: {demand_trend: falling, cash_risk: medium}
+  not_when: {demand_trend: falling, cash_risk: low}
+
+- id: R72
+  name: Healthy growth
+  group: diagnosis
+  priority: 50
+  cf: 0.8
+  when:
+    - [cash_risk, "==", low]
+    - [outlook, "==", up]
+  then:
+    - diagnose: healthy_growth
+      text: "Healthy: sales are expected to grow and cash is comfortable."
+  fires_when: {cash_risk: low, outlook: up}
+  not_when: {cash_risk: low, outlook: down}
+
+# ---------------- recommendations ----------------
+- id: R80
+  name: Expand when healthy and stocked
+  group: recommend
+  priority: 40
+  cf: 0.7
+  when:
+    - ["diagnose:healthy_growth", exists]
+    - [stock_cover_weeks, ">=", 3]
+  then:
+    - recommend: channel_expansion
+      text: "Things look healthy: test a second sales channel while demand is rising."
+  fires_when: {"diagnose:healthy_growth": "Healthy", stock_cover_weeks: 6.0}
+  not_when: {"diagnose:healthy_growth": "Healthy", stock_cover_weeks: 1.0}
+
+- id: R81
+  name: Win back ground with a promotion
+  group: recommend
+  priority: 40
+  cf: 0.7
+  when:
+    - ["diagnose:losing_ground", exists]
+    - [cash_risk, "!=", high]
+  then:
+    - recommend: promotion
+      text: "Run a short promotion: the market is rising while you are not, so demand is there to win back."
+  fires_when: {"diagnose:losing_ground": "Losing ground", cash_risk: low}
+  not_when: {"diagnose:losing_ground": "Losing ground", cash_risk: high}
+
+- id: R82
+  name: Slow season and short cash
+  group: recommend
+  priority: 40
+  cf: 0.8
+  when:
+    - [market_risk, "==", high]
+    - [cash_risk, in, [high, medium]]
+  then:
+    - recommend: cost_reduction
+      text: "A slow season is coming and cash is limited: trim fixed costs before it starts."
+  fires_when: {market_risk: high, cash_risk: high}
+  not_when: {market_risk: high, cash_risk: low}
+
+- id: R83
+  name: Hold when nothing calls for action
+  group: recommend
+  priority: 1
+  cf: 0.6
+  when:
+    - ["recommend:*", missing]
+    - [runway_months, exists]
+    - ["diagnose:losing_ground", missing]
+    - ["diagnose:losing_share", missing]
+    - ["diagnose:declining_with_little_cash", missing]
+    - ["warn:forecast_drop", missing]
+  then:
+    - recommend: hold
+      text: "Nothing in your numbers calls for a change right now: keep going and check again next week."
+  fires_when: {history_weeks: 60, runway_months: 999.0}
+  not_when: {runway_months: 999.0, forecast_growth: -0.3}
+
+- id: R84
+  name: A problem is visible but finances are missing
+  group: recommend
+  priority: 2
+  cf: 1.0
+  when:
+    - ["recommend:*", missing]
+    - [runway_months, missing]
+  then:
+    - warn: need_finances
+      text: "We can describe what is happening but cannot recommend a move safely without your cash, fixed costs and margin."
+  fires_when: {forecast_growth: -0.3}
+  not_when: {runway_months: 10.0, forecast_growth: -0.3, market_pulse: rising}
+
+# ---------------- safety ----------------
+- id: R90
+  name: Never coordinate prices
+  group: safety
+  priority: 100
+  cf: 1.0
+  when: []
+  then:
+    - forbid: price_coordination
+      text: "Agreeing prices with competitors is illegal (cartel conduct under competition law). Startup IQ never suggests it."
+  fires_when: {}
+  not_when: null
+
+- id: R91
+  name: No big bets on a weak forecast
+  group: safety
+  priority: 79
+  cf: 0.8
+  when:
+    - [forecast_trust, "==", low]
+  then:
+    - forbid: channel_expansion
+      text: "Not yet: the forecast is too uncertain to justify a new channel. Gather a few more months of sales first."
+  fires_when: {forecast_trust: low}
+  not_when: {forecast_trust: high}
+
+# ---------------- pre-mortem: how this could fail in the next 90 days ----------------
+- id: R95
+  name: Running out of cash
+  group: premortem
+  priority: 40
+  cf: 0.9
+  when:
+    - [cash_risk, "==", high]
+  then:
+    - risk: cash_out
+      text: "Cash runs out in about {runway_months:.1f} months unless sales rise or costs fall."
+  fires_when: {cash_risk: high, runway_months: 2.0}
+  not_when: {cash_risk: low}
+
+- id: R96
+  name: Losing the main product
+  group: premortem
+  priority: 40
+  cf: 0.7
+  when:
+    - [dependence_risk, "==", high]
+  then:
+    - risk: main_product
+      text: "A supplier problem or a rival copying {top_product} takes away most of your sales."
+  fires_when: {dependence_risk: high, top_product: "Masala tea"}
+  not_when: {dependence_risk: low}
+
+- id: R97
+  name: Slow season with fixed costs
+  group: premortem
+  priority: 40
+  cf: 0.7
+  when:
+    - [market_risk, "==", high]
+  then:
+    - risk: slow_season
+      text: "The slow weeks ahead bring in less than your fixed costs, and the gap comes out of cash."
+  fires_when: {market_risk: high}
+  not_when: {market_risk: low}
+
+- id: R98
+  name: A growing rival takes your customers
+  group: premortem
+  priority: 40
+  cf: 0.6
+  when:
+    - [rival_threat, "==", expansion]
+    - [outlook, "==", down]
+  then:
+    - risk: rival_takes_customers
+      text: "A growing rival takes your customers while your own sales are already slipping."
+  fires_when: {rival_threat: expansion, outlook: down}
+  not_when: {rival_threat: expansion, outlook: up}

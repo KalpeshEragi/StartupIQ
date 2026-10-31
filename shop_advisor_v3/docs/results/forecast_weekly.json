@@ -1,0 +1,120 @@
+{
+  "series": {
+    "Rossmann stores": 935,
+    "UCI products": 1604
+  },
+  "validation": {
+    "summary": [
+      {
+        "dataset": "Rossmann stores",
+        "series": 935,
+        "Naive (last week)": "1.021",
+        "Moving average (4 weeks)": "0.897",
+        "Seasonal naive (52 weeks)": "0.492",
+        "Seasonal naive, level-adjusted": "0.418",
+        "ETS (damped trend, log)": "0.906",
+        "Auto: best method on the series' own last 12 weeks": "0.467",
+        "LightGBM global": "1.1494 \u00b1 0.0353"
+      },
+      {
+        "dataset": "UCI products",
+        "series": 1604,
+        "Naive (last week)": "0.790",
+        "Moving average (4 weeks)": "0.666",
+        "Seasonal naive (52 weeks)": "1.033",
+        "Seasonal naive, level-adjusted": "1.144",
+        "ETS (damped trend, log)": "0.637",
+        "Auto: best method on the series' own last 12 weeks": "0.703",
+        "LightGBM global": "0.6197 \u00b1 0.0016"
+      },
+      {
+        "dataset": "Pooled",
+        "series": 2539,
+        "Naive (last week)": "0.875",
+        "Moving average (4 weeks)": "0.751",
+        "Seasonal naive (52 weeks)": "0.834",
+        "Seasonal naive, level-adjusted": "0.877",
+        "ETS (damped trend, log)": "0.736",
+        "Auto: best method on the series' own last 12 weeks": "0.616",
+        "LightGBM global": "0.8148 \u00b1 0.0138"
+      }
+    ],
+    "coverage": {
+      "Rossmann stores": 0.339126559714795,
+      "UCI products": 0.7185681629260183
+    },
+    "auto_coverage": {
+      "Rossmann stores": 0.9456327985739751,
+      "UCI products": 0.5868661679135495
+    },
+    "auto_picks": {
+      "('Rossmann stores', 'Seasonal naive (52 weeks)')": 0.631,
+      "('Rossmann stores', 'Seasonal naive, level-adjusted')": 0.305,
+      "('Rossmann stores', 'Naive (last week)')": 0.042,
+      "('Rossmann stores', 'Moving average (4 weeks)')": 0.014,
+      "('Rossmann stores', 'ETS (damped trend, log)')": 0.009,
+      "('UCI products', 'ETS (damped trend, log)')": 0.309,
+      "('UCI products', 'Naive (last week)')": 0.295,
+      "('UCI products', 'Moving average (4 weeks)')": 0.249,
+      "('UCI products', 'Seasonal naive, level-adjusted')": 0.078,
+      "('UCI products', 'Seasonal naive (52 weeks)')": 0.069
+    }
+  },
+  "tier_check_validation": [
+    {
+      "history_weeks": 8,
+      "Moving average (4 weeks)": 0.896755361247755,
+      "Naive (last week)": 1.0208025978136896,
+      "ETS (damped trend, log)": NaN,
+      "Store/series mean": 0.9139501220026623,
+      "Seasonal naive (52 weeks)": NaN,
+      "Seasonal naive, level-adjusted": NaN
+    },
+    {
+      "history_weeks": 13,
+      "Moving average (4 weeks)": 0.896755361247755,
+      "Naive (last week)": 1.0208025978136896,
+      "ETS (damped trend, log)": 0.9346682700460608,
+      "Store/series mean": 0.9523645152079874,
+      "Seasonal naive (52 weeks)": NaN,
+      "Seasonal naive, level-adjusted": NaN
+    },
+    {
+      "history_weeks": 26,
+      "Moving average (4 weeks)": 0.896755361247755,
+      "Naive (last week)": 1.0208025978136896,
+      "ETS (damped trend, log)": 0.9398753130166257,
+      "Store/series mean": 0.9013347831274875,
+      "Seasonal naive (52 weeks)": NaN,
+      "Seasonal naive, level-adjusted": NaN
+    },
+    {
+      "history_weeks": 39,
+      "Moving average (4 weeks)": 0.896755361247755,
+      "Naive (last week)": 1.0208025978136896,
+      "ETS (damped trend, log)": 0.93530544330586,
+      "Store/series mean": 0.9005974912313375,
+      "Seasonal naive (52 weeks)": NaN,
+      "Seasonal naive, level-adjusted": NaN
+    },
+    {
+      "history_weeks": 52,
+      "Moving average (4 weeks)": 0.896755361247755,
+      "Naive (last week)": 1.0208025978136896,
+      "ETS (damped trend, log)": 0.9277858796384454,
+      "Store/series mean": 0.8956732058874889,
+      "Seasonal naive (52 weeks)": 0.4921777945144652,
+      "Seasonal naive, level-adjusted": NaN
+    },
+    {
+      "history_weeks": "all",
+      "Moving average (4 weeks)": 0.896755361247755,
+      "Naive (last week)": 1.0208025978136896,
+      "ETS (damped trend, log)": 0.9060482699989921,
+      "Store/series mean": 0.909927534862704,
+      "Seasonal naive (52 weeks)": 0.4921777945144652,
+      "Seasonal naive, level-adjusted": 0.4178097080743659
+    }
+  ],
+  "seconds": 804
+}

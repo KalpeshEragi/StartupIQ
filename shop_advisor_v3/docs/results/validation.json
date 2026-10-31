@@ -1,0 +1,44 @@
+{
+  "overall": [
+    {
+      "sellers": 300,
+      "product forecaster": 0.982,
+      "naive": 1.036,
+      "moving average": 0.936,
+      "P10-P90 coverage": 0.564,
+      "share where product beats naive": 0.377
+    }
+  ],
+  "by_size": [
+    {
+      "size": "small",
+      "sellers": 100,
+      "product": 0.917,
+      "naive": 1.101,
+      "moving_average": 0.928,
+      "coverage": 0.566
+    },
+    {
+      "size": "medium",
+      "sellers": 100,
+      "product": 0.924,
+      "naive": 0.909,
+      "moving_average": 0.932,
+      "coverage": 0.594
+    },
+    {
+      "size": "large",
+      "sellers": 100,
+      "product": 1.105,
+      "naive": 1.098,
+      "moving_average": 0.949,
+      "coverage": 0.531
+    }
+  ],
+  "latency_seconds": {
+    "median": 0.261268200003542,
+    "p95": 0.5637548800012143
+  },
+  "deterministic": "40 of 40",
+  "seconds": 55
+}

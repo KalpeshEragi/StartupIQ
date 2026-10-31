@@ -1,0 +1,64 @@
+{
+  "series": {
+    "Rossmann stores": 935,
+    "UCI products": 1604
+  },
+  "test": {
+    "summary": [
+      {
+        "dataset": "Rossmann stores",
+        "series": 935,
+        "Naive (last week)": "1.094",
+        "Moving average (4 weeks)": "1.036",
+        "Seasonal naive (52 weeks)": "0.516",
+        "Seasonal naive, level-adjusted": "0.440",
+        "ETS (damped trend, log)": "1.036",
+        "Auto: best method on the series' own last 12 weeks": "0.448",
+        "LightGBM global": "0.5734 \u00b1 0.0094"
+      },
+      {
+        "dataset": "UCI products",
+        "series": 1604,
+        "Naive (last week)": "1.004",
+        "Moving average (4 weeks)": "0.920",
+        "Seasonal naive (52 weeks)": "1.483",
+        "Seasonal naive, level-adjusted": "1.868",
+        "ETS (damped trend, log)": "0.923",
+        "Auto: best method on the series' own last 12 weeks": "1.020",
+        "LightGBM global": "1.0187 \u00b1 0.0164"
+      },
+      {
+        "dataset": "Pooled",
+        "series": 2539,
+        "Naive (last week)": "1.037",
+        "Moving average (4 weeks)": "0.963",
+        "Seasonal naive (52 weeks)": "1.127",
+        "Seasonal naive, level-adjusted": "1.342",
+        "ETS (damped trend, log)": "0.964",
+        "Auto: best method on the series' own last 12 weeks": "0.810",
+        "LightGBM global": "0.8547 \u00b1 0.0073"
+      }
+    ],
+    "coverage": {
+      "Rossmann stores": 0.5755793226381462,
+      "UCI products": 0.6953449709060682
+    },
+    "auto_coverage": {
+      "Rossmann stores": 0.6947415329768271,
+      "UCI products": 0.5355361596009975
+    },
+    "auto_picks": {
+      "('Rossmann stores', 'Seasonal naive, level-adjusted')": 0.71,
+      "('Rossmann stores', 'Seasonal naive (52 weeks)')": 0.263,
+      "('Rossmann stores', 'Moving average (4 weeks)')": 0.013,
+      "('Rossmann stores', 'Naive (last week)')": 0.01,
+      "('Rossmann stores', 'ETS (damped trend, log)')": 0.004,
+      "('UCI products', 'ETS (damped trend, log)')": 0.302,
+      "('UCI products', 'Naive (last week)')": 0.279,
+      "('UCI products', 'Moving average (4 weeks)')": 0.268,
+      "('UCI products', 'Seasonal naive, level-adjusted')": 0.081,
+      "('UCI products', 'Seasonal naive (52 weeks)')": 0.07
+    }
+  },
+  "seconds": 497
+}

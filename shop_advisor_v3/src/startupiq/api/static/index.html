@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Startup IQ</title>
+<style>
+  :root {
+    --bg:#f4f5f7; --panel:#ffffff; --panel2:#f0f2f5; --ink:#10131a; --ink2:#5a6270; --line:#e1e4ea;
+    --accent:#0b7a6b; --accent2:#e0861a; --band:rgba(11,122,107,.16); --good:#12805c; --warn:#b86e00; --bad:#c23a3a; --shadow:0 1px 2px rgba(16,19,26,.05), 0 8px 24px rgba(16,19,26,.05);
+  }
+  @media (prefers-color-scheme: dark) { :root {
+    --bg:#0b0e13; --panel:#12161d; --panel2:#181d26; --ink:#eef1f6; --ink2:#98a1b0; --line:#232a36;
+    --accent:#2dd4bf; --accent2:#f5a524; --band:rgba(45,212,191,.16); --good:#34d399; --warn:#f5a524; --bad:#f87171; --shadow:none; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 20px; }
+  header { border-bottom:1px solid var(--line); background:var(--panel); }
+  header .wrap { display:flex; align-items:center; gap:12px; height:60px; }
+  .logo { width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:grid; place-items:center; color:#fff; font-weight:800; font-size:13px; }
+  header b { font-size:16px; letter-spacing:-.01em; } header span { color:var(--ink2); font-size:13px; margin-left:auto; }
+  h1 { font-size:clamp(26px,4vw,40px); line-height:1.1; letter-spacing:-.03em; margin:44px 0 10px; max-width:760px; }
+  .lead { color:var(--ink2); max-width:680px; margin:0 0 26px; font-size:16px; }
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); }
+  .intake { padding:20px; display:grid; gap:18px; }
+  .drop { border:1.5px dashed var(--line); border-radius:12px; padding:26px; text-align:center; cursor:pointer; background:var(--panel2); transition:.15s; }
+  .drop:hover, .drop.on { border-color:var(--accent); background:var(--band); }
+  .drop b { display:block; font-size:16px; } .drop small { color:var(--ink2); }
+  .samples { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .samples > span { color:var(--ink2); font-size:13px; margin-right:4px; }
+  .chip { font:inherit; font-size:13px; padding:6px 12px; border-radius:99px; border:1px solid var(--line); background:var(--panel); color:var(--ink); cursor:pointer; }
+  .chip:hover { border-color:var(--accent); } .chip.sel { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .money { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+  label { display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--ink2); }
+  input { font:inherit; font-size:14px; padding:9px 10px; border:1px solid var(--line); border-radius:9px; background:var(--panel2); color:var(--ink); }
+  input:focus { outline:2px solid var(--accent); outline-offset:-1px; }
+  .go { font:inherit; font-weight:650; padding:13px; border:0; border-radius:11px; background:var(--accent); color:#fff; cursor:pointer; font-size:15px; }
+  @media (prefers-color-scheme: dark) { .go, .chip.sel { color:#04201c; } }
+  .go:disabled { opacity:.55; cursor:default; }
+  .note { color:var(--ink2); font-size:12px; margin:0; }
+  #out { margin:28px 0 80px; display:none; }
+  .top { display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
+  .top h2 { font-size:clamp(22px,3vw,30px); letter-spacing:-.02em; margin:0; line-height:1.2; max-width:760px; }
+  .badge { display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line); background:var(--panel); border-radius:99px; padding:5px 12px; font-size:13px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--accent); }
+  .kpis { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:14px; }
+  .kpi { padding:14px 16px; } .kpi small { color:var(--ink2); font-size:12px; text-transform:uppercase; letter-spacing:.05em; }
+  .kpi b { display:block; font-size:25px; letter-spacing:-.02em; margin:2px 0; } .kpi em { font-style:normal; font-size:12px; color:var(--ink2); }
+  .up { color:var(--good) !important; } .down { color:var(--bad) !important; }
+  @media (max-width:980px) { .kpis { grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); } }
+  .grid { display:grid; gap:14px; grid-template-columns:repeat(12,1fr); margin-bottom:14px; }
+  .c12 { grid-column:span 12; } .c7 { grid-column:span 7; } .c5 { grid-column:span 5; } .c6 { grid-column:span 6; }
+  @media (max-width:860px) { .c7,.c5,.c6 { grid-column:span 12; } }
+  .sec { padding:18px; } .sec h3 { margin:0 0 2px; font-size:15px; letter-spacing:-.01em; }
+  .tag { font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink2); border:1px solid var(--line); border-radius:99px; padding:1px 8px; margin-left:6px; vertical-align:2px; font-weight:500; }
+  .sub { color:var(--ink2); font-size:13px; margin:0 0 12px; }
+  svg { display:block; width:100%; height:auto; } svg text { fill:var(--ink2); font-size:11px; font-family:inherit; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--ink2); margin-top:6px; }
+  .legend i { display:inline-block; width:14px; height:3px; border-radius:2px; vertical-align:middle; margin-right:6px; }
+  .row { display:grid; grid-template-columns:150px 1fr 54px; gap:10px; align-items:center; font-size:13px; margin:7px 0; }
+  .track { height:9px; border-radius:6px; background:var(--panel2); overflow:hidden; position:relative; }
+  .fill { position:absolute; inset:0 auto 0 0; border-radius:6px; background:var(--ink2); opacity:.5; }
+  .fill.win { background:var(--accent); opacity:1; } .fill.me { background:var(--accent2); opacity:1; }
+  .row span:last-child { text-align:right; color:var(--ink2); font-variant-numeric:tabular-nums; }
+  .pair { display:grid; grid-template-columns:190px 1fr; gap:10px; align-items:center; font-size:13px; margin:9px 0; }
+  .pair .bars { display:grid; gap:3px; } .pair .track { height:6px; }
+  .pair small { color:var(--ink2); }
+  .seg { display:flex; align-items:baseline; gap:10px; margin:2px 0 6px; } .seg b { font-size:21px; letter-spacing:-.02em; }
+  .mix { display:flex; height:10px; border-radius:6px; overflow:hidden; margin:10px 0 6px; background:var(--panel2); }
+  .mix div:nth-child(1) { background:var(--accent); } .mix div:nth-child(2) { background:var(--accent2); } .mix div:nth-child(n+3) { background:var(--ink2); opacity:.5; }
+  .pill { display:flex; gap:10px; padding:10px 12px; border-radius:10px; background:var(--panel2); margin:8px 0; font-size:14px; border-left:3px solid var(--warn); }
+  .pill.good { border-color:var(--good); } .pill.bad { border-color:var(--bad); } .pill small { color:var(--ink2); display:block; font-size:12px; margin-top:2px; }
+  .step { counter-increment:s; display:flex; gap:10px; margin:7px 0; font-size:14px; } .step::before { content:counter(s); flex:none; width:22px; height:22px; border-radius:50%; background:var(--accent); color:#fff; font-size:12px; display:grid; place-items:center; font-weight:700; }
+  @media (prefers-color-scheme: dark) { .step::before { color:#04201c; } }
+  ol.steps { list-style:none; padding:0; margin:8px 0; counter-reset:s; }
+  details { margin-top:12px; } summary { cursor:pointer; color:var(--ink2); font-size:13px; } pre { white-space:pre-wrap; font-size:12px; color:var(--ink2); background:var(--panel2); padding:12px; border-radius:10px; max-height:340px; overflow:auto; }
+  .tip { position:absolute; pointer-events:none; background:var(--ink); color:var(--bg); font-size:12px; padding:6px 9px; border-radius:8px; white-space:nowrap; transform:translate(-50%,-110%); display:none; z-index:2; }
+  .chartbox { position:relative; }
+  .busy { display:none; padding:34px 20px; text-align:center; } .busy ul { list-style:none; padding:0; margin:14px auto 0; max-width:300px; text-align:left; color:var(--ink2); font-size:14px; }
+  .busy li { padding:4px 0; opacity:.35; } .busy li.on { opacity:1; color:var(--ink); } .busy li.done { opacity:.8; } .busy li.done::before { content:"✓ "; color:var(--good); }
+  .err { color:var(--bad); padding:14px 0; }
+  table { width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums; }
+  th, td { text-align:right; padding:8px 10px; border-bottom:1px solid var(--line); } th:first-child, td:first-child { text-align:left; }
+  th { color:var(--ink2); font-weight:500; font-size:12px; } tr.best td { color:var(--accent); font-weight:650; } tr.ref td { color:var(--ink2); }
+  .scroll { overflow-x:auto; }
+  .ask { border-left:3px solid var(--accent2); padding-left:10px; margin:6px 0; font-size:14px; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="logo">IQ</div><b>Startup IQ</b><span>Your file is processed in memory and never stored</span></div></header>
+<main class="wrap">
+  <section id="intro">
+    <h1>See the next 12 weeks of your business before they happen.</h1>
+    <p class="lead">Upload a sales sheet. We work out what kind of business you run, forecast it with a model that was tested on businesses like yours, and tell you which moves are safe for your cash.</p>
+    <form id="f" class="box intake">
+      <div class="drop" id="drop"><b id="dropt">Drop your sales file here, or click to browse</b><small>CSV or Excel. A date and an amount per row is enough.</small>
+        <input type="file" name="file" id="file" accept=".csv,.xlsx,.xls,.tsv,.txt" hidden></div>
+      <div class="samples" id="samples"><span>or try a sample shop:</span></div>
+      <div class="money">
+        <label>Cash on hand <input name="cash" inputmode="decimal" placeholder="optional"></label>
+        <label>Fixed costs per month <input name="fixed_costs" inputmode="decimal" placeholder="rent, salaries"></label>
+        <label>Gross margin % <input name="margin_pct" inputmode="decimal" placeholder="e.g. 35"></label>
+        <label>Stock on hand (at cost) <input name="stock_value" inputmode="decimal" placeholder="optional"></label>
+        <label>Supplier lead time (days) <input name="lead_time_days" inputmode="numeric" placeholder="optional"></label>
+      </div>
+      <p class="note">Money figures are optional. Without them you still get your profile and forecast; with them you also get cash runway, warnings and safe-move advice.</p>
+      <input type="hidden" name="sample" id="sample">
+      <button class="go" id="go">Analyse my business</button>
+    </form>
+    <div class="box busy" id="busy"><b>Working on it</b><ul id="steps"><li>Reading and cleaning your file</li><li>Profiling your business</li><li>Backtesting forecast models on your history</li><li>Checking moves against your cash</li></ul></div>
+    <div class="err" id="err"></div>
+  </section>
+  <section id="out"></section>
+</main>
+<script>
+const $ = (s, e = document) => e.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let CUR = "";
+const num = v => (v == null || isNaN(v)) ? "?" : Math.round(v).toLocaleString("en-IN");
+const money = v => CUR + num(v);
+const short = v => { const a = Math.abs(v); return CUR + (a >= 1e7 ? (v / 1e7).toFixed(1) + "Cr" : a >= 1e5 ? (v / 1e5).toFixed(1) + "L" : a >= 1e3 ? (v / 1e3).toFixed(0) + "k" : Math.round(v)); };
+const dfmt = (d, o = { day: "numeric", month: "short" }) => new Date(d + "T00:00:00").toLocaleDateString("en-GB", o);
+
+// ---------- intake ----------
+const drop = $("#drop"), file = $("#file");
+drop.onclick = () => file.click();
+file.onchange = () => { if (file.files[0]) { $("#dropt").textContent = file.files[0].name; $("#sample").value = ""; document.querySelectorAll(".chip").forEach(c => c.classList.remove("sel")); } };
+["dragover", "dragenter"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add("on"); }));
+["dragleave", "drop"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove("on"); }));
+drop.addEventListener("drop", e => { if (e.dataTransfer.files[0]) { file.files = e.dataTransfer.files; file.onchange(); } });
+
+fetch("/api/samples").then(r => r.json()).then(list => {
+  $("#samples").insertAdjacentHTML("beforeend", list.map(s => `<button type="button" class="chip" data-f="${esc(s.file)}">${esc(s.label)}</button>`).join(""));
+  $("#samples").onclick = e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    const s = list.find(x => x.file === b.dataset.f), c = s.context || {};
+    document.querySelectorAll(".chip").forEach(x => x.classList.toggle("sel", x === b));
+    $("#sample").value = s.file; file.value = ""; $("#dropt").textContent = "Sample: " + s.label;
+    const set = (n, v) => $(`[name=${n}]`).value = v == null ? "" : v;
+    set("cash", c.cash_on_hand); set("fixed_costs", c.monthly_fixed_costs); set("margin_pct", c.gross_margin == null ? "" : Math.round(c.gross_margin * 100));
+    set("stock_value", c.stock_value); set("lead_time_days", c.supplier_lead_time_days);
+  };
+}).catch(() => {});
+
+// ---------- charts ----------
+function forecastChart(d) {
+  const h = d.history, n = d.p50.length, W = 900, H = 330, L = 56, R = 16, T = 18, B = 34;
+  const ys = [...h.values, ...d.p90], max = Math.max(...ys) * 1.08, N = h.values.length + n;
+  const x = i => L + i * (W - L - R) / (N - 1), y = v => T + (1 - v / max) * (H - T - B);
+  const fx = i => x(h.values.length + i);
+  const hist = h.values.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+  const joint = `${x(h.values.length - 1)},${y(h.values[h.values.length - 1])} `;
+  const mid = joint + d.p50.map((v, i) => `${fx(i)},${y(v)}`).join(" ");
+  const band = `${x(h.values.length - 1)},${y(h.values[h.values.length - 1])} ` + d.p90.map((v, i) => `${fx(i)},${y(v)}`).join(" ") + " " +
+    d.p10.map((_, i) => `${fx(n - 1 - i)},${y(d.p10[n - 1 - i])}`).join(" ");
+  const grid = [0, .25, .5, .75, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="var(--line)"/><text x="${L - 8}" y="${y(max * f) + 4}" text-anchor="end">${short(max * f)}</text>`).join("");
+  const all = [...h.dates, ...d.dates];
+  const ticks = all.map((dt, i) => [dt, i]).filter(([, i]) => i % 13 === 0 && i < N - 4).map(([dt, i]) => `<text x="${x(i)}" y="${H - 10}" text-anchor="middle">${dfmt(dt, { month: "short", year: "2-digit" })}</text>`).join("");
+  const pk = d.p50.indexOf(Math.max(...d.p50));
+  return `<div class="chartbox"><svg viewBox="0 0 ${W} ${H}" id="fc" role="img" aria-label="Sales history and 12 week forecast with likely range">
+    ${grid}${ticks}
+    <line x1="${x(h.values.length - 1)}" x2="${x(h.values.length - 1)}" y1="${T}" y2="${H - B}" stroke="var(--ink2)" stroke-dasharray="3 4"/>
+    <text x="${x(h.values.length - 1) - 6}" y="${H - B - 6}" text-anchor="end">history</text><text x="${x(h.values.length - 1) + 6}" y="${H - B - 6}">forecast</text>
+    <polygon points="${band}" fill="var(--band)"/>
+    <polyline points="${hist}" fill="none" stroke="var(--ink2)" stroke-width="1.8" stroke-linejoin="round"/>
+    <polyline points="${mid}" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="0"/>
+    <circle cx="${fx(pk)}" cy="${y(d.p50[pk])}" r="5" fill="var(--accent2)"/><text x="${fx(pk)}" y="${y(d.p50[pk]) - 11}" text-anchor="middle" style="fill:var(--ink);font-weight:600">peak ${short(d.p50[pk])}</text>
+    <line id="cx" y1="${T}" y2="${H - B}" stroke="var(--ink2)" opacity="0"/><circle id="cd" r="4.5" fill="var(--accent)" opacity="0"/>
+    </svg><div class="tip" id="tip"></div></div>
+    <div class="legend"><span><i style="background:var(--ink2)"></i>Your sales (last 52 weeks)</span><span><i style="background:var(--accent)"></i>Expected</span><span><i style="background:var(--band);height:10px"></i>Likely range (P10 to P90)</span></div>`;
+}
+function wireTip(d) {
+  const svg = $("#fc"); if (!svg) return;
+  const h = d.history, n = d.p50.length, W = 900, L = 56, R = 16, N = h.values.length + n, T = 18, B = 34, H = 330;
+  const max = Math.max(...h.values, ...d.p90) * 1.08, y = v => T + (1 - v / max) * (H - T - B);
+  svg.onmousemove = e => {
+    const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * W;
+    const i = Math.max(0, Math.min(N - 1, Math.round((px - L) / (W - L - R) * (N - 1))));
+    const isF = i >= h.values.length, k = i - h.values.length, v = isF ? d.p50[k] : h.values[i];
+    const xx = L + i * (W - L - R) / (N - 1);
+    $("#cx").setAttribute("x1", xx); $("#cx").setAttribute("x2", xx); $("#cx").setAttribute("opacity", .4);
+    $("#cd").setAttribute("cx", xx); $("#cd").setAttribute("cy", y(v)); $("#cd").setAttribute("opacity", 1);
+    const t = $("#tip"); t.style.display = "block"; t.style.left = (xx / W * r.width) + "px"; t.style.top = (y(v) / H * r.height) + "px";
+    t.innerHTML = `${dfmt(isF ? d.dates[k] : h.dates[i], { day: "numeric", month: "short", year: "numeric" })}<br><b>${money(v)}</b>` + (isF ? ` <span style="opacity:.7">(${short(d.p10[k])} to ${short(d.p90[k])})</span>` : "");
+  };
+  svg.onmouseleave = () => { $("#tip").style.display = "none"; ["cx", "cd"].forEach(i => $("#" + i).setAttribute("opacity", 0)); };
+}
+
+// ---------- offline evidence ----------
+let EVID = null;
+fetch("/api/evidence").then(r => r.ok ? r.json() : null).then(d => { EVID = d; }).catch(() => {});
+function evidenceSection() {
+  if (!EVID) return "";
+  const best = Math.min(...EVID.deep.map(d => d.test));
+  const hy = EVID.hybrid.find(h => h.dataset === "Pooled") || {};
+  const f2 = v => (+v).toFixed(3);
+  const pc = v => (v * 100).toFixed(1) + "%";
+  const C = EVID.category, D = EVID.dl_category;
+  const typed = C && D ? `<div class="grid"><div class="box sec c12"><h3>How the business-type models were chosen <span class="tag">synthetic data</span></h3>
+    <p class="sub">4,200 made-up Indian shops in six types, split by shop: models chosen on validation shops, then scored once on 840 test shops they never saw. Synthetic data shows the method works; it does not prove the accuracy on real shops.</p>
+    <div class="scroll"><table><tr><th>Classifier</th><th>Validation accuracy</th><th>Test accuracy</th><th>Test macro-F1</th></tr>
+    ${C.test.map((t, i) => { const v = C.validation.find(x => x.model === t.model) || {}; return `<tr class="${t.model === C.chosen ? "best" : ""}"><td>${esc(t.model)}</td><td>${pc(v["val accuracy"])}</td><td>${pc(t["test accuracy"])}</td><td>${(+t["test macro-F1"]).toFixed(3)}</td></tr>`; }).join("")}</table></div>
+    <p class="sub" style="margin-top:8px">Chosen: <b style="color:var(--ink)">${esc(C.chosen)}</b>. On test: ${C.by_view.map(v => `${esc(v.view)} ${pc(v.accuracy)}`).join(" · ")}.</p>
+    <div class="scroll" style="margin-top:14px"><table><tr><th>Forecaster (last 12 weeks of test shops)</th><th>Validation MASE</th><th>Test MASE</th></tr>
+    ${D.test.filter(t => !t.model.includes("knows the type (true type)")).map(t => { const v = D.validation.find(x => x.model === t.model) || {}; return `<tr class="${t.model === D.chosen ? "best" : ""}"><td>${esc(t.model)}</td><td>${v.MASE != null ? (+v.MASE).toFixed(3) : ""}</td><td>${(+t.MASE).toFixed(3)}</td></tr>`; }).join("")}</table></div>
+    <p class="sub" style="margin-top:8px">MASE: error divided by the error of "same as last week"; lower is better. Each network is trained twice, once told the business type and once not. The plain "seasonal shape of the type" forecast scores about the same as the best network, because these shops were generated from those shapes; the networks have to learn the shapes from data. On test the type comes from the classifier above (right for ${pc(D.classifier_test_accuracy)} of these shops), so this is the whole chain end to end.</p></div></div>` : "";
+  return typed + `<div class="grid"><div class="box sec c12"><h3>How the real-data deep model was chosen <span class="tag">real data</span></h3>
+    <p class="sub">Three neural networks were trained on 2,539 public weekly series (Rossmann stores and UCI products), tuned on a validation window, then scored once on a held-out test window. Error is MASE: below 1 means better than repeating last year; lower is better.</p>
+    <div class="scroll"><table><tr><th>Model</th><th>Parameters</th><th>Validation</th><th>Test</th><th>Stores (test)</th><th>Products (test)</th><th>Range coverage (test)</th></tr>
+    ${EVID.deep.map(d => `<tr class="${d.test === best ? "best" : ""}"><td>${esc(d.arch)}</td><td>${d.params.toLocaleString()}</td><td>${f2(d.val)}</td><td>${f2(d.test)}</td><td>${f2(d.stores_test)}</td><td>${f2(d.products_test)}</td><td>${Math.round(d.coverage_test * 100)}%</td></tr>`).join("")}
+    <tr class="ref"><td>Statistical Auto (reference)</td><td>0</td><td>${f2(EVID.auto.val)}</td><td>${f2(EVID.auto.test)}</td><td></td><td></td><td></td></tr></table></div>
+    <p class="sub" style="margin-top:12px">The 1D CNN (a temporal convolutional network) beat the MLP and the LSTM on both windows. On its own it does not beat statistics on every series, so it is not used blindly: it enters the contest above on each shop's own last 12 weeks. That hybrid scored ${esc(String(hy.Hybrid || "").split(" ")[0])} against ${esc(hy.Auto)} for statistics alone on the validation series.</p></div></div>`;
+}
+
+// ---------- sections ----------
+function typeSection(c, seg) {
+  if (!c) return `<div class="box sec c5"><h3>Your business type <span class="tag">ML classifier</span></h3><p class="sub">Needs at least 8 rows of dated sales to tell what kind of business this is.</p></div>`;
+  const d = c.details, pc = v => Math.round(v * 100) + "%";
+  const fmt = (k, v) => k.startsWith("log_") ? "₹" + Math.round(10 ** v).toLocaleString("en-IN") : (k.endsWith("share") || k === "return_rate" || /^m\d\d$/.test(k) || k === "diwali_lift" ? (v * 100).toFixed(k === "return_rate" ? 1 : 0) + "%" : v.toFixed(2));
+  const top = d.category || d.best_guess;
+  return `<div class="box sec c5"><h3>Your business type <span class="tag">ML classifier</span></h3>
+    <div class="seg"><b>${esc(top)}</b><span class="sub" style="margin:0">${d.category ? pc(d.confidence) + " sure" : "not sure (" + pc(d.confidence) + ")"}</span></div>
+    <p class="sub">Read from ${esc(["your sales", ...d.inputs].join(", "))}. ${d.inputs.length < 2 ? "Add bills, items sold and returns columns to make this sharper." : ""}</p>
+    ${d.probabilities.map((p, i) => `<div class="row"><span>${esc(p.category)}</span><div class="track"><div class="fill ${i === 0 ? "win" : ""}" style="width:${Math.max(2, p.p * 100)}%"></div></div><span>${pc(p.p)}</span></div>`).join("")}
+    <p class="sub" style="margin:14px 0 4px"><b style="color:var(--ink)">Why</b>: your numbers next to a typical ${esc(top.toLowerCase())} and a typical ${esc(d.runner_up.toLowerCase())}</p>
+    <div class="scroll"><table><tr><th></th><th>You</th><th>${esc(top.split(" ")[0])}</th><th>${esc(d.runner_up.split(" ")[0])}</th></tr>
+    ${d.evidence.map(e => `<tr><td>${esc(e.label)}</td><td><b>${fmt(e.key, e.yours)}</b></td><td>${fmt(e.key, e.typical)}</td><td>${fmt(e.key, e.runner_up)}</td></tr>`).join("")}</table></div>
+    <p class="note" style="margin-top:10px">${esc(d.model)}, trained on 4,200 synthetic shops; ${pc(d.test_accuracy)} right on held-out synthetic shops.${seg ? ` Sales pattern group: ${esc(seg.details.segment)}.` : ""}</p></div>`;
+}
+
+function contestSection(fc) {
+  const bt = fc.details.backtest || {}, ent = Object.entries(bt).sort((a, b) => a[1] - b[1]);
+  if (!ent.length) return `<div class="box sec c7"><h3>Model contest</h3><p class="sub">Not enough history to backtest.</p></div>`;
+  const max = Math.max(...ent.map(e => e[1])), win = fc.details.chosen;
+  const used = ent.some(([k]) => k === win) ? win : ent[0][0];
+  const deep = k => k.startsWith("Deep");
+  return `<div class="box sec c7"><h3>Model contest <span class="tag">deep learning</span></h3>
+    <p class="sub">Every model forecast your last 12 weeks without seeing them. The one that came closest forecasts your next 12.</p>
+    ${ent.map(([k, v]) => `<div class="row"><span>${esc(k)}${deep(k) ? " " : ""}</span><div class="track"><div class="fill ${k === used ? "win" : ""}" style="width:${Math.max(3, v / max * 100)}%"></div></div><span>${v.toFixed(1)}%</span></div>`).join("")}
+    <p class="sub" style="margin-top:12px">Error is the average miss as a share of your sales. <b style="color:var(--ink)">${esc(used)}</b> won${used.includes("business type") ? ": the neural network that knows your business type beat every statistical method on your own data" : deep(used) ? ": the 1D CNN trained on real stores and products beat every statistical method on your own data" : ": statistics held up better on your data than the neural networks"}.
+    ${fc.details.periods < 38 ? ` The neural networks need 38+ weeks of history to enter (you have ${fc.details.periods}).` : fc.details.periods < 64 ? ` The real-data 1D CNN needs 64+ weeks to enter (you have ${fc.details.periods}).` : ""}</p></div>`;
+}
+
+function decisionSection(rep) {
+  const by = Object.fromEntries(rep.cards.map(c => [c.key, c]));
+  const w = by.warnings, n = by.next_move, wd = (w && w.details) || {}, nd = (n && n.details) || {};
+  const warn = Object.values(wd.warnings || {}), diag = Object.values(wd.diagnoses || {}), pre = Object.values(wd.premortem || {});
+  const unlock = Object.entries(wd.add_to_unlock || {}).filter(([k]) => k !== "no_rivals").map(([, v]) => v);
+  const recs = nd.recommendations || [], blocked = Object.entries(nd.blocked || {}), plan = nd.plan;
+  const left = `<div class="box sec c6"><h3>What the rules found <span class="tag">rule engine</span></h3><p class="sub">Forward-chaining rules over your numbers. Every line names its reason.</p>
+    ${warn.length ? warn.map(t => `<div class="pill"><div>${esc(t)}</div></div>`).join("") : '<div class="pill good"><div>No warnings for the next 90 days</div></div>'}
+    ${diag.map(t => `<div class="pill good"><div>${esc(t)}</div></div>`).join("")}
+    ${pre.length ? `<p class="sub" style="margin-top:14px"><b>How this could fail in 90 days</b></p>${pre.map(t => `<div class="pill bad"><div>${esc(t)}</div></div>`).join("")}` : ""}
+    ${unlock.length ? `<p class="note" style="margin-top:12px">To unlock more: ${esc(unlock.join(" "))}</p>` : ""}</div>`;
+  const right = `<div class="box sec c6"><h3>What to do next <span class="tag">safety gate</span></h3><p class="sub">A move is only suggested if it keeps your cash, margin and stock inside safe limits.</p>
+    ${recs.length ? recs.map(r => `<div class="pill good"><div><b>${esc(r.action)}</b><small>${esc(r.reason)}</small></div></div>`).join("") : `<p class="sub">${esc(n ? n.headline : "")}</p>`}
+    ${blocked.length ? `<p class="sub" style="margin-top:14px"><b>Blocked by the safety gate</b></p>${blocked.map(([k, v]) => `<div class="pill bad"><div>${esc(k.replaceAll("_", " "))}<small>${esc(v)}</small></div></div>`).join("")}` : ""}
+    ${plan && plan.found ? `<p class="sub" style="margin-top:14px"><b>Cheapest plan to reach your target</b> (A* search)</p><ol class="steps">${plan.steps.map(s => `<li class="step">${esc(s)}</li>`).join("")}</ol>
+      <p class="note">12-week profit ${money(plan.projected_profit_12w)} vs ${money(plan.baseline_profit_12w)} doing nothing; lowest cash ${money(plan.lowest_cash)}.</p>` : ""}</div>`;
+  return left + right;
+}
+
+function render(rep) {
+  const by = Object.fromEntries(rep.cards.map(c => [c.key, c]));
+  const fc = by.forecast, seg = by.segment, kind = by.category, money_ = by.money, intake = by.intake;
+  const cm = intake.details.column_map || {};
+  CUR = /₹|inr|rs\.?/i.test(cm.revenue || "") ? "₹" : "";
+  let html = "";
+  if (rep.tier === "refused") return `<div class="box sec"><h3>We could not read this file</h3>${(intake.details.messages || []).map(m => `<p class="ask">${esc(m)}</p>`).join("")}</div>`;
+  const f = fc && !fc.locked_reason ? fc.details : null;
+  const exp = f ? f.expected_total : 0, last = f ? f.last_total : 0, chg = last ? (exp / last - 1) * 100 : 0;
+  const pk = f ? f.p50.indexOf(Math.max(...f.p50)) : 0;
+  const runway = ((money_ && money_.details.facts) || []).find(x => x.name === "runway_months");
+  const err = f && f.backtest && f.backtest[f.chosen] != null ? f.backtest[f.chosen] : null;
+  html += `<div class="top"><div><span class="badge"><span class="dot"></span>${kind ? esc(kind.details.category || "Business type unclear") : "Business"} · ${rep.tier} data</span>
+    <h2 style="margin-top:12px">${f ? `Expect about ${money(exp)} over the next ${f.p50.length} weeks, ${chg >= 0 ? "up" : "down"} ${Math.abs(chg).toFixed(0)}% on the last ${f.p50.length}.` : esc(fc ? fc.locked_reason : "")}</h2></div></div>`;
+  if (f) {
+    html += `<div class="kpis">
+      <div class="box kpi"><small>Expected, next ${f.p50.length} weeks</small><b>${short(exp)}</b><em>range ${short(f.p10.reduce((a, b) => a + b))} to ${short(f.p90.reduce((a, b) => a + b))}</em></div>
+      <div class="box kpi"><small>Vs previous ${f.p50.length} weeks</small><b class="${chg >= 0 ? "up" : "down"}">${chg >= 0 ? "+" : ""}${chg.toFixed(1)}%</b><em>${short(last)} before</em></div>
+      <div class="box kpi"><small>Busiest week</small><b>${dfmt(f.dates[pk])}</b><em>${short(f.p50[pk])} expected</em></div>
+      <div class="box kpi"><small>Cash runway</small><b class="${runway && runway.value === "profitable" ? "up" : ""}">${runway ? (runway.value === "profitable" ? "Profitable" : runway.value + " months") : "n/a"}</b><em>${runway ? "at current burn" : "add cash and costs"}</em></div>
+      <div class="box kpi"><small>Model error on your last 12 weeks</small><b>${err != null ? err.toFixed(1) + "%" : "n/a"}</b><em>${esc(f.chosen || "")}</em></div></div>`;
+    html += `<div class="grid"><div class="box sec c12"><h3>Sales forecast <span class="tag">deep learning + statistics</span></h3><p class="sub">${esc(f.model)}</p>${forecastChart(f)}</div></div>`;
+  }
+  html += `<div class="grid">${typeSection(kind, seg)}${f ? contestSection(fc) : ""}</div><div class="grid">${decisionSection(rep)}</div>` + (f ? evidenceSection() : "");
+  html += `<details class="box sec"><summary>Data quality, cleaning and full reasoning trace</summary>
+    ${(intake.details.messages || []).map(m => `<p class="ask">${esc(m)}</p>`).join("")}
+    <p class="sub">Columns used: ${esc(Object.entries(cm).map(([k, v]) => k + " = " + v).join(", "))}. Data quality: ${esc(intake.details.tier)}. ${esc(intake.headline)}.</p>
+    <pre>${esc((intake.details.cleaning_log || []).join("\n"))}</pre><pre>${esc(rep.trace.join("\n"))}</pre></details>
+    <p style="margin-top:20px"><button class="chip" id="again">Analyse another business</button></p>`;
+  $("#out").innerHTML = html; $("#out").style.display = "block"; $("#intro").style.display = "none";
+  if (f) wireTip(f);
+  $("#again").onclick = () => { $("#out").style.display = "none"; $("#intro").style.display = "block"; window.scrollTo(0, 0); };
+  window.scrollTo(0, 0);
+}
+
+// ---------- submit ----------
+$("#f").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!file.files[0] && !$("#sample").value) { $("#err").textContent = "Choose a sales file or one of the sample shops."; return; }
+  $("#err").textContent = ""; $("#go").disabled = true; $("#f").style.display = "none"; $("#busy").style.display = "block";
+  const lis = [...document.querySelectorAll("#steps li")]; let i = 0;
+  const tick = () => lis.forEach((li, k) => { li.className = k < i ? "done" : k === i ? "on" : ""; }); tick();
+  const timer = setInterval(() => { i = Math.min(i + 1, lis.length - 1); tick(); }, 1400);
+  try {
+    const r = await fetch("/api/analyze", { method: "POST", body: new FormData(e.target) });
+    const rep = await r.json();
+    if (!r.ok) throw new Error(rep.error || r.statusText);
+    render(rep);
+  } catch (x) {
+    $("#err").textContent = "Could not analyse the file: " + x.message; $("#f").style.display = "grid";
+  } finally { clearInterval(timer); $("#busy").style.display = "none"; $("#go").disabled = false; }
+});
+</script>
+</body>
+</html>

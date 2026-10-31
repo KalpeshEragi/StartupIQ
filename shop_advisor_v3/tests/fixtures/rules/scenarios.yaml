@@ -1,0 +1,98 @@
+# 15 SYNTHETIC founder situations with the advice a sensible advisor would give, written down as
+# expectations. Checked by tests/test_rules.py and scored by `python -m startupiq.rules.evaluate`.
+# Caveat: written by the same author as the rules, so agreement measures consistency with stated
+# intent, not independent expert agreement (devdocs/decisions/0013-rule-base.md).
+# Keys: recommend (must be recommended), not_recommend, warn, forbid, diagnose, risk.
+
+01_cash_crunch_growing:
+  facts: {history_weeks: 60, runway_months: 2.0, growth_recent: 0.25, gross_margin: 0.35, min_margin: 0.10}
+  recommend: [cost_reduction]
+  not_recommend: [new_product, channel_expansion]
+  warn: [runway_critical]
+  diagnose: [growing_but_cash_starved]
+  risk: [cash_out]
+
+02_stockout_before_diwali:
+  facts: {history_weeks: 70, runway_months: 12.0, stock_cover_weeks: 1.5, supplier_lead_time_weeks: 3, weeks_to_peak: 4, peak_ratio: 1.8}
+  recommend: [restock]
+  warn: [stockout, peak_ahead]
+  risk: [sellout_in_peak]
+
+03_healthy_and_stocked:
+  facts: {history_weeks: 80, runway_months: 14.0, forecast_growth: 0.2, stock_cover_weeks: 6.0, supplier_lead_time_weeks: 1, band_width: 0.3}
+  recommend: [channel_expansion]
+  diagnose: [healthy_growth]
+
+04_healthy_but_new:
+  facts: {history_weeks: 14, runway_months: 14.0, forecast_growth: 0.2, stock_cover_weeks: 6.0, band_width: 0.3}
+  not_recommend: [channel_expansion]
+  forbid: [channel_expansion]
+  warn: [short_history]
+
+05_losing_ground:
+  facts: {history_weeks: 70, runway_months: 10.0, forecast_growth: -0.2, market_pulse: rising}
+  recommend: [promotion]
+  diagnose: [losing_ground]
+  warn: [forecast_drop]
+
+06_price_war_thin_margin:
+  facts: {history_weeks: 60, runway_months: 9.0, gross_margin: 0.18, min_margin: 0.10, rival_count: 2, rival_price_cut_seen: true}
+  recommend: [loyalty_offer]
+  forbid: [price_cut]
+
+07_price_war_fat_margin:
+  facts: {history_weeks: 60, runway_months: 9.0, gross_margin: 0.55, min_margin: 0.10, rival_count: 2, rival_price_cut_seen: true}
+  not_recommend: [price_cut]
+
+08_margin_below_floor:
+  facts: {history_weeks: 60, runway_months: 9.0, gross_margin: 0.06, min_margin: 0.10}
+  forbid: [price_cut]
+  warn: [thin_margin]
+
+09_one_product_shop_with_cash:
+  facts: {history_weeks: 60, runway_months: 24.0, top_product_share: 0.8, top_product: "Masala tea"}
+  recommend: [new_product]
+  warn: [dependence]
+  risk: [main_product]
+
+10_one_product_shop_no_cash:
+  facts: {history_weeks: 60, runway_months: 2.5, top_product_share: 0.8, top_product: "Masala tea"}
+  not_recommend: [new_product]
+  recommend: [cost_reduction]
+
+11_slow_season_tight_cash:
+  facts: {history_weeks: 70, runway_months: 4.0, market_pulse: falling}
+  recommend: [cost_reduction]
+  warn: [market_falling]
+  risk: [slow_season]
+
+12_overstocked_falling:
+  facts: {history_weeks: 60, runway_months: 10.0, stock_cover_weeks: 20.0, forecast_growth: -0.15}
+  warn: [overstock, forecast_drop]
+  not_recommend: [restock]
+
+13_rival_leaving:
+  facts: {history_weeks: 60, runway_months: 10.0, rival_count: 3, rival_p_exit: 0.55, rival_exit_name: "Rival X"}
+  recommend: [loyalty_offer]
+
+14_quiet_business:
+  facts: {history_weeks: 60, runway_months: 999.0, profitable: true, forecast_growth: 0.02, stock_cover_weeks: 5.0, supplier_lead_time_weeks: 1, band_width: 0.3, market_pulse: flat}
+  recommend: [hold]
+  not_recommend: [price_cut, promotion, channel_expansion]
+
+15_volatile_sales_expansion_tempting:
+  facts: {history_weeks: 60, runway_months: 20.0, forecast_growth: 0.25, stock_cover_weeks: 8.0, sales_volatility: 0.9, band_width: 0.3}
+  forbid: [channel_expansion]
+  warn: [volatile]
+
+# Added after the first coverage run (R71 never fired) and the first real-data run ("hold" despite a visible problem).
+16_declining_little_cash:
+  facts: {history_weeks: 60, runway_months: 4.0, growth_recent: -0.3}
+  diagnose: [declining_with_little_cash]
+  recommend: [cost_reduction]
+
+17_problem_without_finances:
+  facts: {history_weeks: 60, forecast_growth: -0.3, market_pulse: rising}
+  diagnose: [losing_ground]
+  warn: [need_finances]
+  not_recommend: [hold, promotion]

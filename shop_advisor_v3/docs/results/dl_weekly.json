@@ -1,0 +1,351 @@
+{
+  "search": [
+    {
+      "stage": "search",
+      "pooled": 0.7856585407413129,
+      "coverage": 0.656688985164763,
+      "Rossmann stores": 1.0529438582559423,
+      "Rossmann stores coverage": 0.5934937611408201,
+      "UCI products": 0.6298531966788575,
+      "UCI products coverage": 0.6935266001662509,
+      "config": "mlp h64 l2 do0.3 lr0.003 wd0.0",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 60,
+      "params": 18883
+    },
+    {
+      "stage": "search",
+      "pooled": 0.6887911378405626,
+      "coverage": 0.8365170014441382,
+      "Rossmann stores": 0.8246130021128563,
+      "Rossmann stores coverage": 0.931283422459893,
+      "UCI products": 0.609618168330217,
+      "UCI products coverage": 0.7812759767248546,
+      "config": "mlp h32 l2 do0.3 lr0.001 wd0.0",
+      "seed": 0,
+      "epochs": 25,
+      "seconds": 29,
+      "params": 7395
+    },
+    {
+      "stage": "search",
+      "pooled": 0.9468890842017292,
+      "coverage": 0.5322305369568072,
+      "Rossmann stores": 1.1097040734910235,
+      "Rossmann stores coverage": 0.5120320855614974,
+      "UCI products": 0.8519813441858378,
+      "UCI products coverage": 0.5440045719035743,
+      "config": "mlp h128 l1 do0.0 lr0.003 wd0.0",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 88,
+      "params": 54147
+    },
+    {
+      "stage": "search",
+      "pooled": 0.7933715302945508,
+      "coverage": 0.6960417487199685,
+      "Rossmann stores": 0.9834385907852294,
+      "Rossmann stores coverage": 0.6973262032085561,
+      "UCI products": 0.682578075457403,
+      "UCI products coverage": 0.6952930174563591,
+      "config": "mlp h64 l2 do0.1 lr0.001 wd0.0",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 79,
+      "params": 18883
+    },
+    {
+      "stage": "search",
+      "pooled": 0.7748271856179327,
+      "coverage": 0.6728042536431666,
+      "Rossmann stores": 1.0567903417529583,
+      "Rossmann stores coverage": 0.5686274509803922,
+      "UCI products": 0.6104658695417177,
+      "UCI products coverage": 0.7335307564422278,
+      "config": "mlp h128 l2 do0.3 lr0.003 wd0.001",
+      "seed": 0,
+      "epochs": 27,
+      "seconds": 72,
+      "params": 54147
+    },
+    {
+      "stage": "search",
+      "pooled": 0.808860367793168,
+      "coverage": 0.6004660627543653,
+      "Rossmann stores": 1.1040580654032608,
+      "Rossmann stores coverage": 0.4704099821746881,
+      "UCI products": 0.6367844031638434,
+      "UCI products coverage": 0.6762780548628429,
+      "config": "lstm+attention h128 l1 do0.0 lr0.001 wd0.0001",
+      "seed": 0,
+      "epochs": 27,
+      "seconds": 99,
+      "params": 119043
+    },
+    {
+      "stage": "search",
+      "pooled": 0.7280127588197448,
+      "coverage": 0.7021793356964684,
+      "Rossmann stores": 0.9389954181969,
+      "Rossmann stores coverage": 0.6494652406417112,
+      "UCI products": 0.6050272310656052,
+      "UCI products coverage": 0.732907315045719,
+      "config": "lstm+attention h128 l2 do0.3 lr0.001 wd0.001",
+      "seed": 0,
+      "epochs": 23,
+      "seconds": 113,
+      "params": 251139
+    },
+    {
+      "stage": "search",
+      "pooled": 0.6952450443846778,
+      "coverage": 0.7192136011553105,
+      "Rossmann stores": 0.8504108182356023,
+      "Rossmann stores coverage": 0.7418894830659536,
+      "UCI products": 0.6047961674827985,
+      "UCI products coverage": 0.7059954280964255,
+      "config": "lstm+attention h32 l2 do0.0 lr0.001 wd0.0001",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 65,
+      "params": 16707
+    },
+    {
+      "stage": "search",
+      "pooled": 0.6971438783314465,
+      "coverage": 0.7413679926480242,
+      "Rossmann stores": 0.8583004738525261,
+      "Rossmann stores coverage": 0.7671122994652406,
+      "UCI products": 0.6032028454061291,
+      "UCI products coverage": 0.7263611803823773,
+      "config": "lstm+attention h32 l2 do0.0 lr0.001 wd0.001",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 68,
+      "params": 16707
+    },
+    {
+      "stage": "search",
+      "pooled": 0.7485185878817631,
+      "coverage": 0.7611592490481817,
+      "Rossmann stores": 0.9700020146037186,
+      "Rossmann stores coverage": 0.644830659536542,
+      "UCI products": 0.6194119769185282,
+      "UCI products coverage": 0.8289692435577722,
+      "config": "lstm+attention h64 l2 do0.3 lr0.003 wd0.0001",
+      "seed": 0,
+      "epochs": 18,
+      "seconds": 47,
+      "params": 64131
+    },
+    {
+      "stage": "search",
+      "pooled": 0.8143166122184902,
+      "coverage": 0.6935473283444925,
+      "Rossmann stores": 0.8118713867049406,
+      "Rossmann stores coverage": 0.7691622103386809,
+      "UCI products": 0.8157419774648548,
+      "UCI products coverage": 0.6494700748129676,
+      "config": "tcn h64 l6 do0.0 lr0.001 wd0.0",
+      "seed": 0,
+      "epochs": 19,
+      "seconds": 98,
+      "params": 157251
+    },
+    {
+      "stage": "search",
+      "pooled": 0.8149059733184983,
+      "coverage": 0.67684127609295,
+      "Rossmann stores": 1.0699323366285924,
+      "Rossmann stores coverage": 0.5385918003565063,
+      "UCI products": 0.6662465907156692,
+      "UCI products coverage": 0.7574293433083957,
+      "config": "tcn h64 l6 do0.1 lr0.001 wd0.0",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 169,
+      "params": 157251
+    },
+    {
+      "stage": "search",
+      "pooled": 0.682907014507891,
+      "coverage": 0.6802218721281345,
+      "Rossmann stores": 0.8299672441868512,
+      "Rossmann stores coverage": 0.6542780748663102,
+      "UCI products": 0.5971830028184723,
+      "UCI products coverage": 0.6953449709060683,
+      "config": "tcn h32 l6 do0.1 lr0.001 wd0.0",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 133,
+      "params": 39715
+    },
+    {
+      "stage": "search",
+      "pooled": 0.6884230408554174,
+      "coverage": 0.726893790206118,
+      "Rossmann stores": 0.8470964355928968,
+      "Rossmann stores coverage": 0.7103386809269162,
+      "UCI products": 0.5959295096337568,
+      "UCI products coverage": 0.7365440565253532,
+      "config": "tcn h32 l6 do0.3 lr0.001 wd0.0",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 117,
+      "params": 39715
+    },
+    {
+      "stage": "search",
+      "pooled": 0.7359875367729124,
+      "coverage": 0.6770382040173296,
+      "Rossmann stores": 0.9601022124581648,
+      "Rossmann stores coverage": 0.63698752228164,
+      "UCI products": 0.6053471242007733,
+      "UCI products coverage": 0.700384455527847,
+      "config": "tcn h64 l6 do0.3 lr0.003 wd0.0001",
+      "seed": 0,
+      "epochs": 30,
+      "seconds": 165,
+      "params": 157251
+    }
+  ],
+  "chosen": {
+    "mlp": {
+      "config": {
+        "arch": "mlp",
+        "hidden": 32,
+        "layers": 2,
+        "dropout": 0.3,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "attention": true,
+        "batch": 512,
+        "max_epochs": 30,
+        "patience": 4
+      },
+      "pooled_mean": 0.7196238512874181,
+      "pooled_sd": 0.02608710289405858,
+      "coverage_mean": 0.7800205680276574
+    },
+    "lstm": {
+      "config": {
+        "arch": "lstm",
+        "hidden": 32,
+        "layers": 2,
+        "dropout": 0.0,
+        "lr": 0.001,
+        "weight_decay": 0.0001,
+        "attention": true,
+        "batch": 512,
+        "max_epochs": 30,
+        "patience": 4
+      },
+      "pooled_mean": 0.7154883103356418,
+      "pooled_sd": 0.015630622959669747,
+      "coverage_mean": 0.6029823640103278
+    },
+    "tcn": {
+      "config": {
+        "arch": "tcn",
+        "hidden": 32,
+        "layers": 6,
+        "dropout": 0.1,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "attention": true,
+        "batch": 512,
+        "max_epochs": 30,
+        "patience": 4
+      },
+      "pooled_mean": 0.6861575196372098,
+      "pooled_sd": 0.008841965077199221,
+      "coverage_mean": 0.7481838869196097
+    }
+  },
+  "seeds": [
+    {
+      "model": "mlp h32 l2 do0.3 lr0.001 wd0.0",
+      "arch": "mlp",
+      "pooled MASE": "0.7196 \u00b1 0.0261",
+      "Rossmann stores": "0.8953 \u00b1 0.0571",
+      "UCI products": "0.6172 \u00b1 0.0085",
+      "P10-P90 coverage": "0.7800 \u00b1 0.0420",
+      "params": 7395,
+      "epochs": 25
+    },
+    {
+      "model": "lstm+attention h32 l2 do0.0 lr0.001 wd0.0001",
+      "arch": "lstm",
+      "pooled MASE": "0.7155 \u00b1 0.0156",
+      "Rossmann stores": "0.9008 \u00b1 0.0387",
+      "UCI products": "0.6074 \u00b1 0.0022",
+      "P10-P90 coverage": "0.6030 \u00b1 0.1376",
+      "params": 16707,
+      "epochs": 30
+    },
+    {
+      "model": "tcn h32 l6 do0.1 lr0.001 wd0.0",
+      "arch": "tcn",
+      "pooled MASE": "0.6862 \u00b1 0.0088",
+      "Rossmann stores": "0.8335 \u00b1 0.0245",
+      "UCI products": "0.6002 \u00b1 0.0023",
+      "P10-P90 coverage": "0.7482 \u00b1 0.0521",
+      "params": 39715,
+      "epochs": 30
+    }
+  ],
+  "attention_ablation": [
+    {
+      "variant": "lstm+attention h32 l2 do0.0 lr0.001 wd0.0001",
+      "pooled MASE": 0.6952450443846778
+    },
+    {
+      "variant": "lstm h32 l2 do0.0 lr0.001 wd0.0001",
+      "pooled MASE": 0.7759176847245453
+    }
+  ],
+  "regularisation": [
+    {
+      "dropout": 0.0,
+      "weight decay": 0.0,
+      "pooled MASE": 0.6966874788019716,
+      "coverage": 0.74389523434423,
+      "epochs": 30,
+      "holdout minus train loss (last epoch)": -0.0007925948085513099
+    },
+    {
+      "dropout": 0.3,
+      "weight decay": 0.0,
+      "pooled MASE": 0.7065431957560343,
+      "coverage": 0.8273926742812131,
+      "epochs": 30,
+      "holdout minus train loss (last epoch)": -0.0027389708379000344
+    },
+    {
+      "dropout": 0.0,
+      "weight decay": 0.001,
+      "pooled MASE": 0.6971438783314465,
+      "coverage": 0.7413679926480242,
+      "epochs": 30,
+      "holdout minus train loss (last epoch)": -0.0008106570241707134
+    },
+    {
+      "dropout": 0.3,
+      "weight decay": 0.001,
+      "pooled MASE": 0.7021081791804221,
+      "coverage": 0.8304450571090981,
+      "epochs": 30,
+      "holdout minus train loss (last epoch)": -0.002700366649601056
+    }
+  ],
+  "step5_bar": {
+    "Auto": 0.616,
+    "LightGBM global": 0.8148,
+    "Moving average (4 weeks)": 0.751
+  },
+  "verdict": "stays an experiment (best deep model tcn: pooled MASE 0.686 \u00b1 0.009, coverage 0.748; Auto 0.616; rule: beat Auto by more than one sd AND coverage within (0.7, 0.9))",
+  "best_arch": "tcn",
+  "seconds": 2262
+}

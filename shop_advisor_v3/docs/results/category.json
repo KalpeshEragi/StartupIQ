@@ -1,0 +1,127 @@
+{
+  "validation": [
+    {
+      "model": "Logistic regression",
+      "val accuracy": 0.956,
+      "val macro-F1": 0.9559,
+      "val log-loss": 0.1249
+    },
+    {
+      "model": "k-nearest neighbours (k=15)",
+      "val accuracy": 0.8857,
+      "val macro-F1": 0.8862,
+      "val log-loss": 0.5257
+    },
+    {
+      "model": "SVM (RBF kernel)",
+      "val accuracy": 0.9476,
+      "val macro-F1": 0.9476,
+      "val log-loss": 0.1615
+    },
+    {
+      "model": "Random forest",
+      "val accuracy": 0.9548,
+      "val macro-F1": 0.9548,
+      "val log-loss": 0.2548
+    },
+    {
+      "model": "LightGBM",
+      "val accuracy": 0.9631,
+      "val macro-F1": 0.9631,
+      "val log-loss": 0.1439
+    },
+    {
+      "model": "Neural network (MLP)",
+      "val accuracy": 0.9333,
+      "val macro-F1": 0.9333,
+      "val log-loss": 0.1736
+    },
+    {
+      "model": "Majority class (baseline)",
+      "val accuracy": 0.1667,
+      "val macro-F1": 0.0476,
+      "val log-loss": NaN
+    }
+  ],
+  "chosen": "LightGBM",
+  "test": [
+    {
+      "model": "Logistic regression",
+      "test accuracy": 0.9524,
+      "test macro-F1": 0.9524,
+      "test log-loss": 0.1363
+    },
+    {
+      "model": "k-nearest neighbours (k=15)",
+      "test accuracy": 0.8738,
+      "test macro-F1": 0.8748,
+      "test log-loss": 0.4851
+    },
+    {
+      "model": "SVM (RBF kernel)",
+      "test accuracy": 0.9452,
+      "test macro-F1": 0.9453,
+      "test log-loss": 0.1506
+    },
+    {
+      "model": "Random forest",
+      "test accuracy": 0.9619,
+      "test macro-F1": 0.9619,
+      "test log-loss": 0.2444
+    },
+    {
+      "model": "LightGBM",
+      "test accuracy": 0.9619,
+      "test macro-F1": 0.962,
+      "test log-loss": 0.1483
+    },
+    {
+      "model": "Neural network (MLP)",
+      "test accuracy": 0.9345,
+      "test macro-F1": 0.9346,
+      "test log-loss": 0.1923
+    }
+  ],
+  "by_view": [
+    {
+      "view": "daily, sales only",
+      "accuracy": 0.919,
+      "shops": 210
+    },
+    {
+      "view": "daily, with orders",
+      "accuracy": 0.9952,
+      "shops": 414
+    },
+    {
+      "view": "weekly, sales only",
+      "accuracy": 0.8406,
+      "shops": 69
+    },
+    {
+      "view": "weekly, with orders",
+      "accuracy": 0.9864,
+      "shops": 147
+    }
+  ],
+  "by_history": [
+    {
+      "history": "12-26 weeks",
+      "accuracy": 0.9085,
+      "shops": 153
+    },
+    {
+      "history": "27-52 weeks",
+      "accuracy": 0.9478,
+      "shops": 230
+    },
+    {
+      "history": "53+ weeks",
+      "accuracy": 0.9869,
+      "shops": 457
+    }
+  ],
+  "confident_share": 0.9976,
+  "confident_accuracy": 0.963,
+  "seconds": 15653
+}

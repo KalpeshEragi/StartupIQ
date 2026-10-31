@@ -1,0 +1,69 @@
+{
+  "rows": {
+    "train": 6088,
+    "test": 3767,
+    "val": 3277
+  },
+  "mean_share_pct": 3.587,
+  "validation": [
+    {
+      "model": "Persistence (share stays the same)",
+      "MAE (pct points)": "2.1638",
+      "MAE small sellers": "0.761",
+      "MAE medium sellers": "1.513",
+      "MAE large sellers": "4.219"
+    },
+    {
+      "model": "Ridge",
+      "MAE (pct points)": "2.1696",
+      "MAE small sellers": "1.174",
+      "MAE medium sellers": "1.675",
+      "MAE large sellers": "3.661"
+    },
+    {
+      "model": "Random forest",
+      "MAE (pct points)": "1.8507 \u00b1 0.0013",
+      "MAE small sellers": "0.802",
+      "MAE medium sellers": "1.421",
+      "MAE large sellers": "3.334"
+    },
+    {
+      "model": "LightGBM (L1 loss)",
+      "MAE (pct points)": "1.6781 \u00b1 0.0064",
+      "MAE small sellers": "0.639",
+      "MAE medium sellers": "1.250",
+      "MAE large sellers": "3.140"
+    }
+  ],
+  "test": [
+    {
+      "model": "Persistence (share stays the same)",
+      "MAE (pct points)": "1.9859",
+      "MAE small sellers": "0.844",
+      "MAE medium sellers": "1.568",
+      "MAE large sellers": "3.546"
+    },
+    {
+      "model": "Ridge",
+      "MAE (pct points)": "1.7462",
+      "MAE small sellers": "0.921",
+      "MAE medium sellers": "1.444",
+      "MAE large sellers": "2.874"
+    },
+    {
+      "model": "Random forest",
+      "MAE (pct points)": "1.7066 \u00b1 0.0024",
+      "MAE small sellers": "0.830",
+      "MAE medium sellers": "1.405",
+      "MAE large sellers": "2.893"
+    },
+    {
+      "model": "LightGBM (L1 loss)",
+      "MAE (pct points)": "1.5536 \u00b1 0.0072",
+      "MAE small sellers": "0.704",
+      "MAE medium sellers": "1.189",
+      "MAE large sellers": "2.746"
+    }
+  ],
+  "seconds": 71
+}

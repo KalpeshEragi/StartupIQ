@@ -1,0 +1,156 @@
+{
+  "rows": {
+    "train": 6391,
+    "test": 3867,
+    "val": 3381
+  },
+  "class_share": {
+    "exit": {
+      "test": 0.197,
+      "train": 0.159,
+      "val": 0.173
+    },
+    "expansion": {
+      "test": 0.142,
+      "train": 0.188,
+      "val": 0.18
+    },
+    "price_cut": {
+      "test": 0.02,
+      "train": 0.02,
+      "val": 0.019
+    },
+    "stagnate": {
+      "test": 0.641,
+      "train": 0.633,
+      "val": 0.629
+    }
+  },
+  "validation": [
+    {
+      "model": "Majority class (stagnate)",
+      "macro-F1": "0.1930",
+      "accuracy": "0.6285",
+      "Brier": "n/a"
+    },
+    {
+      "model": "Same move as last month",
+      "macro-F1": "0.2120",
+      "accuracy": "0.4759",
+      "Brier": "n/a"
+    },
+    {
+      "model": "Logistic regression",
+      "macro-F1": "0.3418",
+      "accuracy": "0.4463",
+      "Brier": "0.6621"
+    },
+    {
+      "model": "Linear SVM (calibrated)",
+      "macro-F1": "0.1972 \u00b1 0.0000",
+      "accuracy": "0.6291 \u00b1 0.0000",
+      "Brier": "0.5104 \u00b1 0.0000"
+    },
+    {
+      "model": "Decision tree (depth 6)",
+      "macro-F1": "0.2539 \u00b1 0.0000",
+      "accuracy": "0.2573 \u00b1 0.0000",
+      "Brier": "0.7740 \u00b1 0.0000"
+    },
+    {
+      "model": "Random forest",
+      "macro-F1": "0.3787 \u00b1 0.0028",
+      "accuracy": "0.5814 \u00b1 0.0018",
+      "Brier": "0.5655 \u00b1 0.0003"
+    },
+    {
+      "model": "LightGBM",
+      "macro-F1": "0.3617 \u00b1 0.0007",
+      "accuracy": "0.5610 \u00b1 0.0044",
+      "Brier": "0.5587 \u00b1 0.0031"
+    },
+    {
+      "model": "Soft vote (logistic + forest)",
+      "macro-F1": "0.3787 \u00b1 0.0029",
+      "accuracy": "0.5341 \u00b1 0.0021",
+      "Brier": "0.5944 \u00b1 0.0001"
+    }
+  ],
+  "chosen": "Random forest",
+  "errors": {
+    "accuracy_by_size_band": {
+      "small": 0.504,
+      "medium": 0.567,
+      "large": 0.677
+    },
+    "macro_f1_by_size_band": {
+      "small": 0.348,
+      "medium": 0.374,
+      "large": 0.39
+    },
+    "accuracy_by_active_months": {
+      "(0, 3]": 0.529,
+      "(3, 6]": 0.6,
+      "(6, 12]": 0.61,
+      "(12, 30]": 0.669
+    },
+    "top_confusions": {
+      "('expansion', 'stagnate')": 354,
+      "('stagnate', 'exit')": 339,
+      "('stagnate', 'expansion')": 315,
+      "('exit', 'stagnate')": 262,
+      "('exit', 'expansion')": 39
+    }
+  },
+  "test": [
+    {
+      "model": "Majority class (stagnate)",
+      "macro-F1": "0.1953",
+      "accuracy": "0.6411",
+      "Brier": "n/a"
+    },
+    {
+      "model": "Same move as last month",
+      "macro-F1": "0.2279",
+      "accuracy": "0.4854",
+      "Brier": "n/a"
+    },
+    {
+      "model": "Logistic regression",
+      "macro-F1": "0.2983",
+      "accuracy": "0.3566",
+      "Brier": "0.7093"
+    },
+    {
+      "model": "Linear SVM (calibrated)",
+      "macro-F1": "0.2047 \u00b1 0.0000",
+      "accuracy": "0.6418 \u00b1 0.0000",
+      "Brier": "0.4974 \u00b1 0.0000"
+    },
+    {
+      "model": "Decision tree (depth 6)",
+      "macro-F1": "0.2498 \u00b1 0.0000",
+      "accuracy": "0.2697 \u00b1 0.0000",
+      "Brier": "0.7581 \u00b1 0.0000"
+    },
+    {
+      "model": "Random forest",
+      "macro-F1": "0.3658 \u00b1 0.0038",
+      "accuracy": "0.5749 \u00b1 0.0028",
+      "Brier": "0.5625 \u00b1 0.0009"
+    },
+    {
+      "model": "LightGBM",
+      "macro-F1": "0.3521 \u00b1 0.0047",
+      "accuracy": "0.5145 \u00b1 0.0016",
+      "Brier": "0.5945 \u00b1 0.0027"
+    },
+    {
+      "model": "Soft vote (logistic + forest)",
+      "macro-F1": "0.3706 \u00b1 0.0010",
+      "accuracy": "0.5044 \u00b1 0.0012",
+      "Brier": "0.6135 \u00b1 0.0004"
+    }
+  ],
+  "seconds": 506
+}

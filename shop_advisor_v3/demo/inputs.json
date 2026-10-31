@@ -1,0 +1,146 @@
+{
+  "01_healthy_growing_shop.csv": {
+    "cash_on_hand": 600000,
+    "monthly_fixed_costs": 50000,
+    "gross_margin": 0.4,
+    "stock_value": 150000,
+    "supplier_lead_time_days": 7,
+    "competitors": [
+      "Mobile Mart"
+    ]
+  },
+  "02_stockout_before_festival.csv": {
+    "cash_on_hand": 300000,
+    "monthly_fixed_costs": 60000,
+    "gross_margin": 0.35,
+    "stock_value": 20000,
+    "supplier_lead_time_days": 21,
+    "competitors": [
+      "Gadget Zone"
+    ]
+  },
+  "03_growing_but_cash_crunch.csv": {
+    "cash_on_hand": 40000,
+    "monthly_fixed_costs": 150000,
+    "gross_margin": 0.3,
+    "stock_value": 60000,
+    "supplier_lead_time_days": 7
+  },
+  "04_slow_season_ahead.csv": {
+    "cash_on_hand": 140000,
+    "monthly_fixed_costs": 80000,
+    "gross_margin": 0.3,
+    "stock_value": 150000,
+    "supplier_lead_time_days": 10
+  },
+  "05_losing_ground.csv": {
+    "cash_on_hand": 400000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.4,
+    "stock_value": 80000,
+    "supplier_lead_time_days": 7
+  },
+  "06_price_war_thin_margin.csv": {
+    "cash_on_hand": 300000,
+    "monthly_fixed_costs": 30000,
+    "gross_margin": 0.2,
+    "stock_value": 40000,
+    "supplier_lead_time_days": 7,
+    "competitors": [
+      "Discount Dukaan",
+      "Mobile Mart"
+    ],
+    "rival_price_cut_seen": true
+  },
+  "07_one_product_dependence.csv": {
+    "cash_on_hand": 800000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.4,
+    "stock_value": 60000,
+    "supplier_lead_time_days": 7
+  },
+  "08_overstocked_falling_demand.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 30000,
+    "gross_margin": 0.35,
+    "stock_value": 600000,
+    "supplier_lead_time_days": 7
+  },
+  "09_very_volatile_sales.csv": {
+    "cash_on_hand": 500000,
+    "monthly_fixed_costs": 30000,
+    "gross_margin": 0.4,
+    "stock_value": 200000,
+    "supplier_lead_time_days": 7
+  },
+  "10_new_shop_ten_weeks.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35,
+    "stock_value": 30000,
+    "supplier_lead_time_days": 7
+  },
+  "11_no_finances_given.csv": {},
+  "12_margin_below_floor.csv": {
+    "cash_on_hand": 300000,
+    "monthly_fixed_costs": 10000,
+    "gross_margin": 0.08,
+    "stock_value": 30000,
+    "supplier_lead_time_days": 7
+  },
+  "13_tea_stall_title_rows.xlsx": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "14_hindi_headers.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "15_one_column_per_month.xlsx": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "16_us_dates_semicolons.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "17_ambiguous_dates.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "18_one_huge_bulk_order.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "19_closed_for_six_weeks.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "20_refused_no_dates.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "21_refused_all_zeros.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "22_refused_ten_rows.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  },
+  "23_refused_notes.csv": {
+    "cash_on_hand": 200000,
+    "monthly_fixed_costs": 40000,
+    "gross_margin": 0.35
+  }
+}

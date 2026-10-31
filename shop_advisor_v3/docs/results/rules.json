@@ -1,0 +1,26 @@
+{
+  "rules": 47,
+  "groups": {
+    "data": 5,
+    "cash": 6,
+    "stock": 4,
+    "premortem": 5,
+    "demand": 5,
+    "market": 4,
+    "rivals": 6,
+    "dependence": 2,
+    "diagnosis": 3,
+    "recommend": 5,
+    "safety": 2
+  },
+  "scenario_agreement": 1.0,
+  "scenario_expectations": 47,
+  "coverage_scenarios": 0.894,
+  "coverage_real": 0.553,
+  "real_recommendations": {
+    "Keep things as they are": 49,
+    "Order more stock now": 9,
+    "Loyalty offer for repeat customers": 2
+  },
+  "seconds": 34
+}

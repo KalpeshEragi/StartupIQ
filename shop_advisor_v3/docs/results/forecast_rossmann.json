@@ -1,0 +1,161 @@
+{
+  "validation": {
+    "lightgbm_grid": [
+      {
+        "num_leaves": 31,
+        "n_estimators": 600,
+        "rmspe": 0.13672792844223
+      },
+      {
+        "num_leaves": 127,
+        "n_estimators": 600,
+        "rmspe": 0.13411913489203492
+      },
+      {
+        "num_leaves": 127,
+        "n_estimators": 1500,
+        "rmspe": 0.14277176989908072
+      },
+      {
+        "num_leaves": 255,
+        "n_estimators": 1500,
+        "rmspe": 0.14124872198423177
+      }
+    ],
+    "p10_p90_coverage": 0.7669726729291204,
+    "selection": {
+      "kept": [
+        "store_dow_mean",
+        "Promo",
+        "roll_42_28",
+        "store_mean",
+        "DayOfWeek",
+        "open_prev",
+        "store_promo_lift",
+        "day",
+        "days_to_holiday",
+        "comp_months",
+        "log_comp_dist",
+        "days_since_holiday",
+        "StoreType",
+        "lag_364",
+        "month",
+        "open_next"
+      ],
+      "rmspe_selected": 0.16317751062619687,
+      "rmspe_all": 0.13411913489203492
+    },
+    "errors": {
+      "by_store_type": {
+        "a": 0.1372,
+        "b": 0.1625,
+        "c": 0.1268,
+        "d": 0.1298
+      },
+      "by_promo": {
+        "0": 0.1429,
+        "1": 0.1215
+      },
+      "by_weekday": {
+        "1": 0.1539,
+        "2": 0.1327,
+        "3": 0.1235,
+        "4": 0.136,
+        "5": 0.1312,
+        "6": 0.1274,
+        "7": 0.1866
+      },
+      "by_2014_gap_store": {
+        "false": 0.1366,
+        "true": 0.1202
+      },
+      "lag_364_missing": {
+        "false": 0.131,
+        "true": 0.1667
+      },
+      "worst_stores": {
+        "415": 0.7438,
+        "310": 0.3748,
+        "917": 0.3703,
+        "524": 0.3393,
+        "183": 0.3179,
+        "863": 0.3158,
+        "433": 0.3026,
+        "384": 0.3024,
+        "1073": 0.2821,
+        "209": 0.2806
+      },
+      "worst_store_reasons": {
+        "415": "longest closed run 2 days; 2014 gap store: False; StoreType d",
+        "310": "longest closed run 2 days; 2014 gap store: False; StoreType a",
+        "917": "longest closed run 2 days; 2014 gap store: False; StoreType a",
+        "524": "longest closed run 2 days; 2014 gap store: False; StoreType a",
+        "183": "longest closed run 8 days; 2014 gap store: True; StoreType a"
+      }
+    }
+  },
+  "test": {},
+  "table": [
+    {
+      "model": "Store mean",
+      "split": "validation",
+      "rmspe": 0.29948275287445725,
+      "rows_scored": 37472,
+      "sd": NaN,
+      "rmspe \u00b1 sd": "0.2995"
+    },
+    {
+      "model": "Same weekday, last 4 weeks",
+      "split": "validation",
+      "rmspe": 0.22797384009055752,
+      "rows_scored": 37472,
+      "sd": NaN,
+      "rmspe \u00b1 sd": "0.2280"
+    },
+    {
+      "model": "Same day last year (rows with history only)",
+      "split": "validation",
+      "rmspe": 0.181371751941562,
+      "rows_scored": 34561,
+      "sd": NaN,
+      "rmspe \u00b1 sd": "0.1814"
+    },
+    {
+      "model": "Same day last year, else same weekday 4 weeks",
+      "split": "validation",
+      "rmspe": 0.19481699804980881,
+      "rows_scored": 37472,
+      "sd": NaN,
+      "rmspe \u00b1 sd": "0.1948"
+    },
+    {
+      "model": "Ridge (alpha=0.1)",
+      "split": "validation",
+      "rmspe": 0.1509659686820235,
+      "rows_scored": 37472,
+      "sd": NaN,
+      "rmspe \u00b1 sd": "0.1510"
+    },
+    {
+      "model": "Random forest (300,000 rows)",
+      "split": "validation",
+      "rmspe": 0.1190579222713433,
+      "rows_scored": 37472,
+      "sd": 0.0002549592344005074,
+      "rmspe \u00b1 sd": "0.1191 \u00b1 0.0003"
+    },
+    {
+      "model": "LightGBM (127 leaves, 600 trees)",
+      "split": "validation",
+      "rmspe": 0.13345052965100865,
+      "rows_scored": 37472,
+      "sd": 0.0017239754032563827,
+      "rmspe \u00b1 sd": "0.1335 \u00b1 0.0017"
+    }
+  ],
+  "best_lightgbm": {
+    "num_leaves": 127,
+    "n_estimators": 600
+  },
+  "seconds": 1823
+}

@@ -1,0 +1,100 @@
+# Business moves known to the knowledge model (Task 1), the rule engine (Task 2) and the planner (Task 3).
+# Costs are fractions of the business's monthly sales unless marked otherwise.
+# Effects are ASSUMPTIONS with their source; the planner reports them as such.
+#   demand_lift: multiplier on weekly demand while the move is active
+#   margin_change: change in gross margin (fraction points)
+#   requires: constraint names checked by knowledge/constraints.py
+
+hold:
+  label: Keep things as they are
+  cost: 0.0
+  lead_time_weeks: 0
+  duration_weeks: 1
+  demand_lift: 1.0
+  affects: {}
+  requires: []
+  source: no change
+
+restock:
+  label: Order more stock now
+  cost_rule: weeks_of_sales_at_cost   # cash needed = weeks ordered x weekly sales x (1 - margin)
+  weeks_ordered: 4
+  lead_time_weeks: supplier            # uses the business's supplier lead time
+  duration_weeks: 0
+  demand_lift: 1.0
+  affects: {stock_cover: +, cash: "-", lost_sales: "-"}
+  requires: [cash_covers_cost, lead_time_known]
+  source: arithmetic
+
+promotion:
+  label: Run a promotion (2 weeks)
+  cost: 0.05
+  lead_time_weeks: 1
+  duration_weeks: 2
+  demand_lift: 1.2
+  affects: {revenue: +, margin: "-", cash: "-"}
+  requires: [cash_covers_cost, stock_covers_promotion]
+  source: "Rossmann promo days sell 1.39x (EDA); 1.2 assumed for small sellers without a brand"
+
+price_cut:
+  label: Cut prices by 10%
+  cost: 0.0
+  margin_change: -0.10
+  lead_time_weeks: 0
+  duration_weeks: 4
+  demand_lift: 1.15
+  affects: {revenue: +, margin: "-", share: +}
+  requires: [margin_stays_above_floor]
+  source: "assumed price elasticity -1.5; not measured on our data"
+
+loyalty_offer:
+  label: Loyalty offer for repeat customers
+  cost: 0.03
+  lead_time_weeks: 1
+  duration_weeks: 4
+  demand_lift: 1.05
+  affects: {revenue: +, retention: +, cash: "-"}
+  requires: [cash_covers_cost]
+  source: assumption
+
+new_product:
+  label: Launch a new product
+  cost: 0.5
+  lead_time_weeks: 6
+  duration_weeks: 12
+  demand_lift: 1.1
+  affects: {revenue: +, dependence: "-", cash: "-"}
+  requires: [cash_covers_cost, runway_at_least_6_months]
+  source: assumption
+
+channel_expansion:
+  label: Start selling on a new channel
+  cost: 0.3
+  lead_time_weeks: 4
+  duration_weeks: 12
+  demand_lift: 1.15
+  affects: {revenue: +, share: +, cash: "-", stock_cover: "-"}
+  requires: [cash_covers_cost, runway_at_least_6_months, stock_covers_expansion]
+  source: assumption
+
+cost_reduction:
+  label: Cut a fixed cost
+  cost: 0.02
+  fixed_cost_change: -0.10
+  lead_time_weeks: 2
+  duration_weeks: 0
+  demand_lift: 1.0
+  affects: {cash: +, runway: +}
+  requires: []
+  source: assumption
+
+price_coordination:
+  label: Agree prices with a competitor
+  cost: 0.0
+  lead_time_weeks: 0
+  duration_weeks: 0
+  demand_lift: 1.0
+  affects: {margin: +}
+  requires: [legal]
+  legal: false
+  source: "Illegal cartel conduct (Competition Act 2002, s.3 in India; similar law elsewhere). In the ontology only so the system can recognise and refuse it."

@@ -1,0 +1,15 @@
+20:33:45 validation: 77,067 training windows, 1115 stores scored
+20:34:07 mlp h128 l1 do0.1 lr0.002 wd0.0001 seed 0: RMSPE 0.1446, coverage 0.840, 8 epochs, 17s
+20:34:22 mlp h128 l1 do0.1 lr0.002 wd0.0001 seed 1: RMSPE 0.1510, coverage 0.875, 8 epochs, 15s
+20:34:40 mlp h128 l1 do0.1 lr0.002 wd0.0001 seed 2: RMSPE 0.1402, coverage 0.842, 9 epochs, 17s
+20:35:03 lstm+attention h64 l1 do0.1 lr0.002 wd0.0001 seed 0: RMSPE 0.1582, coverage 0.844, 8 epochs, 23s
+20:35:22 lstm+attention h64 l1 do0.1 lr0.002 wd0.0001 seed 1: RMSPE 0.1618, coverage 0.846, 7 epochs, 18s
+20:35:46 lstm+attention h64 l1 do0.1 lr0.002 wd0.0001 seed 2: RMSPE 0.1571, coverage 0.846, 8 epochs, 24s
+20:37:48 tcn h32 l6 do0.1 lr0.002 wd0.0001 seed 0: RMSPE 0.1284, coverage 0.865, 25 epochs, 122s
+20:39:51 tcn h32 l6 do0.1 lr0.002 wd0.0001 seed 1: RMSPE 0.1286, coverage 0.816, 25 epochs, 123s
+20:41:52 tcn h32 l6 do0.1 lr0.002 wd0.0001 seed 2: RMSPE 0.1351, coverage 0.778, 25 epochs, 120s
+11:27:10 test: 81,527 training windows, 1115 stores scored
+11:27:26 mlp h128 l1 do0.1 lr0.002 wd0.0001 seed 0: RMSPE 0.1378, coverage 0.810, 9 epochs, 9s
+11:27:36 mlp h128 l1 do0.1 lr0.002 wd0.0001 seed 1: RMSPE 0.1365, coverage 0.882, 9 epochs, 10s
+11:27:46 mlp h128 l1 do0.1 lr0.002 wd0.0001 seed 2: RMSPE 0.1459, coverage 0.832, 10 epochs, 10s
+11:28:06 lstm+attention h64 l1 do0.1 lr0.002 wd0.0001 seed 0: RMSPE 0.1524, coverage 0.864, 8 epochs, 19s

@@ -1,0 +1,31 @@
+{
+  "test": [
+    {
+      "model": "mlp h32 l2 do0.3 lr0.001 wd0.0",
+      "pooled MASE": "0.9266 \u00b1 0.0241",
+      "Rossmann stores": "0.9257 \u00b1 0.0723",
+      "UCI products": "0.9272 \u00b1 0.0041",
+      "P10-P90 coverage": "0.8385 \u00b1 0.0323"
+    },
+    {
+      "model": "lstm+attention h32 l2 do0.0 lr0.001 wd0.0001",
+      "pooled MASE": "0.9137 \u00b1 0.0375",
+      "Rossmann stores": "0.8559 \u00b1 0.0962",
+      "UCI products": "0.9475 \u00b1 0.0272",
+      "P10-P90 coverage": "0.7042 \u00b1 0.0483"
+    },
+    {
+      "model": "tcn h32 l6 do0.1 lr0.001 wd0.0",
+      "pooled MASE": "0.8612 \u00b1 0.0165",
+      "Rossmann stores": "0.7806 \u00b1 0.0450",
+      "UCI products": "0.9082 \u00b1 0.0037",
+      "P10-P90 coverage": "0.7474 \u00b1 0.0090"
+    }
+  ],
+  "step5_test_bar": {
+    "Auto": 0.81,
+    "LightGBM global": 0.8547,
+    "Moving average (4 weeks)": 0.963
+  },
+  "seconds": 1074
+}

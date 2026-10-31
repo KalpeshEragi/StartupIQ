@@ -1,4 +1,0 @@
-seed_flag,n,error_rate,fp_rate,fn_rate,acquired_share
-no seed,784,0.332,0.147,0.185,0.667
-seed,277,0.347,0.09,0.256,0.404
-unknown funding,198,0.323,0.086,0.237,0.52

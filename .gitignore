@@ -1,16 +1,33 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
 .venv/
 venv/
-.env
-.env.*
-!.env.example
-kaggle.json
-.ipynb_checkpoints/
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# Node
+node_modules/
+dist/
+
+# Data and model artefacts
+data/raw/
+data/interim/
+data/processed/
+*.pt
+*.joblib
+*.pkl
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

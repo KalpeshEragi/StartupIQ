@@ -1,8 +1,0 @@
-feature,auc_drop,std
-age_at_first_funding,0.0965,0.0115
-region,0.0386,0.0063
-country_code,0.0291,0.0059
-has_seed,0.0263,0.0054
-market,0.0236,0.0046
-n_categories,0.0107,0.0052
-has_angel,0.0074,0.0016

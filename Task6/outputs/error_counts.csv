@@ -1,4 +1,0 @@
-outcome_error,count
-correct,839
-"false_negative (pred closed, was acquired)",263
-"false_positive (pred acquired, was closed)",157

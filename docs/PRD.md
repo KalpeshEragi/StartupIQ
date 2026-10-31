@@ -40,6 +40,11 @@ Everything that must be exact (P&L arithmetic, cap table, dilution, vesting, SAF
 
 A user can belong to several startups (e.g. an investor in many) with a different role in each.
 
+**Rollout:** v1 ships the founder role only. The data model is multi-role from day one: every user-startup link is a row
+in `memberships(user, startup, role)` and every endpoint goes through one access check, so adding team and investor
+roles later means new role values, permissions in that one check, and invite/portal pages, with no change to existing
+tables or queries.
+
 Startup types supported from day one: **physical product** (D2C, hardware, FMCG) and **digital product** (SaaS, apps,
 platforms). The type changes which unit metrics are shown, not the P&L.
 
@@ -63,7 +68,7 @@ Non-goals: tax filing, payroll, accounting-standard statements (Ind AS), legal d
 - **Sign up / log in** - email + password (argon2 hash), email verification, password reset, session refresh.
 - **Create startup** - name, sector, stage (idea, pre-seed, seed, Series A+), physical or digital, founding date,
   currency (INR default), financial year start (April default).
-- **Team and access** - invite by email with role; revoke; every change written to the audit log.
+- **Team and access** (later phase) - invite by email with role; revoke; every change written to the audit log.
 
 ### B. Dashboard
 - KPI tiles: revenue (month), MoM growth, gross margin, EBITDA, net burn, cash, runway (with forecast range).
@@ -207,13 +212,14 @@ Models are trained and evaluated on public data only; demo data is never used to
 
 | Phase | Scope | Done when |
 | --- | --- | --- |
-| 1 Foundation | Repo, Docker Compose, Postgres, auth, startups, roles, audit log | Sign up, create startup, invite member, tests green |
+| 1 Foundation | Repo, Docker Compose, Postgres, auth (founder accounts), startups, membership-based access check, audit log | Sign up, log in, create and edit a startup, other users get 404, tests green |
 | 2 Transactions + ML | Import, categorisation models + evaluation, review inbox, corrections | Results report; inbox works on demo data |
 | 3 Financials | P&L from transactions, month close, unit economics, dashboard | Dashboard KPIs match hand-computed values |
-| 4 Equity + investors | Cap table, rounds, SAFEs, ESOP, dilution simulator, investors, pipeline, portal | Dilution matches worked examples; investor sees only shared data |
+| 4 Equity + investors | Cap table, rounds, SAFEs, ESOP, dilution simulator, investor list, pipeline | Dilution matches worked examples |
 | 5 Forecast + DL | Forecasters, cash forecast, scenarios, track record | Results report; forecast page live |
 | 6 Insights | Anomaly detection, rules, recommendations, monthly update | Injected-anomaly precision reported |
 | 7 Hardening | Security tests, performance, deployment, demo script | End-to-end demo on a clean machine |
+| 8 Roles | Team and investor roles, invites, investor portal, sharing settings | Investor sees only shared data; role tests green |
 
 ## 12. Risks and open questions
 - Choice and licence of the public transaction dataset; Indian descriptions may differ from it (mitigation: Indian

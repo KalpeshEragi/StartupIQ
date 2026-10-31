@@ -59,7 +59,7 @@ def run_eda(df: pd.DataFrame, out_dir):
     # 4. funding by outcome (resolved)
     fig, ax = plt.subplots(figsize=(5, 4))
     data = [np.log10(res[res.status == s].funding_total_usd.dropna()) for s in RESOLVED]
-    ax.boxplot(data, labels=RESOLVED)
+    ax.boxplot(data, tick_labels=RESOLVED)
     ax.set_ylabel("log10(total funding USD)")
     ax.set_title("Funding by outcome")
     _save(fig, fig_dir, "04_funding_by_outcome.png")
@@ -84,7 +84,7 @@ def run_eda(df: pd.DataFrame, out_dir):
     age = age.where(age >= -1)
     res = res.assign(age_first_funding=age)
     fig, ax = plt.subplots(figsize=(5, 4))
-    ax.boxplot([age[res.status == s].dropna().clip(upper=15) for s in RESOLVED], labels=RESOLVED)
+    ax.boxplot([age[res.status == s].dropna().clip(upper=15) for s in RESOLVED], tick_labels=RESOLVED)
     ax.set_title("Age at first funding (years, capped 15)")
     _save(fig, fig_dir, "06_age_first_funding.png")
 

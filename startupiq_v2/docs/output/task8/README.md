@@ -12,7 +12,7 @@
 | All checks | `src/startupiq/pipelines/task8_competitors.py` |
 | Images | `src/startupiq/pipelines/output_figures_comp.py` |
 | Numbers | `docs/results/task8_competitors/results_task8_competitors.json` |
-| Readable examples (10 startups x 5 competitors, with "matched on" words) | `docs/results/task8_competitors/worked_examples.md` |
+| Readable examples (12 startups x 5 competitors, with "matched on" words) | `docs/results/task8_competitors/worked_examples.md` |
 | 150 pairs for hand rating | `docs/results/task8_competitors/explanations_to_rate.csv` |
 
 ## Example of what the founder sees

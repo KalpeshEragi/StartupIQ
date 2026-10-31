@@ -1,0 +1,4 @@
+{"judge": "Claude (an LLM, not a human), blind to which system produced each candidate; one-liner texts only; labels written before system identities were joined.",
+ "rule": "1 = a founder of the query startup would plausibly name the candidate as a competitor: same product category, selling to a similar customer or use case. 0 = shares words, a broad industry or an adjacent tool only. Vertical-specific products count only when the query is also that vertical; generic-category products count when the query is the vertical version of that category.",
+ "split": "val",
+ "relevant": {"4":[0,2,3,4,7,8,13,14],"51":[],"108":[18,20],"119":[25],"206":[9,12,15],"260":[5,9,12],"271":[3,9,11],"427":[1,4,8,10,12],"453":[8,11],"521":[0,2,4,5,7,13,18,20,22,23],"562":[10],"615":[7,9,14,18,19],"703":[0,1,8,9,13,15],"737":[8,15,18],"755":[8,10,11,13,16,17],"758":[2,3,6,9,10,19],"803":[4,11],"817":[2,5,7,12,13],"843":[0,1,2,3,5,6,8,9,11,13,15,16,18],"858":[5,11,14,15]}}

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ErrorBox, Field } from '../components/Form'
+import { StartupNav } from '../components/StartupNav'
 import {
   api, errorText, type BankAccount, type Category, type ImportResult, type ReviewSummary, type Source, type Startup,
   type Transaction,
@@ -141,9 +142,9 @@ export function Transactions() {
 
   return (
     <div>
+      <StartupNav id={id} name={startup.name} />
       <div className="page-head">
         <div>
-          <p className="crumbs"><Link to={`/startups/${id}`}>{startup.name}</Link> / Transactions</p>
           <h1>Transactions</h1>
         </div>
         {accounts.length > 0 && (

@@ -32,6 +32,53 @@ export interface ReviewSummary {
 }
 export interface TransactionFilter { needs_review?: boolean; category?: string; month?: string; q?: string; limit?: number; offset?: number }
 
+export interface PnlLine { key: string; label: string; amount: number }
+export interface PnlMonth {
+  month: string; revenue: number; other_income: number; cogs: number; gross_profit: number; gross_margin: number | null
+  opex: PnlLine[]; opex_total: number; expenses: number; ebitda: number; cash_in: number; cash_out: number
+  net_cash_flow: number; burn: number; financing_in: number; taxes_paid: number; loan_repaid: number
+  closing_cash: number | null; lines: number; needs_review: number; uncategorised: number
+}
+export interface Runway { cash: number | null; avg_burn: number | null; months: number | null; status: 'burning' | 'not_burning' | 'no_balance' | 'no_data' }
+export interface Pnl { currency: string; months: PnlMonth[]; runway: Runway }
+export type Units = Record<string, number | null>
+export interface Dashboard {
+  currency: string; has_data: boolean; month?: string
+  kpis?: { revenue: number; revenue_growth: number | null; gross_margin: number | null; ebitda: number; burn: number }
+  runway?: Runway; needs_review?: number; uncategorised?: number
+  series?: { month: string; revenue: number; expenses: number; ebitda: number; closing_cash: number | null }[]
+  top_expenses?: PnlLine[]; units?: Units; units_entered?: boolean
+}
+export interface UnitMetricRow extends Record<string, unknown> { month: string; computed?: Units }
+export type HolderKind = 'founder' | 'investor' | 'employee' | 'advisor' | 'esop_pool' | 'other'
+export interface Holder {
+  id: string; name: string; kind: HolderKind; email: string | null; shares: number; options: number; vested_options: number
+  fully_diluted: number; ownership: number; invested: number
+}
+export interface CapTable {
+  total_fully_diluted: number; holders: Holder[]
+  rounds: { id: string; name: string; closed_on: string; pre_money: number; amount_raised: number; post_money: number; price_per_share: number; founders_after: number }[]
+  safes: { id: string; holder: string; amount: number; valuation_cap: number | null; discount: number | null; signed_on: string; converted: boolean }[]
+  grants: { id: string; holder: string; shares: number; granted_on: string; vesting_months: number; cliff_months: number; vested: number }[]
+}
+export interface RoundInput { new_money: number; pre_money: number; pool_target: number; investor_name: string }
+export interface Simulation {
+  price_per_share: number; post_money: number; new_shares: number; pool_top_up: number
+  safe_conversions: { holder: string; amount: number; shares: number }[]
+  table: { name: string; kind: string; before: number; after: number; ownership_before: number; ownership_after: number }[]
+}
+export type DealStage = 'contacted' | 'meeting' | 'due_diligence' | 'term_sheet' | 'closed' | 'passed'
+export interface Deal {
+  id: string; investor_name: string; firm: string | null; stage: DealStage; amount: number | null
+  next_step: string | null; next_date: string | null; notes: string | null
+}
+export const DEAL_STAGES: Record<DealStage, string> = {
+  contacted: 'Contacted', meeting: 'Meeting', due_diligence: 'Due diligence', term_sheet: 'Term sheet', closed: 'Closed', passed: 'Passed',
+}
+export const HOLDER_KINDS: Record<HolderKind, string> = {
+  founder: 'Founder', investor: 'Investor', employee: 'Employee', advisor: 'Advisor', esop_pool: 'ESOP pool', other: 'Other',
+}
+
 export const STAGES: Record<Stage, string> = {
   idea: 'Idea', pre_seed: 'Pre-seed', seed: 'Seed', series_a: 'Series A', series_b_plus: 'Series B+',
 }
@@ -120,4 +167,28 @@ export const api = {
   reviewSummary: (id: string) => call<ReviewSummary>(`/startups/${id}/transactions/summary`),
   categorise: (id: string, txnId: string, category: string, remember: boolean) =>
     call<{ transaction: Transaction; also_updated: number }>(`/startups/${id}/transactions/${txnId}`, json('PATCH', { category, remember })),
+  pnl: (id: string) => call<Pnl>(`/startups/${id}/financials/pnl`),
+  dashboard: (id: string) => call<Dashboard>(`/startups/${id}/financials/dashboard`),
+  unitMetrics: (id: string) => call<UnitMetricRow[]>(`/startups/${id}/unit-metrics`),
+  saveUnitMetrics: (id: string, month: string, data: Record<string, number | null>) =>
+    call<unknown>(`/startups/${id}/unit-metrics/${month}`, json('PUT', data)),
+  setOpeningBalance: (id: string, accountId: string, opening_balance: number | null) =>
+    call<unknown>(`/startups/${id}/bank-accounts/${accountId}`, json('PATCH', { opening_balance })),
+  capTable: (id: string) => call<CapTable>(`/startups/${id}/cap-table`),
+  setupCapTable: (id: string, data: { incorporated_on: string; founders: { name: string; shares: number }[]; pool_shares: number }) =>
+    call<CapTable>(`/startups/${id}/cap-table/setup`, json('POST', data)),
+  addSafe: (id: string, data: { investor_name: string; amount: number; valuation_cap: number | null; discount: number | null; signed_on: string }) =>
+    call<unknown>(`/startups/${id}/safes`, json('POST', data)),
+  addGrant: (id: string, data: { employee_name: string; shares: number; granted_on: string; vesting_months: number; cliff_months: number }) =>
+    call<unknown>(`/startups/${id}/option-grants`, json('POST', data)),
+  addShares: (id: string, data: { name: string; kind: HolderKind; shares: number; price_per_share: number | null; issued_on: string }) =>
+    call<unknown>(`/startups/${id}/share-issues`, json('POST', data)),
+  remove: (id: string, kind: 'safes' | 'option-grants' | 'rounds' | 'shareholders' | 'deals', objId: string) =>
+    call<void>(`/startups/${id}/${kind}/${objId}`, { method: 'DELETE' }),
+  simulate: (id: string, data: RoundInput) => call<Simulation>(`/startups/${id}/cap-table/simulate`, json('POST', data)),
+  recordRound: (id: string, data: RoundInput & { name: string; closed_on: string }) =>
+    call<CapTable>(`/startups/${id}/rounds`, json('POST', data)),
+  deals: (id: string) => call<Deal[]>(`/startups/${id}/deals`),
+  addDeal: (id: string, data: Partial<Deal> & { investor_name: string }) => call<Deal>(`/startups/${id}/deals`, json('POST', data)),
+  updateDeal: (id: string, dealId: string, data: Partial<Deal>) => call<Deal>(`/startups/${id}/deals/${dealId}`, json('PATCH', data)),
 }

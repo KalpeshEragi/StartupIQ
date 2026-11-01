@@ -83,8 +83,18 @@ def test_import_reads_rows_and_applies_rules(setup, no_model):
     assert gst["category"] == "taxes" and gst["category_source"] == "rule"
     person = next(v for k, v in t.items() if "VARUN MEHTA" in k)
     assert person["category"] == "person_payment" and person["needs_review"]
+    assert person["suggestions"] == ["people", "professional_services"]
     aws = t["NEFT DR-HDFC0001234-AMAZON WEB SERVICES"]
     assert aws["category"] is None and aws["needs_review"] and "not installed" in aws["reason"]
+
+
+def test_title_lines_shorter_than_the_table(setup, no_model):
+    """Real exports put one-cell title lines above the table; they must not make the reader drop the real rows."""
+    client, h, sid, acc = setup
+    ragged = 'HDFC BANK Ltd.\n"Statement of account for: CHAI LABS"\n\n' + NOVEMBER
+    r = upload(client, h, sid, acc, ragged)
+    assert r.status_code == 201, r.text
+    assert r.json()["rows_added"] == 1 and "Skipped 2 line(s) above the table." in r.json()["notes"]
 
 
 def test_same_statement_twice_adds_nothing(setup, no_model):
@@ -114,7 +124,7 @@ def test_model_files_confident_expenses(setup, tiny_model):
     upload(client, h, sid, acc, OCTOBER)
     power = by_desc(client, h, sid)["ELECTRICITY BILL BESCOM"]
     assert power["category"] == "utilities" and power["category_source"] == "model" and not power["needs_review"]
-    assert power["confidence"] >= 0.5 and "Utilities" in power["reason"]
+    assert power["confidence"] >= 0.5 and "Utilities" in power["reason"] and power["suggestions"] == []
 
 
 def test_review_filter_and_bad_category(setup, no_model):

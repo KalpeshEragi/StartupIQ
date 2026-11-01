@@ -138,6 +138,12 @@ class TransactionOut(BaseModel):
     confidence: float | None
     needs_review: bool
     reason: str | None
+    suggestions: list[str] = []
+
+    @field_validator("suggestions", mode="before")
+    @classmethod
+    def _split(cls, v: object) -> list[str]:
+        return [s for s in v.split(",") if s] if isinstance(v, str) else (v or [])
 
 
 class TransactionPage(BaseModel):

@@ -80,6 +80,7 @@ class Transaction(IdMixin, TimestampMixin, Base):
     confidence: Mapped[float | None] = mapped_column(Float)
     needs_review: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     reason: Mapped[str | None] = mapped_column(String(300))
+    suggestions: Mapped[str | None] = mapped_column(String(160))  # comma-separated category keys, best first, when unsure
     model_version: Mapped[str | None] = mapped_column(String(40))
 
 

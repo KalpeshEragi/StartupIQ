@@ -36,15 +36,18 @@ def categorise(db: Session, startup_id: uuid.UUID, txns: list[Transaction]) -> N
         remembered = memory.get(t.vendor_key) if t.vendor_key else None
         if remembered is not None:
             t.category, t.category_source, t.confidence = remembered.category, CategorySource.memory, 1.0
-            t.needs_review, t.model_version = False, None
+            t.needs_review, t.model_version, t.suggestions = False, None, None
             t.reason = f"You filed “{t.vendor_key}” as {_label(remembered.category)} before"
             remembered.times_applied += 1
             continue
         category, reason = formats.classify(t.description, str(t.direction), clean(t.description))
         if category is not None:
             t.category, t.category_source, t.confidence, t.model_version = category, CategorySource.rule, 1.0, None
+            t.suggestions = None
             t.needs_review = category == "person_payment"  # who was paid, and for what, only the founder knows
             t.reason = reason[0].upper() + reason[1:]
+            if t.needs_review:
+                t.suggestions = "people,professional_services"  # salary or a contractor, in most startups
         elif str(t.direction) == "debit":
             for_model.append(t)
         else:
@@ -62,11 +65,12 @@ def categorise(db: Session, startup_id: uuid.UUID, txns: list[Transaction]) -> N
     for t, p in zip(for_model, predictions, strict=True):
         t.category, t.confidence, t.model_version = p.category, round(p.confidence, 4), model.version
         if p.confident:
-            t.category_source, t.needs_review = CategorySource.model, False
-            t.reason = f"Predicted {_label(p.category)} ({p.confidence:.0%} sure)"
-        else:
+            t.category_source, t.needs_review, t.suggestions = CategorySource.model, False, None
+            t.reason = f"Looks like {_label(p.category)} from the description"
+        else:  # scores are margins, not probabilities, so founders see ranked suggestions rather than percentages
             t.category_source, t.needs_review = CategorySource.none, True
-            t.reason = "Not sure: " + ", ".join(f"{_label(c)} {s:.0%}" for c, s in p.alternatives)
+            t.suggestions = ",".join(c for c, _ in p.alternatives)
+            t.reason = "Not sure. Best guesses: " + ", ".join(_label(c) for c, _ in p.alternatives)
 
 
 def correct(db: Session, txn: Transaction, new_category: str, user_id: uuid.UUID, remember: bool) -> int:
@@ -77,6 +81,7 @@ def correct(db: Session, txn: Transaction, new_category: str, user_id: uuid.UUID
                               new_category=new_category, text=txn.vendor_key or clean(txn.description)[:200],
                               direction=str(txn.direction), amount=txn.amount))
     txn.category, txn.category_source, txn.confidence, txn.needs_review = new_category, CategorySource.founder, 1.0, False
+    txn.suggestions = None
     txn.reason = "Set by you"
     if not (remember and txn.vendor_key):
         return 0
@@ -90,6 +95,6 @@ def correct(db: Session, txn: Transaction, new_category: str, user_id: uuid.UUID
         .where(Transaction.startup_id == txn.startup_id, Transaction.vendor_key == txn.vendor_key, Transaction.id != txn.id,
                Transaction.category_source != CategorySource.founder)
         .values(category=new_category, category_source=CategorySource.memory, confidence=1.0, needs_review=False,
-                model_version=None, reason=f"You filed “{txn.vendor_key}” as {_label(new_category)}")
+                suggestions=None, model_version=None, reason=f"You filed “{txn.vendor_key}” as {_label(new_category)}")
     )
     return result.rowcount or 0

@@ -89,14 +89,19 @@ def dashboard(access: Access = Depends(startup_access()), db: Session = Depends(
     }
 
 
+# Upper bounds keep inputs inside the database columns (Integer counts, Numeric(16, 2) money) on every database.
+MAX_COUNT = 2_000_000_000
+MAX_MONEY = 1e13
+
+
 class UnitMetricIn(BaseModel):
-    units_sold: int | None = Field(default=None, ge=0)
-    orders: int | None = Field(default=None, ge=0)
-    inventory_value: float | None = Field(default=None, ge=0)
-    customers: int | None = Field(default=None, ge=0)
-    new_customers: int | None = Field(default=None, ge=0)
-    churned_customers: int | None = Field(default=None, ge=0)
-    mrr: float | None = Field(default=None, ge=0)
+    units_sold: int | None = Field(default=None, ge=0, le=MAX_COUNT)
+    orders: int | None = Field(default=None, ge=0, le=MAX_COUNT)
+    inventory_value: float | None = Field(default=None, ge=0, le=MAX_MONEY)
+    customers: int | None = Field(default=None, ge=0, le=MAX_COUNT)
+    new_customers: int | None = Field(default=None, ge=0, le=MAX_COUNT)
+    churned_customers: int | None = Field(default=None, ge=0, le=MAX_COUNT)
+    mrr: float | None = Field(default=None, ge=0, le=MAX_MONEY)
 
 
 FIELDS = list(UnitMetricIn.model_fields)
@@ -136,7 +141,7 @@ def save_unit_metrics(body: UnitMetricIn, request: Request, month: str = MONTH, 
 
 
 class OpeningBalanceIn(BaseModel):
-    opening_balance: float | None
+    opening_balance: float | None = Field(ge=-MAX_MONEY, le=MAX_MONEY, allow_inf_nan=False)
 
 
 @router.patch("/bank-accounts/{account_id}")

@@ -9,9 +9,9 @@ from app.services.verification import inr
 from tests.test_transactions import NOVEMBER, OCTOBER, by_desc, no_model, setup, upload  # noqa: F401 (fixtures)
 
 NEWEST_FIRST = """Date,Narration,Withdrawal Amt.,Deposit Amt.,Closing Balance
-03/12/26,OFFICE RENT DEC,"50,000.00",,"1,70,000.00"
-02/12/26,RAZORPAY SETTLEMENT 9911,,"20,000.00","2,20,000.00"
-01/12/26,ZOHO SUBSCRIPTION,"1,000.00",,"2,00,000.00"
+03/09/26,OFFICE RENT SEP,"50,000.00",,"1,70,000.00"
+02/09/26,RAZORPAY SETTLEMENT 9911,,"20,000.00","2,20,000.00"
+01/09/26,ZOHO SUBSCRIPTION,"1,000.00",,"2,00,000.00"
 """
 NO_BALANCE = """Date,Narration,Withdrawal Amt.,Deposit Amt.
 01/10/26,ZOHO SUBSCRIPTION,"1,000.00",
@@ -58,7 +58,7 @@ def test_newest_first_export_and_missing_balance_column(setup, no_model):
     assert report(client, h, sid)["imports"][0]["opening_balance"] == 201000
     other = client.post(f"/api/v1/startups/{sid}/bank-accounts", json={"name": "Second"}, headers=h).json()["id"]
     imp = upload(client, h, sid, other, NO_BALANCE).json()
-    assert imp["balance_status"] == "unverified" and "no balance column" in imp["issues"][0]
+    assert imp["balance_status"] == "unverified" and "no readable balances" in imp["issues"][0]
 
 
 def test_missing_statement_between_uploads_and_same_file_again(setup, no_model):

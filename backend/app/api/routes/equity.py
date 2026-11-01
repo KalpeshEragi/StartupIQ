@@ -15,6 +15,10 @@ from app.finance import equity
 from app.models import Deal, DealStage, FundingRound, HolderKind, OptionGrant, Safe, Shareholder, ShareIssue
 from app.services import audit
 
+# Upper bounds keep inputs inside the database columns (Integer shares, Numeric(18, 2) money) on every database.
+MAX_SHARES = 2_000_000_000
+MAX_MONEY = 1e15
+
 router = APIRouter(prefix="/startups/{startup_id}", tags=["equity"])
 
 
@@ -62,14 +66,20 @@ def get_cap_table(access: Access = Depends(startup_access()), db: Session = Depe
 
 class FounderIn(BaseModel):
     name: str = Field(min_length=1, max_length=120)
-    shares: int = Field(gt=0)
+    shares: int = Field(gt=0, le=MAX_SHARES)
     email: EmailStr | None = None
 
 
 class SetupIn(BaseModel):
     incorporated_on: date
     founders: list[FounderIn] = Field(min_length=1, max_length=10)
-    pool_shares: int = Field(default=0, ge=0)
+    pool_shares: int = Field(default=0, ge=0, le=MAX_SHARES)
+
+    @model_validator(mode="after")
+    def _not_future(self) -> "SetupIn":
+        if self.incorporated_on > date.today():
+            raise ValueError("the incorporation date cannot be in the future")
+        return self
 
 
 @router.post("/cap-table/setup", status_code=status.HTTP_201_CREATED)
@@ -120,8 +130,8 @@ class IssueIn(BaseModel):
     shareholder_id: uuid.UUID | None = None
     name: str | None = None
     kind: HolderKind = HolderKind.other
-    shares: int = Field(gt=0)
-    price_per_share: float | None = Field(default=None, ge=0)
+    shares: int = Field(gt=0, le=MAX_SHARES)
+    price_per_share: float | None = Field(default=None, ge=0, le=MAX_MONEY)
     issued_on: date
 
 
@@ -141,8 +151,8 @@ def add_issue(body: IssueIn, request: Request, access: Access = Depends(startup_
 class SafeIn(BaseModel):
     shareholder_id: uuid.UUID | None = None
     investor_name: str | None = None
-    amount: float = Field(gt=0)
-    valuation_cap: float | None = Field(default=None, gt=0)
+    amount: float = Field(gt=0, le=MAX_MONEY)
+    valuation_cap: float | None = Field(default=None, gt=0, le=MAX_MONEY)
     discount: float | None = Field(default=None, ge=0, lt=1)
     signed_on: date
 
@@ -163,7 +173,7 @@ def add_safe(body: SafeIn, request: Request, access: Access = Depends(startup_ac
 class GrantIn(BaseModel):
     shareholder_id: uuid.UUID | None = None
     employee_name: str | None = None
-    shares: int = Field(gt=0)
+    shares: int = Field(gt=0, le=MAX_SHARES)
     granted_on: date
     vesting_months: int = Field(default=48, ge=1, le=120)
     cliff_months: int = Field(default=12, ge=0, le=60)
@@ -218,8 +228,8 @@ def delete_grant(obj_id: uuid.UUID, request: Request, access: Access = Depends(s
 
 
 class RoundIn(BaseModel):
-    new_money: float = Field(gt=0)
-    pre_money: float = Field(gt=0)
+    new_money: float = Field(gt=0, le=MAX_MONEY)
+    pre_money: float = Field(gt=0, le=MAX_MONEY)
     pool_target: float = Field(default=0, ge=0, le=0.5)  # unallocated pool as a share of the post-round total
     investor_name: str = Field(default="New investor", min_length=1, max_length=120)
 
@@ -294,7 +304,7 @@ class DealIn(BaseModel):
     investor_name: str = Field(min_length=1, max_length=120)
     firm: str | None = Field(default=None, max_length=120)
     stage: DealStage = DealStage.contacted
-    amount: float | None = Field(default=None, ge=0)
+    amount: float | None = Field(default=None, ge=0, le=MAX_MONEY)
     next_step: str | None = Field(default=None, max_length=200)
     next_date: date | None = None
     notes: str | None = Field(default=None, max_length=4000)
@@ -304,7 +314,7 @@ class DealUpdate(BaseModel):
     investor_name: str | None = Field(default=None, min_length=1, max_length=120)
     firm: str | None = Field(default=None, max_length=120)
     stage: DealStage | None = None
-    amount: float | None = Field(default=None, ge=0)
+    amount: float | None = Field(default=None, ge=0, le=MAX_MONEY)
     next_step: str | None = Field(default=None, max_length=200)
     next_date: date | None = None
     notes: str | None = Field(default=None, max_length=4000)

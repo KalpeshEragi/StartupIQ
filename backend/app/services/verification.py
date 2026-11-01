@@ -64,38 +64,46 @@ def _signed(row: ParsedRow) -> Decimal:
 
 def check_balances(rows: Sequence[ParsedRow]) -> BalanceCheck:
     """Every line: previous balance + money in - money out = this balance. Banks export oldest-first or newest-first;
-    the order that adds up best is used."""
-    pairs = [i for i in range(1, len(rows)) if rows[i].balance is not None and rows[i - 1].balance is not None]
-    if not any(r.balance is not None for r in rows):
-        return BalanceCheck("unverified", issues=["The file has no balance column, so its lines cannot be checked "
+    the order that adds up best is used. Lines without a balance are bridged: the next balance must account for them."""
+    with_balance = [i for i, r in enumerate(rows) if r.balance is not None]
+    if not with_balance:
+        return BalanceCheck("unverified", issues=["The file has no readable balances, so its lines cannot be checked "
                                                   "against each other."])
-    def oldest_first_ok(i: int) -> bool:
-        return rows[i - 1].balance + _signed(rows[i]) == rows[i].balance  # type: ignore[operator]
+    prefix = [Decimal(0)]  # prefix[k] = sum of signed amounts of rows[:k]
+    for r in rows:
+        prefix.append(prefix[-1] + _signed(r))
+    pairs = list(zip(with_balance, with_balance[1:], strict=False))  # (j, i): neighbouring lines that have a balance
 
-    def newest_first_ok(i: int) -> bool:
-        return rows[i].balance + _signed(rows[i - 1]) == rows[i - 1].balance  # type: ignore[operator]
+    def oldest_first_expected(j: int, i: int) -> Decimal:  # balance of row i, from row j and the lines after it
+        return rows[j].balance + prefix[i + 1] - prefix[j + 1]  # type: ignore[operator]
 
-    newest_first = sum(map(newest_first_ok, pairs)) > sum(map(oldest_first_ok, pairs))  # oldest-first when tied
-    ok = newest_first_ok if newest_first else oldest_first_ok
-    broken = [i for i in pairs if not ok(i)]
+    def newest_first_expected(j: int, i: int) -> Decimal:  # balance of row j, from row i and the lines above it
+        return rows[i].balance + prefix[i] - prefix[j]  # type: ignore[operator]
+
+    oldest_ok = sum(oldest_first_expected(j, i) == rows[i].balance for j, i in pairs)
+    newest_first = sum(newest_first_expected(j, i) == rows[j].balance for j, i in pairs) > oldest_ok  # oldest-first if tied
+    checks = [(rows[j], newest_first_expected(j, i)) if newest_first else (rows[i], oldest_first_expected(j, i))
+              for j, i in pairs]
+    broken = [(row, expected) for row, expected in checks if row.balance != expected]
 
     issues: list[str] = []
-    for i in broken[:MAX_ISSUES]:
-        later, earlier = (rows[i - 1], rows[i]) if newest_first else (rows[i], rows[i - 1])
-        expected = earlier.balance + _signed(later)  # type: ignore[operator]
+    for later, expected in broken[:MAX_ISSUES]:
         issues.append(f"Line {later.line} ({later.txn_date:%d %b %Y}, {later.description[:60]}): the balance should be "
                       f"{inr(expected)} but the file says {inr(later.balance)}. A line may have been edited or is missing.")
     if len(broken) > MAX_ISSUES:
         issues.append(f"…and {len(broken) - MAX_ISSUES} more lines that do not add up.")
-    missing = sum(r.balance is None for r in rows)
+    missing = len(rows) - len(with_balance)
     if missing:
-        issues.append(f"{missing} line(s) have no balance and could not be checked.")
+        issues.append(f"{missing} line(s) have no balance; they are checked through the next line that has one.")
 
-    chrono = list(reversed(rows)) if newest_first else list(rows)
-    first = next((r for r in chrono if r.balance is not None), None)
-    last = next((r for r in reversed(chrono) if r.balance is not None), None)
-    opening = first.balance - _signed(first) if first is not None and first is chrono[0] else None  # type: ignore[operator]
-    closing = last.balance if last is not None and last is chrono[-1] else None
+    # Opening and closing balances, counting any lines without a balance before the first or after the last one.
+    first, last = (with_balance[-1], with_balance[0]) if newest_first else (with_balance[0], with_balance[-1])
+    if newest_first:
+        opening = rows[first].balance - (prefix[len(rows)] - prefix[first])  # type: ignore[operator]
+        closing = rows[last].balance + prefix[last]  # type: ignore[operator]
+    else:
+        opening = rows[first].balance - prefix[first + 1]  # type: ignore[operator]
+        closing = rows[last].balance + prefix[len(rows)] - prefix[last + 1]  # type: ignore[operator]
     if not pairs:  # a single line still gives opening and closing balances for the gap check between statements
         return BalanceCheck("unverified", 0, 0, opening, closing, ["Too few lines with a balance to check."])
     return BalanceCheck("warnings" if broken else "verified", len(pairs), len(broken), opening, closing, issues)

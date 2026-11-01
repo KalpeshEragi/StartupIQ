@@ -1,8 +1,9 @@
 """Bank accounts, statement upload, transactions and the review inbox. Every route is scoped to one startup."""
+import re
 import uuid
 from collections import Counter
-
 from datetime import date
+
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile, status
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
@@ -70,7 +71,7 @@ def _account(db: Session, access: Access, account_id: uuid.UUID) -> BankAccount:
 async def import_statement(account_id: uuid.UUID, request: Request, file: UploadFile = File(...),
                            access: Access = Depends(startup_access()), db: Session = Depends(get_db)) -> ImportOut:
     account = _account(db, access, account_id)
-    name = (file.filename or "statement.csv")[:255]
+    name = re.split(r"[\\/]", file.filename or "")[-1][:255] or "statement.csv"  # the name only, never a path
     if not name.lower().endswith(ALLOWED):
         raise HTTPException(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, "Upload a CSV or Excel statement.")
     data = await file.read(MAX_UPLOAD + 1)
@@ -85,8 +86,11 @@ async def import_statement(account_id: uuid.UUID, request: Request, file: Upload
     same_file = db.scalar(select(StatementImport.filename).where(StatementImport.bank_account_id == account.id,
                                                                  StatementImport.file_sha256 == sha).limit(1))
     check = verification.check_balances(parsed.rows)
-    existing = set(db.scalars(select(Transaction.fingerprint).where(
-        Transaction.bank_account_id == account.id, Transaction.fingerprint.in_([r.fingerprint for r in parsed.rows]))))
+    prints = [r.fingerprint for r in parsed.rows]
+    existing: set[str] = set()
+    for i in range(0, len(prints), 1000):  # databases cap the values in one query (SQLite: 32,766)
+        existing.update(db.scalars(select(Transaction.fingerprint).where(Transaction.bank_account_id == account.id,
+                                                                         Transaction.fingerprint.in_(prints[i:i + 1000]))))
     new_rows = [r for r in parsed.rows if r.fingerprint not in existing]
     imp = StatementImport(startup_id=access.startup.id, bank_account_id=account.id, filename=name, uploaded_by=access.user.id,
                           rows_read=len(parsed.rows) + parsed.skipped, rows_added=len(new_rows),
@@ -142,7 +146,7 @@ def _recheck_older_imports(db: Session, account: BankAccount, rows: list, imp: S
 @router.get("/transactions", response_model=TransactionPage)
 def list_transactions(access: Access = Depends(startup_access()), db: Session = Depends(get_db),
                       needs_review: bool | None = None, category: str | None = None, q: str | None = Query(None, max_length=100),
-                      month: str | None = Query(None, pattern=r"^\d{4}-\d{2}$"),
+                      month: str | None = Query(None, pattern=r"^\d{4}-(0[1-9]|1[0-2])$"),
                       limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0)) -> TransactionPage:
     where = [Transaction.startup_id == access.startup.id]
     if needs_review is not None:

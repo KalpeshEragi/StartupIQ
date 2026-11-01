@@ -60,8 +60,6 @@ Most numbers come from the bank statement. The founder only types what a stateme
 - Review inbox with one-click suggestions; vendor memory ("file this vendor the same way from now on")
 - 18-statement synthetic demo pack across 5 bank layouts (kept outside the repo)
 
-### In progress
-
 **Phase 3: Financials and dashboard**
 - Monthly P&L from categorised transactions: revenue, other income, cost of goods, gross profit and margin, operating
   expenses by category, EBITDA
@@ -81,6 +79,7 @@ Most numbers come from the bank statement. The founder only types what a stateme
 - Dilution simulator: "raise X at a pre-money of Y with a Z% pool top-up: what does everyone own after?"
 - Quick setup for a new company (founders and pool at incorporation)
 - Investor list and fundraising pipeline (contacted, meeting, due diligence, term sheet, closed, passed)
+- Record a simulated round in one click (investor shares, SAFE conversions, pool top-up), and undo it
 
 ### Planned
 

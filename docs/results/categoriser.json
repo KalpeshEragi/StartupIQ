@@ -1,0 +1,248 @@
+{
+ "chosen": "Linear SVM",
+ "validation": [
+  {
+   "accuracy": 0.4957939397498385,
+   "macro_f1": 0.5650571334139138,
+   "accuracy_new_wording": 0.49956857171860725,
+   "macro_f1_new_wording": 0.532063490254981,
+   "model": "Keyword rules (baseline)",
+   "auto_filed": 0.6677432614950966,
+   "precision_when_filed": 0.7424918652713042
+  },
+  {
+   "accuracy": 0.895281578483763,
+   "macro_f1": 0.8513255106468834,
+   "accuracy_new_wording": 0.8345345650187799,
+   "macro_f1_new_wording": 0.7873233431331392,
+   "auto_filed": 0.7851899700510894,
+   "precision_when_filed": 0.9500037394360931,
+   "model": "Naive Bayes (complement)",
+   "threshold": 0.8658004846650718,
+   "fit_seconds": 2
+  },
+  {
+   "accuracy": 0.9293191027071467,
+   "macro_f1": 0.8899268480119792,
+   "accuracy_new_wording": 0.8672216018678307,
+   "macro_f1_new_wording": 0.8354110037703304,
+   "auto_filed": 0.95867343942686,
+   "precision_when_filed": 0.9500007656850584,
+   "model": "Logistic regression",
+   "threshold": 0.5115223947757697,
+   "fit_seconds": 885
+  },
+  {
+   "accuracy": 0.9319102707146633,
+   "macro_f1": 0.8943620627547535,
+   "accuracy_new_wording": 0.8785656278550401,
+   "macro_f1_new_wording": 0.8519774367218965,
+   "auto_filed": 0.9654780081038229,
+   "precision_when_filed": 0.9499806126405583,
+   "model": "Linear SVM",
+   "threshold": 0.17502930365786132,
+   "fit_seconds": 416
+  },
+  {
+   "accuracy": 0.9201509190204944,
+   "macro_f1": 0.8778583779429601,
+   "accuracy_new_wording": 0.845117246980002,
+   "macro_f1_new_wording": 0.809695946717879,
+   "auto_filed": 0.9447413236244054,
+   "precision_when_filed": 0.9500015539532571,
+   "model": "LightGBM",
+   "threshold": 0.47191229930600564,
+   "fit_seconds": 589
+  },
+  {
+   "accuracy": 0.9082007164249222,
+   "macro_f1": 0.8617334792141209,
+   "accuracy_new_wording": 0.8457517003349914,
+   "macro_f1_new_wording": 0.8106252624466155,
+   "auto_filed": 0.9282400610722884,
+   "precision_when_filed": 0.9496425634212691,
+   "model": "Neural network (MLP)",
+   "threshold": 0.5137772406395714,
+   "fit_seconds": 103
+  }
+ ],
+ "test": [
+  {
+   "accuracy": 0.44194097428779167,
+   "macro_f1": 0.5063090121104566,
+   "accuracy_new_wording": 0.45711441573216316,
+   "macro_f1_new_wording": 0.47000362476099977,
+   "model": "Keyword rules (baseline)",
+   "auto_filed": 0.6163246083680349,
+   "precision_when_filed": 0.717058784100811
+  },
+  {
+   "accuracy": 0.8660023795359905,
+   "macro_f1": 0.8172658530472633,
+   "accuracy_new_wording": 0.8119819600195027,
+   "macro_f1_new_wording": 0.7585091194490342,
+   "auto_filed": 0.7040121620728402,
+   "precision_when_filed": 0.9521523800582105,
+   "model": "Naive Bayes (complement)"
+  },
+  {
+   "accuracy": 0.9082143565338092,
+   "macro_f1": 0.858920248693603,
+   "accuracy_new_wording": 0.8437957094100439,
+   "macro_f1_new_wording": 0.8028332196537926,
+   "auto_filed": 0.946923127767863,
+   "precision_when_filed": 0.9349085578668156,
+   "model": "Logistic regression"
+  },
+  {
+   "accuracy": 0.9117258245753189,
+   "macro_f1": 0.8659118388485786,
+   "accuracy_new_wording": 0.8558223630749228,
+   "macro_f1_new_wording": 0.8206486723378045,
+   "auto_filed": 0.9533759666864962,
+   "precision_when_filed": 0.9346471500749638,
+   "model": "Linear SVM"
+  },
+  {
+   "accuracy": 0.8948955648093067,
+   "macro_f1": 0.8396252537756939,
+   "accuracy_new_wording": 0.8208191126279863,
+   "macro_f1_new_wording": 0.7784824064117865,
+   "auto_filed": 0.9256147134642078,
+   "precision_when_filed": 0.9339456747806372,
+   "model": "LightGBM"
+  },
+  {
+   "accuracy": 0.8848982087381849,
+   "macro_f1": 0.8272202079416603,
+   "accuracy_new_wording": 0.8159434422233057,
+   "macro_f1_new_wording": 0.7668404522857433,
+   "auto_filed": 0.9123868067948973,
+   "precision_when_filed": 0.9347719781214909,
+   "model": "Neural network (MLP)"
+  }
+ ],
+ "per_class": [
+  {
+   "category": "Equipment & furniture",
+   "test F1": 0.9228880603801036,
+   "test rows": 10545
+  },
+  {
+   "category": "Cleaning, repairs & security",
+   "test F1": 0.7981405831807297,
+   "test rows": 7359
+  },
+  {
+   "category": "Insurance",
+   "test F1": 0.9057632398753894,
+   "test rows": 1277
+  },
+  {
+   "category": "Marketing & events",
+   "test F1": 0.7109292811221508,
+   "test rows": 3675
+  },
+  {
+   "category": "Meals & hospitality",
+   "test F1": 0.580199539524175,
+   "test rows": 1578
+  },
+  {
+   "category": "Office supplies & postage",
+   "test F1": 0.9157173702628248,
+   "test rows": 27650
+  },
+  {
+   "category": "People costs",
+   "test F1": 0.9104106180008296,
+   "test rows": 4869
+  },
+  {
+   "category": "Professional services",
+   "test F1": 0.8725503090885177,
+   "test rows": 3454
+  },
+  {
+   "category": "Rent & premises",
+   "test F1": 0.9167086602836368,
+   "test rows": 7045
+  },
+  {
+   "category": "Software & IT services",
+   "test F1": 0.9055728429985855,
+   "test rows": 8761
+  },
+  {
+   "category": "Subscriptions & publications",
+   "test F1": 0.7898089171974523,
+   "test rows": 2447
+  },
+  {
+   "category": "Phone & internet",
+   "test F1": 0.975892482150357,
+   "test rows": 18109
+  },
+  {
+   "category": "Travel & accommodation",
+   "test F1": 0.9524795905933959,
+   "test rows": 7926
+  },
+  {
+   "category": "Utilities",
+   "test F1": 0.9657042492219517,
+   "test rows": 16337
+  }
+ ],
+ "most_confused": [
+  {
+   "true": "office_supplies",
+   "predicted": "marketing",
+   "rows": 1256.0
+  },
+  {
+   "true": "office_supplies",
+   "predicted": "equipment",
+   "rows": 618.0
+  },
+  {
+   "true": "facilities",
+   "predicted": "office_supplies",
+   "rows": 522.0
+  },
+  {
+   "true": "meals",
+   "predicted": "travel",
+   "rows": 408.0
+  },
+  {
+   "true": "office_supplies",
+   "predicted": "facilities",
+   "rows": 331.0
+  },
+  {
+   "true": "equipment",
+   "predicted": "office_supplies",
+   "rows": 296.0
+  },
+  {
+   "true": "facilities",
+   "predicted": "professional_services",
+   "rows": 296.0
+  },
+  {
+   "true": "facilities",
+   "predicted": "equipment",
+   "rows": 294.0
+  }
+ ],
+ "data": {
+  "train_used": 326256,
+  "train_available": 782429,
+  "val": 136232,
+  "test": 121032,
+  "val_new_wording": 0.28924188149627106,
+  "test_new_wording": 0.4067023597065239
+ },
+ "seconds": 957
+}

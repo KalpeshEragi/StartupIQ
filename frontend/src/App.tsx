@@ -2,6 +2,9 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
 import { AppShell, GuestOnly, RequireAuth } from './components/Layout'
 import { Login, Register } from './pages/Auth'
+import { CapTable } from './pages/CapTable'
+import { Financials } from './pages/Financials'
+import { Investors } from './pages/Investors'
 import { NewStartup } from './pages/NewStartup'
 import { StartupOverview } from './pages/StartupOverview'
 import { Startups } from './pages/Startups'
@@ -21,6 +24,9 @@ export default function App() {
             <Route path="/startups/new" element={<NewStartup />} />
             <Route path="/startups/:id" element={<StartupOverview />} />
             <Route path="/startups/:id/transactions" element={<Transactions />} />
+            <Route path="/startups/:id/financials" element={<Financials />} />
+            <Route path="/startups/:id/cap-table" element={<CapTable />} />
+            <Route path="/startups/:id/investors" element={<Investors />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

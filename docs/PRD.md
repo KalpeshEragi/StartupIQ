@@ -6,7 +6,7 @@ Version 1.0 · 1 November 2026 · Status: draft for build
 
 Startup IQ is the founder's monthly operating system. A founder connects their bank transaction history; the platform
 categorises every transaction into a P&L automatically, keeps month-by-month financials (revenue, gross profit, EBITDA,
-burn, runway), the cap table and investors in one place, forecasts revenue and cash with a range, flags anomalies, and
+burn, runway), the cap table and investors in one place, forecasts where its market is heading with a range, flags anomalies, and
 gives investors a read-only view of what the founder chooses to share.
 
 Machine learning is used only where it removes manual work or catches problems earlier:
@@ -14,8 +14,8 @@ Machine learning is used only where it removes manual work or catches problems e
 | Intelligence | Job | Kind |
 | --- | --- | --- |
 | Transaction categorisation | Turn raw bank lines into P&L categories | Supervised ML (text + amount), learns from founder corrections |
-| Revenue and cash forecasting | Next 6-12 months with P10/P50/P90 | Deep learning (MLP, LSTM, 1D CNN) vs statistical baselines |
-| Anomaly detection | Flag unusual spend, duplicates, revenue drops | Unsupervised ML + forecast-range checks |
+| Market behaviour forecasting | Sector market interest, next 4-12 weeks, P10/P50/P90 | Deep learning (MLP, LSTM, 1D CNN) vs statistical baselines |
+| Anomaly detection | Flag unusual spend, duplicates, revenue drops | Unsupervised ML + usual-range checks |
 | Rules engine | Health checks, alerts, recommendations | Deterministic rules |
 
 Everything that must be exact (P&L arithmetic, cap table, dilution, vesting, SAFE conversion) is deterministic by design.
@@ -71,8 +71,8 @@ Non-goals: tax filing, payroll, accounting-standard statements (Ind AS), legal d
 - **Team and access** (later phase) - invite by email with role; revoke; every change written to the audit log.
 
 ### B. Dashboard
-- KPI tiles: revenue (month), MoM growth, gross margin, EBITDA, net burn, cash, runway (with forecast range).
-- 24-month revenue and burn chart continued by the forecast band.
+- KPI tiles: revenue (month), MoM growth, gross margin, EBITDA, net burn, cash, runway.
+- 12-month revenue, expenses and cash chart.
 - Goal progress, top recommendations, open anomalies, uncategorised transactions waiting for review.
 
 ### C. Transactions (ML: categorisation)
@@ -113,10 +113,11 @@ Non-goals: tax filing, payroll, accounting-standard statements (Ind AS), legal d
 - Goals with owner, target, deadline; progress computed from actuals.
 - Quarterly plan: milestones, budget by category, planned hires (feeds the cash forecast).
 
-### I. Forecast and scenarios (DL)
-- Revenue (and MRR or units) forecast for 6-12 months with P10/P50/P90.
-- Cash forecast = revenue forecast + planned costs from H; probability runway falls under 6 months.
-- Scenarios: hire, cut spend, raise on a date -> new runway and EBITDA path.
+### I. Market outlook and scenarios
+- Market interest forecast for the startup's sector, next 4-12 weeks, P10/P50/P90 (deep learning).
+- "You vs your market": how the startup's revenue moves with its market and whether it is beating it (statistics).
+- Simple revenue estimate = own trend adjusted by the market forecast, labelled as an estimate.
+- Scenarios: hire, cut spend, raise on a date -> new runway and EBITDA path (exact calculation).
 - **Track record** - past forecasts against actuals, shown on the page.
 
 ### J. Insights (anomalies + rules)
@@ -149,18 +150,23 @@ drafting of updates grounded in stored numbers.
 - **Data**: public labelled transaction dataset (to be selected; licence checked before use) for training and
   evaluation; generated Indian transactions for the demo startups.
 
-### 6.2 Revenue and cash forecasting (DL)
-- **Models**: MLP, LSTM (+attention), 1D CNN (TCN) with quantile outputs; baselines: naive, seasonal naive, ETS.
-- **Inputs**: past revenue window, calendar (month, festival season), last year same period when available, startup
-  type.
-- **Evaluation**: rolling origins, choose on validation, test once; MASE, P10-P90 coverage.
-- **Serving**: per startup, all candidates backtested on its own last periods; the closest is used and the contest is
-  shown.
-- **Data**: real public sales series (Rossmann, UCI Online Retail, cleaned in this repo) and a public monthly series
-  set for digital-style revenue.
+### 6.2 Market behaviour forecasting (DL)
+- **Why the market, not one startup's sales**: startup financials are private, so no open training data exists;
+  market signals are public and recent, and training and testing use the same kind of data. Full reasoning:
+  docs/WHY_DEEP_LEARNING.md.
+- **Data**: daily Wikipedia page views (Wikimedia Analytics, CC0) of about 170 topic and brand articles in
+  English and Hindi across 19 sectors, 2023-2026 only (post-COVID, UPI and AI-era). Views summed over redirects,
+  scaled per article, median per sector. Google Trends ruled out (closed API, scraping not allowed); NPCI, GST and
+  RBI data are monthly and can be added later as extra inputs.
+- **Models**: MLP, LSTM (+attention), 1D CNN (TCN) as one global model across series, quantile outputs;
+  baselines: naive, seasonal naive, ETS.
+- **Inputs**: past index window, calendar (week, month, festival season), sector, language.
+- **Evaluation**: time-based split, rolling origins, choose on validation, test once on the latest hidden period;
+  MASE, P10-P90 coverage. Known limit: about three yearly cycles, so festive-month ranges are wider.
+- **Serving**: best model per sector; the comparison with baselines is shown.
 
 ### 6.3 Anomaly detection (ML)
-- Category level: actual outside the forecast P10-P90 band.
+- Category level: spend outside its usual range from the startup's own history.
 - Transaction level: Isolation Forest on amount, counterparty, timing, frequency; exact and near-duplicate checks.
 - Evaluation: precision and recall on anomalies injected into held-out data.
 

@@ -2,7 +2,7 @@
 
 **The founder's monthly operating system.** A founder uploads their bank statement; Startup IQ sorts every
 transaction into a P&L automatically, keeps the monthly numbers (revenue, gross profit, EBITDA, burn, runway), the cap
-table and investors in one place, forecasts revenue and cash, and warns early when something looks wrong. It learns the
+table and investors in one place, forecasts where its market is heading, and warns early when something looks wrong. It learns the
 business from the founder's corrections every month.
 
 India-first: Indian bank statement formats (HDFC, SBI, ICICI, Axis, Kotak), NEFT / IMPS / RTGS / UPI narrations, GST
@@ -23,7 +23,7 @@ bank statement (CSV / Excel)
                              4. otherwise the review inbox, with suggestions
    -> founder reviews and corrects; corrections are remembered and become training data
    -> monthly P&L, cash, runway, unit economics, dashboard
-   -> forecasts (deep learning), alerts and recommendations
+   -> market forecasts (deep learning), alerts and recommendations
 ```
 
 Most numbers come from the bank statement. The founder only types what a statement cannot know:
@@ -83,15 +83,18 @@ Most numbers come from the bank statement. The founder only types what a stateme
 
 ### Planned
 
-**Phase 5: Forecasting (deep learning)**
-- Revenue (and MRR or units) forecast for 6-12 months with P10 / P50 / P90 ranges
-- Models compared: MLP, LSTM (with attention), 1D CNN (TCN), against statistical baselines (naive, seasonal naive, ETS)
-- Per startup, every model is backtested on the startup's own recent months; the closest is used and the comparison
-  is shown
-- Cash forecast = revenue forecast + planned costs; probability that runway falls under six months
-- What-if scenarios: hire people, cut spend, raise money on a date -> new runway and EBITDA path
-- Track record: past forecasts against what actually happened
-- Training on GPU (PyTorch)
+**Phase 5: Market behaviour forecasting (deep learning)**
+- Forecast where interest in the startup's sector is heading over the next 4-12 weeks, with P10 / P50 / P90
+  ranges ("interest in your market is expected to rise about 12% by October")
+- Market interest index per sector from daily Wikipedia page views (CC0) of about 170 topic and brand articles in
+  English and Hindi, 19 sectors, 2023-2026 only (post-COVID, UPI and AI-era). Code in ml/market/
+- Corrected for the chatbot effect: share of all Wikipedia views, then relative to the median of all sectors
+- Trained on GPU: LSTM with attention test MASE 1.367 vs 1.477 for the best baseline (exponential smoothing),
+  P10-P90 coverage 91% vs 69%; wins 10 of 19 sectors. Details: ml/market/RESULTS.md. Next: Market tab in the app
+- Models compared: MLP, LSTM (with attention), 1D CNN (TCN), against statistical baselines (naive, seasonal naive, ETS);
+  every model backtested on the same hidden recent period, the best one used per sector
+- "You vs your market": how the startup's revenue moves with its market and whether it is beating it (simple statistics)
+- Training on GPU (PyTorch). Why deep learning and not rules or statistics: see docs/WHY_DEEP_LEARNING.md
 
 **Phase 6: Insights**
 - Anomaly alerts: spend outside its expected range, duplicate payments, sudden revenue drops (Isolation Forest plus
@@ -132,7 +135,7 @@ churn prediction per customer, invoice payment-date prediction, investor matchin
 | Part | What it does | Data | Status |
 | --- | --- | --- | --- |
 | ML: expense categorisation | Bank line -> kind of expense; 6 approaches compared | ~1M real IPSA expense claims; time-based split | Done |
-| DL: forecasting | Revenue and cash with a range; MLP vs LSTM vs 1D CNN vs statistics | Real public sales series (Rossmann, UCI Online Retail) | Phase 5 |
+| DL: market behaviour forecasting | Sector market interest with a range; MLP vs LSTM vs 1D CNN vs statistics | Wikipedia page views (CC0), 2023-2026 only | Phase 5 |
 | Unsupervised ML: anomalies | Unusual spend, duplicates | Same data plus injected anomalies to measure precision | Phase 6 |
 | Rules | Indian bank formats, health checks, recommendations | Written from finance practice, each rule tested | Done, growing |
 

@@ -93,6 +93,9 @@ Most numbers come from the bank statement. The founder only types what a stateme
 - Trust page: overall status, share of lines from statements that add up, auto-filed vs set by the founder, month by
   month; printable as an investor report. P&L cells link to the transactions behind them
 - Statements uploaded before these checks show "Not checked" until the same file is uploaded again
+- Odd inputs handled (fuzzed on SQLite and PostgreSQL): UTF-16 / Windows-1252 files, dates before 2000 or in the
+  future, lines with both a withdrawal and a deposit, impossible amounts, files over 50,000 lines (refused, not cut),
+  lines without a balance (checked through the next one), numbers beyond the database columns (rejected with 422)
 - Limits: cannot prove a file came from the bank (only bank-signed data can); details in docs/PRD.md section 9
 
 ### Planned

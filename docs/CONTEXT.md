@@ -114,7 +114,9 @@ React 19, TypeScript, Vite; Docker Compose, GitHub Actions CI; ruff and oxlint; 
 1. **Read any layout:** CSV or Excel; title rows above the table are skipped; the header row is detected; columns are
    recognised by role (date, narration, withdrawal/deposit or amount + Dr/Cr, balance), whatever the bank calls them.
 2. **Normalise values:** Indian number formats (1,23,456.00), Dr/Cr signs, many date formats; rows with an unreadable
-   date or amount are counted as skipped, never guessed.
+   date or amount are counted as skipped, never guessed. UTF-8, UTF-16 and Windows-1252 files are read.
+   Lines dated before 2000 or more than a week ahead, lines with both a withdrawal and a deposit, and impossibly large
+   amounts are left out with a note saying why. Files over 50,000 lines are refused, never cut short.
 3. **De-duplicate:** each line gets a fingerprint (date, amount, direction, narration, account), so uploading
    overlapping months never double-counts.
 4. **Clean the narration for matching** (`backend/app/categorisation/text.py`): remove redaction marks, bracketed

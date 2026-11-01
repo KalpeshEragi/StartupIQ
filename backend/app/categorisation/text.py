@@ -12,11 +12,15 @@ _BANK_PREFIX = re.compile(r"^(?:upi|neft|imps|rtgs|pos debit|pos|ach|nach|ecs|ch
                           r"[\s/:-]*(?:dr|cr|p2m|p2a)?\b[\s/:-]*",
                           re.IGNORECASE)
 _IFSC = re.compile(r"\b[A-Z]{4}0[A-Z0-9]{6}\b")
-_VPA = re.compile(r"[\w.\-]+@[\w.\-]+")                            # UPI handles and e-mail addresses
+_VPA = re.compile(r"[\w.]+@[a-z]+\b", re.IGNORECASE)     # UPI handles and e-mail addresses
 _LONG_NUMBER = re.compile(r"\b[A-Z]*\d[\dA-Z]{5,}\b")      # reference numbers, account numbers, card stubs
 _NUMBER = re.compile(r"\d+")
 _SEPARATORS = re.compile(r"[/_*|\\\-:;,.#()\[\]+&]+")
 _SPACES = re.compile(r"\s+")
+# Words banks wrap around the payee ("TO TRANSFER-NEFT*...", "DEBIT-ACH", "ATMCard POS", "ECOM PUR"). They say how
+# the money moved, not what it was for, so they are dropped wherever they appear.
+_BANK_TOKENS = frozenset("""upi neft imps rtgs ach nach ecs pos atmcard debit credit transfer trf to by dr cr p2m p2a mmt
+inw ecom pur bil onl pcd netbank yesb ybl paytm okaxis okicici oksbi ibl""".split())
 
 
 def clean(text: str | None) -> str:
@@ -31,4 +35,4 @@ def clean(text: str | None) -> str:
     t = _LONG_NUMBER.sub(" ", t.upper())
     t = _NUMBER.sub("0", t)
     t = _SEPARATORS.sub(" ", t)
-    return _SPACES.sub(" ", t).strip().lower()
+    return " ".join(w for w in t.lower().split() if w not in _BANK_TOKENS)

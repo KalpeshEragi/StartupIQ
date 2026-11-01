@@ -141,7 +141,7 @@ def parse_statement(data: bytes, filename: str) -> ParsedStatement:
 
 def vendor_key(description: str) -> str:
     """What the founder's memory matches on: the cleaned description without leftover number tokens."""
-    return " ".join(t for t in clean(description).split() if t != "0")[:200]
+    return " ".join(t for t in clean(description).split() if len(t) > 1)[:200]  # drop "0" and stray letters ("ACH D-")
 
 
 def _rows(body: pd.DataFrame, cols: dict[str, int], names: dict[str, str], header_row: int) -> ParsedStatement:

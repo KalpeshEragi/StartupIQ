@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ErrorBox, Field } from '../components/Form'
-import { StartupNav } from '../components/StartupNav'
+import { Icon } from '../components/Icons'
 import { api, errorText, type BankAccount, type Pnl, type PnlMonth, type Startup, type UnitMetricRow } from '../lib/api'
 import { compact, count, money, monthLabel, pct, today } from '../lib/format'
 import { runwayText } from './StartupOverview'
@@ -110,7 +110,7 @@ export function Financials() {
   }, [months])
 
   if (error) return <div className="narrow"><ErrorBox error={error} /><Link to="/">Back</Link></div>
-  if (!startup || !pnl) return <p className="muted">Loading…</p>
+  if (!startup || !pnl) return <p className="muted" role="status" aria-busy="true">Loading…</p>
   const c = pnl.currency
   const m = (n: number | null) => money(n, c)
   const run = runwayText(pnl.runway)
@@ -139,14 +139,14 @@ export function Financials() {
 
   return (
     <div>
-      <StartupNav id={id} name={startup.name} />
       <div className="page-head">
         <div><h1>Financials</h1><p className="muted">Built from your categorised transactions. Correct a transaction and the numbers update.</p></div>
-        <div className="card stat runway-tile"><span className="muted">Cash runway</span><strong>{run.value}</strong><span className="muted small">{run.note}</span></div>
+        <div className="card stat runway-tile"><span className="stat-label">Cash runway</span><strong>{run.value}</strong><span className="muted small">{run.note}</span></div>
       </div>
       {pnl.runway.status === 'no_balance' && accounts.length > 0 && <OpeningBalance startupId={id} accounts={accounts} onSaved={load} />}
       {pnl.months.length === 0 ? (
-        <div className="card empty"><p className="muted">No transactions yet. Upload a statement in Transactions.</p>
+        <div className="card empty"><span className="empty-icon"><Icon name="financials" size={22} /></span><h2>No months to show yet</h2>
+          <p className="muted">Upload a bank statement and every month it covers appears here as a P&amp;L and cash-flow column.</p>
           <Link className="btn primary" to={`/startups/${id}/transactions`}>Go to Transactions</Link></div>
       ) : (
         <section className="card table-card">

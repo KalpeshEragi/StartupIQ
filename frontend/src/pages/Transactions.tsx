@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ErrorBox, Field } from '../components/Form'
-import { StartupNav } from '../components/StartupNav'
+import { Icon } from '../components/Icons'
 import {
   api, errorText, type BankAccount, type Category, type ImportResult, type ReviewSummary, type Source, type Startup,
   type Transaction,
@@ -138,11 +138,10 @@ export function Transactions() {
   }
 
   if (error && !startup) return <div className="narrow"><ErrorBox error={error} /><Link to="/">Back</Link></div>
-  if (!startup || accounts === null) return <p className="muted">Loading…</p>
+  if (!startup || accounts === null) return <p className="muted" role="status" aria-busy="true">Loading…</p>
 
   return (
     <div>
-      <StartupNav id={id} name={startup.name} />
       <div className="page-head">
         <div>
           <h1>Transactions</h1>
@@ -157,7 +156,7 @@ export function Transactions() {
             <input ref={fileInput} type="file" accept=".csv,.xlsx,.xls,.xlsm,.txt" hidden
               onChange={e => e.target.files?.[0] && upload(e.target.files[0])} />
             <button className="btn primary" disabled={uploading} onClick={() => fileInput.current?.click()}>
-              {uploading ? 'Reading statement…' : 'Upload statement'}
+              <Icon name="upload" size={16} /> {uploading ? 'Reading statement…' : 'Upload statement'}
             </button>
           </div>
         )}
@@ -183,16 +182,20 @@ export function Transactions() {
 
           {summary && summary.total > 0 && (
             <div className="stats">
-              <div className="card stat"><span className="muted">Transactions</span><strong>{summary.total.toLocaleString('en-IN')}</strong></div>
-              <div className="card stat"><span className="muted">Filed automatically</span><strong>{Math.round(summary.auto_filed_share * 100)}%</strong></div>
+              <div className="card stat"><span className="stat-label">Transactions</span>
+                <strong>{summary.total.toLocaleString('en-IN')}</strong></div>
+              <div className="card stat"><span className="stat-label">Filed automatically</span>
+                <strong>{Math.round(summary.auto_filed_share * 100)}%</strong></div>
               <div className={`card stat ${summary.needs_review ? 'attention' : ''}`}>
-                <span className="muted">Need your review</span><strong>{summary.needs_review}</strong>
+                <span className="stat-label">Need your review</span>
+                <strong>{summary.needs_review}</strong>
               </div>
             </div>
           )}
 
           {summary?.total === 0 ? (
             <div className="card empty">
+              <span className="empty-icon"><Icon name="upload" size={22} /></span>
               <h2>Upload your first statement</h2>
               <p className="muted">Download the statement from your bank's net banking as CSV or Excel and upload it here.
                 Every line is sorted into a category; you only check the ones we are unsure about.</p>

@@ -23,7 +23,7 @@ export function Login() {
 
   return (
     <form className="card auth-card" onSubmit={submit}>
-      <h1>Sign in</h1>
+      <div><h1>Welcome back</h1><p className="muted" style={{ margin: 0 }}>Sign in to your founder workspace.</p></div>
       <ErrorBox error={error} />
       <Field label="Email"><input name="email" type="email" autoComplete="email" required autoFocus /></Field>
       <Field label="Password"><input name="password" type="password" autoComplete="current-password" required /></Field>
@@ -51,7 +51,7 @@ export function Register() {
 
   return (
     <form className="card auth-card" onSubmit={submit}>
-      <h1>Create your account</h1>
+      <div><h1>Create your account</h1><p className="muted" style={{ margin: 0 }}>Set up your workspace in under a minute.</p></div>
       <ErrorBox error={error} />
       <Field label="Full name"><input name="full_name" autoComplete="name" required maxLength={120} autoFocus /></Field>
       <Field label="Work email"><input name="email" type="email" autoComplete="email" required /></Field>

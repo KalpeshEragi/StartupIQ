@@ -6,8 +6,8 @@ export function NewStartup() {
   const navigate = useNavigate()
   return (
     <div className="narrow">
-      <h1>Set up your startup</h1>
-      <p className="muted">You can change any of this later.</p>
+      <div><h1>Set up your startup</h1>
+      <p className="muted" style={{ margin: 0 }}>A few basics so the numbers make sense. You can change any of this later.</p></div>
       <div className="card">
         <StartupForm submitLabel="Create startup" onSubmit={async data => {
           const s = await api.createStartup(data)

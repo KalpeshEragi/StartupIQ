@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ErrorBox, Field } from '../components/Form'
-import { StartupNav } from '../components/StartupNav'
 import { api, errorText, HOLDER_KINDS, type CapTable as Table, type HolderKind, type Simulation, type Startup } from '../lib/api'
 import { compact, count, pct, today } from '../lib/format'
 
@@ -123,13 +122,12 @@ export function CapTable() {
     try { await fn(); load() } catch (err) { setError(errorText(err)) }
   }
 
-  if (!startup || !table) return error ? <div className="narrow"><ErrorBox error={error} /><Link to="/">Back</Link></div> : <p className="muted">Loading…</p>
+  if (!startup || !table) return error ? <div className="narrow"><ErrorBox error={error} /><Link to="/">Back</Link></div> : <p className="muted" role="status" aria-busy="true">Loading…</p>
   const c = startup.currency
   const empty = table.total_fully_diluted === 0
 
   return (
     <div>
-      <StartupNav id={id} name={startup.name} />
       <div className="page-head"><div><h1>Cap table</h1><p className="muted">Who owns the company, fully diluted.</p></div></div>
       <ErrorBox error={error} />
       {empty ? <Setup id={id} onDone={load} /> : (
@@ -176,14 +174,14 @@ export function CapTable() {
                 <ul className="activity">{table.safes.map(s => (
                   <li key={s.id}><span>{s.holder}: {compact(s.amount, c)}{s.valuation_cap ? ` · cap ${compact(s.valuation_cap, c)}` : ''}{s.discount ? ` · ${pct(s.discount)} discount` : ''}
                     {s.converted && <span className="pill">converted</span>}</span>
-                    {!s.converted && <button className="btn ghost small" onClick={() => act(() => api.remove(id, 'safes', s.id))}>Remove</button>}</li>
+                    {!s.converted && <button className="btn ghost small" onClick={() => confirm(`Remove ${s.holder}'s SAFE of ${compact(s.amount, c)}?`) && act(() => api.remove(id, 'safes', s.id))}>Remove</button>}</li>
                 ))}</ul>) : <p className="muted">None yet.</p>}
-              <form className="mini-form" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget
+              <form className="mini-form" autoComplete="off" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget
                 act(() => api.addSafe(id, { investor_name: String(f.get('name')), amount: num(f, 'amount') ?? 0, valuation_cap: num(f, 'cap'),
                   discount: num(f, 'discount') === null ? null : (num(f, 'discount') ?? 0) / 100, signed_on: String(f.get('signed_on')) }).then(() => form.reset())) }}>
-                <input name="name" placeholder="Investor" required /><input name="amount" type="number" min={1} placeholder="Amount" required />
-                <input name="cap" type="number" min={1} placeholder="Valuation cap" /><input name="discount" type="number" min={0} max={90} placeholder="Discount %" />
-                <input name="signed_on" type="date" max={today()} required /><button className="btn small">Add SAFE</button>
+                <input name="name" placeholder="Investor…" aria-label="Investor" required /><input name="amount" type="number" min={1} placeholder="Amount…" aria-label="Amount" required />
+                <input name="cap" type="number" min={1} placeholder="Valuation cap…" aria-label="Valuation cap" /><input name="discount" type="number" min={0} max={90} placeholder="Discount %…" aria-label="Discount %" />
+                <input name="signed_on" type="date" max={today()} required aria-label="Signed on" /><button className="btn small">Add SAFE</button>
               </form>
             </section>
             <section className="card">
@@ -191,14 +189,14 @@ export function CapTable() {
               {table.grants.length ? (
                 <ul className="activity">{table.grants.map(g => (
                   <li key={g.id}><span>{g.holder}: {count(g.shares)} options · {count(g.vested)} vested <span className="muted small">({g.vesting_months / 12} yr, {g.cliff_months} mo cliff)</span></span>
-                    <button className="btn ghost small" onClick={() => act(() => api.remove(id, 'option-grants', g.id))}>Remove</button></li>
+                    <button className="btn ghost small" onClick={() => confirm(`Remove ${g.holder}'s grant of ${count(g.shares)} options? The options go back to the pool.`) && act(() => api.remove(id, 'option-grants', g.id))}>Remove</button></li>
                 ))}</ul>) : <p className="muted">No grants yet.</p>}
-              <form className="mini-form" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget
+              <form className="mini-form" autoComplete="off" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget
                 act(() => api.addGrant(id, { employee_name: String(f.get('name')), shares: num(f, 'shares') ?? 0, granted_on: String(f.get('granted_on')),
                   vesting_months: num(f, 'vesting') ?? 48, cliff_months: num(f, 'cliff') ?? 12 }).then(() => form.reset())) }}>
-                <input name="name" placeholder="Employee" required /><input name="shares" type="number" min={1} placeholder="Options" required />
-                <input name="granted_on" type="date" max={today()} required />
-                <input name="vesting" type="number" min={1} defaultValue={48} title="Vesting months" /><input name="cliff" type="number" min={0} defaultValue={12} title="Cliff months" />
+                <input name="name" placeholder="Employee…" aria-label="Employee" required /><input name="shares" type="number" min={1} placeholder="Options…" aria-label="Options" required />
+                <input name="granted_on" type="date" max={today()} required aria-label="Granted on" />
+                <input name="vesting" type="number" min={1} defaultValue={48} title="Vesting months" aria-label="Vesting months" /><input name="cliff" type="number" min={0} defaultValue={12} title="Cliff months" aria-label="Cliff months" />
                 <button className="btn small">Grant options</button>
               </form>
             </section>
@@ -208,13 +206,13 @@ export function CapTable() {
 
           <details className="card">
             <summary>Add shares by hand (for example an angel who bought shares directly)</summary>
-            <form className="mini-form" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget
+            <form className="mini-form" autoComplete="off" onSubmit={e => { e.preventDefault(); const f = new FormData(e.currentTarget); const form = e.currentTarget
               act(() => api.addShares(id, { name: String(f.get('name')), kind: f.get('kind') as HolderKind, shares: num(f, 'shares') ?? 0,
                 price_per_share: num(f, 'price'), issued_on: String(f.get('issued_on')) }).then(() => form.reset())) }}>
-              <input name="name" placeholder="Holder" required />
-              <select name="kind" defaultValue="investor">{Object.entries(HOLDER_KINDS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
-              <input name="shares" type="number" min={1} placeholder="Shares" required /><input name="price" type="number" min={0} step="any" placeholder="Price per share" />
-              <input name="issued_on" type="date" max={today()} required /><button className="btn small">Add shares</button>
+              <input name="name" placeholder="Holder…" aria-label="Holder" required />
+              <select name="kind" defaultValue="investor" aria-label="Holder type">{Object.entries(HOLDER_KINDS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
+              <input name="shares" type="number" min={1} placeholder="Shares…" aria-label="Shares" required /><input name="price" type="number" min={0} step="any" placeholder="Price per share…" aria-label="Price per share" />
+              <input name="issued_on" type="date" max={today()} required aria-label="Issued on" /><button className="btn small">Add shares</button>
             </form>
           </details>
         </>

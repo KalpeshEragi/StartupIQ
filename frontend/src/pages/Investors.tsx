@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ErrorBox } from '../components/Form'
-import { StartupNav } from '../components/StartupNav'
 import { api, DEAL_STAGES, errorText, type CapTable, type Deal, type DealStage, type Startup } from '../lib/api'
 import { compact, pct } from '../lib/format'
 
@@ -31,7 +30,7 @@ export function Investors() {
       amount: f.get('amount') ? Number(f.get('amount')) : null, next_step: String(f.get('next')) || null }).then(() => form.reset()))
   }
 
-  if (!startup) return error ? <div className="narrow"><ErrorBox error={error} /><Link to="/">Back</Link></div> : <p className="muted">Loading…</p>
+  if (!startup) return error ? <div className="narrow"><ErrorBox error={error} /><Link to="/">Back</Link></div> : <p className="muted" role="status" aria-busy="true">Loading…</p>
   const c = startup.currency
   const investors = table?.holders.filter(h => h.kind === 'investor') ?? []
   const open = deals.filter(d => ACTIVE.includes(d.stage))
@@ -39,7 +38,6 @@ export function Investors() {
 
   return (
     <div>
-      <StartupNav id={id} name={startup.name} />
       <div className="page-head"><div><h1>Investors</h1><p className="muted">Who has invested, and who you are talking to about the next round.</p></div></div>
       <ErrorBox error={error} />
 
@@ -56,9 +54,9 @@ export function Investors() {
           <h2>Fundraising pipeline</h2>
           <span className="muted">{open.length} open · {compact(pipelineTotal, c)} in play</span>
         </div>
-        <form className="mini-form" onSubmit={add}>
-          <input name="name" placeholder="Investor name" required /><input name="firm" placeholder="Firm (optional)" />
-          <input name="amount" type="number" min={0} placeholder="Possible cheque" /><input name="next" placeholder="Next step" />
+        <form className="mini-form" autoComplete="off" onSubmit={add}>
+          <input name="name" placeholder="Investor name…" aria-label="Investor name" required /><input name="firm" placeholder="Firm (optional)…" aria-label="Firm (optional)" />
+          <input name="amount" type="number" min={0} placeholder="Possible cheque…" aria-label="Possible cheque" /><input name="next" placeholder="Next step…" aria-label="Next step" />
           <button className="btn small primary">Add to pipeline</button>
         </form>
         <div className="kanban">
@@ -72,10 +70,10 @@ export function Investors() {
                   {d.amount != null && <span className="small">{compact(d.amount, c)}</span>}
                   {d.next_step && <span className="muted small">Next: {d.next_step}</span>}
                   <div className="deal-actions">
-                    <select value={d.stage} aria-label="Stage" onChange={e => act(() => api.updateDeal(id, d.id, { stage: e.target.value as DealStage }))}>
+                    <select value={d.stage} aria-label={`Stage for ${d.investor_name}`} onChange={e => act(() => api.updateDeal(id, d.id, { stage: e.target.value as DealStage }))}>
                       {Object.entries(DEAL_STAGES).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
                     </select>
-                    <button className="btn ghost small" aria-label="Remove" onClick={() => act(() => api.remove(id, 'deals', d.id))}>✕</button>
+                    <button className="btn ghost small" aria-label={`Remove ${d.investor_name} from the pipeline`} onClick={() => confirm(`Remove ${d.investor_name} from the pipeline?`) && act(() => api.remove(id, 'deals', d.id))}><span aria-hidden="true">✕</span></button>
                   </div>
                 </div>
               ))}

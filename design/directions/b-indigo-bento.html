@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction B: Indigo Bento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#F5F3FF; --card:#FFFFFF; --fg:#1E1B4B; --fg2:#475569; --line:#E0E7FF; --primary:#6366F1; --primary2:#818CF8; --accent:#059669; --soft:#EEF0FF; }
+  * { box-sizing:border-box } body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 "Work Sans",system-ui,sans-serif; }
+  h1,h2,b,.brand { font-family:Outfit,sans-serif; }
+  header { display:flex; align-items:center; gap:28px; padding:16px 32px; }
+  .brand { font-weight:800; font-size:20px; display:flex; gap:10px; align-items:center } .brand i { width:34px; height:34px; border-radius:11px; background:linear-gradient(135deg,#6366F1,#a78bfa); display:inline-block }
+  nav { display:flex; gap:4px; background:#fff; border:1px solid var(--line); border-radius:99px; padding:4px; }
+  nav a { padding:7px 16px; border-radius:99px; color:var(--fg2); font-weight:500; text-decoration:none; } nav a.on { background:var(--primary); color:#fff; }
+  .avatar { margin-left:auto; width:38px; height:38px; border-radius:99px; background:var(--soft); display:grid; place-items:center; font-weight:600; color:var(--primary) }
+  main { max-width:1180px; margin:0 auto; padding:8px 32px 48px; }
+  h1 { font-size:36px; letter-spacing:-.03em; margin:12px 0 4px; } .sub { color:var(--fg2); margin:0 0 22px }
+  .bento { display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:150px; gap:16px; }
+  .c { background:var(--card); border-radius:24px; padding:22px; box-shadow:0 4px 6px rgba(30,27,75,.04); border:1px solid #ecebff; transition:transform .2s; }
+  .c:hover { transform:scale(1.02) } .c small { color:var(--fg2); font-weight:500 } .c b { display:block; font-size:34px; letter-spacing:-.03em; margin-top:6px }
+  .hero { grid-column:span 2; grid-row:span 2; background:linear-gradient(140deg,#6366F1,#8b5cf6); color:#fff; border:0; display:flex; flex-direction:column; justify-content:space-between }
+  .hero small { color:#e0e7ff } .hero b { font-size:56px } .pill { display:inline-block; background:rgba(255,255,255,.18); padding:4px 12px; border-radius:99px; font-size:13px }
+  .wide { grid-column:span 2 } .tall { grid-row:span 2 } .green b { color:var(--accent) }
+  .bars { display:flex; align-items:flex-end; gap:10px; height:70px; margin-top:12px } .bars span { flex:1; background:var(--primary2); border-radius:8px 8px 3px 3px } .bars span:last-child { background:var(--primary) }
+  .list { list-style:none; padding:0; margin:12px 0 0 } .list li { display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--line) }
+  .btn { display:inline-block; margin-top:10px; background:var(--accent); color:#fff; padding:9px 16px; border-radius:12px; font-weight:600; text-decoration:none }
+  .sw { display:flex; gap:10px; margin-top:26px; flex-wrap:wrap } .sw span { display:flex; align-items:center; gap:8px; background:#fff; border-radius:99px; padding:5px 12px 5px 5px; font-size:13px; border:1px solid var(--line) }
+  .sw i { width:22px; height:22px; border-radius:99px; display:inline-block }
+  .note { margin-top:18px; color:var(--fg2); max-width:840px }
+  @media (max-width:860px){ .bento{grid-template-columns:repeat(2,1fr)} .hero{grid-column:span 2} nav{display:none} }
+</style>
+</head>
+<body>
+<header><div class="brand"><i></i>Startup IQ</div><nav><a class="on">Overview</a><a>Transactions</a><a>Financials</a><a>Cap table</a><a>Investors</a></nav><div class="avatar">AD</div></header>
+<main>
+  <h1>Good evening, Asha</h1><p class="sub">Direction B — Indigo Bento: friendly, modular, product-led</p>
+  <div class="bento">
+    <div class="c hero"><div><small>Revenue · November</small><b>₹16.9 L</b></div><div><span class="pill">Cash positive this month</span></div></div>
+    <div class="c green"><small>EBITDA</small><b>₹8.5 L</b></div>
+    <div class="c"><small>Gross margin</small><b>100%</b></div>
+    <div class="c wide"><small>Last 6 months</small><div class="bars"><span style="height:55%"></span><span style="height:62%"></span><span style="height:70%"></span><span style="height:80%"></span><span style="height:92%"></span><span style="height:78%"></span></div></div>
+    <div class="c tall"><small>Biggest expenses</small><ul class="list"><li>People<span>₹4.0 L</span></li><li>Marketing<span>₹1.3 L</span></li><li>Travel<span>₹1.2 L</span></li><li>Rent<span>₹86k</span></li></ul></div>
+    <div class="c"><small>To review</small><b>33</b><a class="btn">Review now</a></div>
+    <div class="c wide"><small>Runway</small><b>Not burning</b></div>
+  </div>
+  <div class="sw"><span><i style="background:#6366F1"></i>Primary #6366F1</span><span><i style="background:#818CF8"></i>Secondary #818CF8</span><span><i style="background:#059669"></i>CTA #059669</span><span><i style="background:#F5F3FF;border:1px solid #ddd"></i>Background #F5F3FF</span><span><i style="background:#1E1B4B"></i>Text #1E1B4B</span></div>
+  <p class="note"><b>Palette</b> indigo + emerald on lavender-white · <b>Fonts</b> Outfit (headings) + Work Sans (body) · <b>Layout</b> top pill navigation instead of a sidebar, Apple-style bento grid with 24px corners, one hero tile per screen. Feels like Linear / Notion: approachable, modern, great for demos. Source: ui-ux-pro-max color "Micro SaaS", typography "Geometric Modern", style "Bento Box Grid".</p>
+</main>
+</body>
+</html>

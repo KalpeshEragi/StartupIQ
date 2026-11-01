@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction A: Ledger Night</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#020617; --card:#0E1223; --muted:#1A1E2F; --line:#334155; --fg:#F8FAFC; --fg2:#94A3B8; --accent:#22C55E; --bad:#EF4444; --amber:#F59E0B; }
+  * { box-sizing:border-box } body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 "IBM Plex Sans",system-ui,sans-serif; }
+  .num { font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; }
+  .app { display:grid; grid-template-columns:64px 1fr; min-height:100vh; }
+  .rail { border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:center; gap:10px; padding:16px 0; }
+  .rail .logo { width:34px; height:34px; border-radius:8px; background:var(--accent); color:#022c12; display:grid; place-items:center; font-weight:700; margin-bottom:12px; }
+  .rail i { width:36px; height:36px; border-radius:8px; display:grid; place-items:center; color:var(--fg2); font-style:normal; font-size:12px; }
+  .rail i.on { background:var(--muted); color:var(--accent); box-shadow:inset 2px 0 0 var(--accent); }
+  main { padding:20px 24px; max-width:1200px; }
+  .bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .bar h1 { font-size:18px; margin:0; font-weight:600; } .bar span { color:var(--fg2); }
+  .tag { font:500 11px "IBM Plex Mono",monospace; color:var(--accent); border:1px solid #14532d; background:#052e16; padding:3px 8px; border-radius:4px; }
+  .kpis { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .kpi { background:var(--card); padding:14px 16px; } .kpi small { color:var(--fg2); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+  .kpi b { display:block; font:600 22px "IBM Plex Mono",monospace; margin:4px 0 2px; } .up { color:var(--accent) } .down { color:var(--bad) }
+  .row { display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-top:12px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; }
+  .panel h2 { font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--fg2); margin:0 0 12px; font-weight:600; }
+  table { width:100%; border-collapse:collapse; } td,th { padding:7px 4px; border-bottom:1px solid #1e293b; text-align:right; } th { color:var(--fg2); font-weight:500; font-size:11px; text-transform:uppercase; }
+  td:first-child,th:first-child { text-align:left; }
+  .swatches { display:flex; gap:8px; margin-top:16px; flex-wrap:wrap } .sw { width:120px; border:1px solid var(--line); border-radius:6px; overflow:hidden; font-size:11px; }
+  .sw div { height:36px } .sw p { margin:0; padding:6px 8px; color:var(--fg2) }
+  .note { margin-top:16px; color:var(--fg2); border-left:2px solid var(--accent); padding-left:12px; max-width:820px; }
+  @media (max-width:800px){ .kpis{grid-template-columns:repeat(2,1fr)} .row{grid-template-columns:1fr} .app{grid-template-columns:1fr} .rail{display:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail"><div class="logo">IQ</div><i class="on">▦</i><i>⇅</i><i>▥</i><i>◔</i><i>☰</i></nav>
+  <main>
+    <div class="bar"><div><h1>Chai Labs · November 2026</h1><span>Direction A — Ledger Night: dark, dense, terminal-precise</span></div><span class="tag">LIVE · 33 TO REVIEW</span></div>
+    <div class="kpis">
+      <div class="kpi"><small>Revenue</small><b class="num">₹16,94,264</b><span class="down num">▼ 13.6%</span></div>
+      <div class="kpi"><small>Gross margin</small><b class="num">100.0%</b><span class="num" style="color:var(--fg2)">no COGS</span></div>
+      <div class="kpi"><small>EBITDA</small><b class="num up">₹8,51,220</b><span class="up num">▲ 4.1%</span></div>
+      <div class="kpi"><small>Net burn</small><b class="num">₹0</b><span class="up num">cash positive</span></div>
+      <div class="kpi"><small>Runway</small><b class="num">∞</b><span class="num" style="color:var(--fg2)">not burning</span></div>
+    </div>
+    <div class="row">
+      <div class="panel"><h2>Revenue vs expenses · 6 mo</h2>
+        <svg viewBox="0 0 600 160" width="100%"><g fill="#22C55E">
+          <rect x="30" y="60" width="18" height="90" rx="2"/><rect x="130" y="50" width="18" height="100" rx="2"/><rect x="230" y="40" width="18" height="110" rx="2"/>
+          <rect x="330" y="30" width="18" height="120" rx="2"/><rect x="430" y="20" width="18" height="130" rx="2"/><rect x="530" y="38" width="18" height="112" rx="2"/></g>
+          <g fill="#334155"><rect x="52" y="90" width="18" height="60" rx="2"/><rect x="152" y="88" width="18" height="62" rx="2"/><rect x="252" y="85" width="18" height="65" rx="2"/>
+          <rect x="352" y="80" width="18" height="70" rx="2"/><rect x="452" y="84" width="18" height="66" rx="2"/><rect x="552" y="86" width="18" height="64" rx="2"/></g>
+          <polyline points="50,70 150,62 250,52 350,44 450,36 550,40" fill="none" stroke="#F59E0B" stroke-width="2"/></svg></div>
+      <div class="panel"><h2>Top expenses</h2>
+        <table><tr><th>Category</th><th>₹</th></tr><tr><td>People</td><td class="num">4,01,472</td></tr><tr><td>Marketing</td><td class="num">1,28,900</td></tr>
+        <tr><td>Travel</td><td class="num">1,18,300</td></tr><tr><td>Rent</td><td class="num">86,000</td></tr></table></div>
+    </div>
+    <div class="swatches">
+      <div class="sw"><div style="background:#020617"></div><p>Background #020617</p></div><div class="sw"><div style="background:#0E1223"></div><p>Card #0E1223</p></div>
+      <div class="sw"><div style="background:#22C55E"></div><p>Accent #22C55E</p></div><div class="sw"><div style="background:#94A3B8"></div><p>Muted #94A3B8</p></div>
+      <div class="sw"><div style="background:#EF4444"></div><p>Negative #EF4444</p></div>
+    </div>
+    <p class="note"><b>Palette</b> dark navy + profit green · <b>Fonts</b> IBM Plex Sans (UI) + IBM Plex Mono (every number) · <b>Layout</b> icon rail, joined KPI strip, square-ish 8px corners, dense tables. Feels like a Bloomberg terminal for founders: serious, precise, built for daily checking. Source: ui-ux-pro-max design system "fintech saas dashboard" (Dark Mode OLED, IBM Plex).</p>
+  </main>
+</div>
+</body>
+</html>

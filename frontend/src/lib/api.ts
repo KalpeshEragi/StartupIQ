@@ -8,9 +8,22 @@ export interface User { id: string; email: string; full_name: string; created_at
 export interface Session { access_token: string; expires_in: number; user: User }
 export interface Startup {
   id: string; name: string; sector: string; stage: Stage; product_type: ProductType; founded_on: string | null
-  currency: string; fy_start_month: number; created_at: string; role: 'founder'
+  currency: string; fy_start_month: number; created_at: string; role: 'founder'; market_sector?: string | null
 }
 export type StartupInput = Omit<Startup, 'id' | 'created_at' | 'role'>
+export interface ForecastWeek { week: string; p10: number; p50: number; p90: number }
+export interface MarketOutlook {
+  key: string; label: string; history: { week: string; index: number }[]; forecast: ForecastWeek[]
+  model: 'network' | 'smoothing'; model_label: string; backtest: { network_mase: number; smoothing_mase: number }
+  change_4w: number; change_12w: number; change_12w_low: number; change_12w_high: number; peak_week: string
+  monthly: Record<string, number>
+}
+export interface Market {
+  sector: string | null; chosen: string | null; suggested: string | null; available: boolean; message?: string
+  generated_at?: string; data_through?: string; about?: string; outlook?: MarketOutlook
+  you_vs_market?: { months: { month: string; revenue: number; market: number }[]; your_change: number | null
+    market_change: number | null; correlation: number | null; summary: string | null }
+}
 export interface Activity { created_at: string; action: string; user_id: string | null; details: Record<string, unknown> }
 
 export interface Category { key: string; label: string; group: 'expense' | 'structural' }
@@ -142,6 +155,9 @@ async function call<T>(path: string, init: RequestInit = {}): Promise<T> {
 const json = (method: string, data: unknown): RequestInit => ({ method, body: JSON.stringify(data) })
 
 export const api = {
+  market: (id: string) => call<Market>(`/startups/${id}/market`),
+  marketSectors: () => call<{ key: string; label: string }[]>('/market/sectors'),
+  setMarketSector: (id: string, market_sector: string) => call<Startup>(`/startups/${id}`, json('PATCH', { market_sector })),
   register: (email: string, full_name: string, password: string) =>
     raw<Session>('/auth/register', json('POST', { email, full_name, password })),
   login: (email: string, password: string) => raw<Session>('/auth/login', json('POST', { email, password })),

@@ -2,6 +2,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
 import { AppShell, GuestOnly, RequireAuth } from './components/Layout'
 import { Login, Register } from './pages/Auth'
+import { Landing } from './pages/Landing'
+import { Market } from './pages/Market'
 import { CapTable } from './pages/CapTable'
 import { Financials } from './pages/Financials'
 import { Investors } from './pages/Investors'
@@ -15,6 +17,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/welcome" element={<Landing />} />
           <Route element={<GuestOnly />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -27,6 +30,7 @@ export default function App() {
             <Route path="/startups/:id/financials" element={<Financials />} />
             <Route path="/startups/:id/cap-table" element={<CapTable />} />
             <Route path="/startups/:id/investors" element={<Investors />} />
+            <Route path="/startups/:id/market" element={<Market />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -52,6 +52,9 @@ def test_ipsa_mapping(cost_type, category):
     ("UBER TRIP CLIENT MEETING", "debit", None),
     ("STATIONERY AND PRINTER TONER", "debit", None),
     ("IMPS Dr-176955629159-DIVYA RAMAN", "debit", "person_payment"),
+    ("UPI/DR/577110510426/SWIGGY/swiggy@icici", "debit", None),             # a business UPI ID: the model decides
+    ("UPI/DR/691937865764/GOOGLE ADS/googleads@okaxis", "debit", None),
+    ("UPI/DR/886456578909/Nisha Desai/9723204789@pay", "debit", "person_payment"),
     ("NEFT Dr-347896958678-SOFTWARE SUBSCRIPTION", "debit", None),   # an expense: the learned model decides
     ("NEFT Dr-297219212621-CLOUD SERVICES", "debit", None),
 ])

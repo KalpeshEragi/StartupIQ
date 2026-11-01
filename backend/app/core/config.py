@@ -1,5 +1,6 @@
 """Settings from the environment (or a .env file). Every value has a safe local default; production must set a real secret."""
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -15,6 +16,8 @@ class Settings(BaseSettings):
     refresh_token_days: int = 30
     cors_origins: list[str] = ["http://localhost:5173"]
     cookie_secure: bool = False  # True behind HTTPS
+    # Trained expense categoriser (written by ml/categoriser). Missing file = no model; lines go to review instead.
+    categoriser_path: str = str(Path(__file__).resolve().parents[2] / "models" / "categoriser.joblib")
 
     @model_validator(mode="after")
     def _production_needs_a_real_secret(self):

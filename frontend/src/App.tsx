@@ -11,6 +11,7 @@ import { NewStartup } from './pages/NewStartup'
 import { StartupOverview } from './pages/StartupOverview'
 import { Startups } from './pages/Startups'
 import { Transactions } from './pages/Transactions'
+import { Trust } from './pages/Trust'
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/startups/:id/cap-table" element={<CapTable />} />
             <Route path="/startups/:id/investors" element={<Investors />} />
             <Route path="/startups/:id/market" element={<Market />} />
+            <Route path="/startups/:id/trust" element={<Trust />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

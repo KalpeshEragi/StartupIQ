@@ -32,13 +32,32 @@ export type Source = 'founder' | 'memory' | 'rule' | 'model' | 'none'
 export interface Transaction {
   id: string; bank_account_id: string; txn_date: string; description: string; direction: 'debit' | 'credit'
   amount: number; balance: number | null; category: string | null; category_source: Source; confidence: number | null
-  needs_review: boolean; reason: string | null; suggestions: string[]
+  needs_review: boolean; reason: string | null; suggestions: string[]; source_row: number | null
 }
 export interface TransactionPage { items: Transaction[]; total: number }
 export interface ImportResult {
   id: string; filename: string; rows_read: number; rows_added: number; rows_duplicate: number; rows_skipped: number
   period_start: string | null; period_end: string | null; columns: Record<string, string>; notes: string[]
   auto_filed: number; needs_review: number; by_source: Record<string, number>
+  file_sha256: string; balance_status: CheckStatus; balance_checked: number; balance_breaks: number; issues: string[]
+  same_file_as: string | null
+}
+export type CheckStatus = 'verified' | 'warnings' | 'unverified'
+export interface TrustCounts { total: number; verified: number; auto_filed: number; founder_set: number; changed: number; needs_review: number }
+export interface ImportCheck {
+  id: string; filename: string; account: string; uploaded_at: string; uploaded_by: string | null; period_start: string | null
+  period_end: string | null; rows_added: number; file_sha256: string | null; status: CheckStatus; balance_checked: number
+  balance_breaks: number; opening_balance: number | null; closing_balance: number | null; issues: string[]
+}
+export interface Verification {
+  generated_at: string; status: CheckStatus; headline: string; lines: TrustCounts; months: (TrustCounts & { month: string })[]
+  imports: ImportCheck[]; continuity: string[]; limits: string
+  audit: { ok: boolean; sealed: number; unsealed: number; head: string | null; problem: string | null }
+}
+export interface TransactionHistory {
+  transaction: Transaction; file: string | null; file_sha256: string | null; statement_status: CheckStatus | null
+  source_row: number | null; first_category: string | null; first_source: string | null; first_reason: string | null
+  events: { at: string; what: string; by: string | null }[]
 }
 export interface ReviewSummary {
   total: number; needs_review: number; auto_filed_share: number; by_source: Record<string, number>; model_version: string | null
@@ -180,6 +199,8 @@ export const api = {
     const qs = new URLSearchParams(Object.entries(f).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => [k, String(v)]))
     return call<TransactionPage>(`/startups/${id}/transactions?${qs}`)
   },
+  transactionHistory: (id: string, txnId: string) => call<TransactionHistory>(`/startups/${id}/transactions/${txnId}/history`),
+  verification: (id: string) => call<Verification>(`/startups/${id}/verification`),
   reviewSummary: (id: string) => call<ReviewSummary>(`/startups/${id}/transactions/summary`),
   categorise: (id: string, txnId: string, category: string, remember: boolean) =>
     call<{ transaction: Transaction; also_updated: number }>(`/startups/${id}/transactions/${txnId}`, json('PATCH', { category, remember })),

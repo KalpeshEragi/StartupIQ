@@ -6,7 +6,8 @@ import { api, errorText, type BankAccount, type Pnl, type PnlMonth, type Startup
 import { compact, count, money, monthLabel, pct, today } from '../lib/format'
 import { runwayText } from './StartupOverview'
 
-type Row = { label: string; value: (m: PnlMonth) => string; strong?: boolean; tone?: (m: PnlMonth) => string; indent?: boolean }
+type Row = { label: string; value: (m: PnlMonth) => string; strong?: boolean; tone?: (m: PnlMonth) => string; indent?: boolean
+  category?: string }  // the transactions behind each cell are one click away
 
 const PHYSICAL = [['units_sold', 'Units sold'], ['orders', 'Orders'], ['inventory_value', 'Stock on hand (at cost)']] as const
 const DIGITAL = [['customers', 'Paying customers at month end'], ['new_customers', 'New customers'],
@@ -117,12 +118,12 @@ export function Financials() {
 
   const rows: (Row | string)[] = [
     'Profit and loss',
-    { label: 'Revenue', value: x => m(x.revenue), strong: true },
-    { label: 'Cost of goods', value: x => m(x.cogs) },
+    { label: 'Revenue', value: x => m(x.revenue), strong: true, category: 'revenue' },
+    { label: 'Cost of goods', value: x => m(x.cogs), category: 'cogs' },
     { label: 'Gross profit', value: x => m(x.gross_profit), strong: true },
     { label: 'Gross margin', value: x => pct(x.gross_margin) },
     ...opexKeys.map(([key, label]): Row => ({ label, indent: true, value: x => m(x.opex.find(o => o.key === key)?.amount ?? 0),
-      tone: () => (key === 'uncategorised' ? 'warn' : '') })),
+      tone: () => (key === 'uncategorised' ? 'warn' : ''), category: key })),
     { label: 'Operating expenses', value: x => m(x.opex_total), strong: true },
     { label: 'EBITDA', value: x => m(x.ebitda), strong: true, tone: x => (x.ebitda >= 0 ? 'good' : 'bad') },
     { label: 'Other income (interest, dividends)', value: x => m(x.other_income) },
@@ -163,7 +164,10 @@ export function Financials() {
                   : (
                     <tr key={r.label} className={`${r.strong ? 'strong' : ''} ${r.indent ? 'indent' : ''}`}>
                       <td>{r.label}</td>
-                      {months.map(x => <td key={x.month} className={r.tone?.(x) ?? ''}>{r.value(x)}</td>)}
+                      {months.map(x => <td key={x.month} className={r.tone?.(x) ?? ''}>{r.category
+                        ? <Link className="cell-link" title="See these transactions"
+                            to={`/startups/${id}/transactions?month=${x.month.slice(0, 7)}&category=${r.category}`}>{r.value(x)}</Link>
+                        : r.value(x)}</td>)}
                     </tr>
                   ))}
               </tbody>

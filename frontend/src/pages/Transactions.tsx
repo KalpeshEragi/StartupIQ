@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { ErrorBox, Field } from '../components/Form'
 import { Icon } from '../components/Icons'
 import {
   api, errorText, type BankAccount, type Category, type ImportResult, type ReviewSummary, type Source, type Startup,
-  type Transaction,
+  type Transaction, type TransactionHistory,
 } from '../lib/api'
+import { CheckBadge } from './Trust'
 
 const PAGE = 50
 const SOURCE: Record<Source, string> = { founder: 'You', memory: 'Remembered', rule: 'Bank format', model: 'ML model', none: 'Needs review' }
@@ -46,6 +47,29 @@ function AddAccount({ startupId, onAdded }: { startupId: string; onAdded: (a: Ba
   )
 }
 
+function History({ startupId, txnId }: { startupId: string; txnId: string }) {
+  const [h, setH] = useState<TransactionHistory | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  useEffect(() => { api.transactionHistory(startupId, txnId).then(setH).catch(e => setError(errorText(e))) }, [startupId, txnId])
+  if (error) return <div className="txn-history"><ErrorBox error={error} /></div>
+  if (!h) return <div className="txn-history muted small" aria-busy="true">Loading history…</div>
+  return (
+    <div className="txn-history small">
+      {h.file && (
+        <div className="muted">Source: <strong>{h.file}</strong>{h.source_row ? `, line ${h.source_row}` : ''}
+          {h.statement_status && <> · <CheckBadge status={h.statement_status} /></>}
+          {h.file_sha256 && <> · fingerprint <code className="hash" title={h.file_sha256}>{h.file_sha256.slice(0, 16)}…</code></>}</div>
+      )}
+      <ol>
+        {h.events.map((e, i) => (
+          <li key={i}><span className="muted">{new Date(e.at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</span>{' '}
+            {e.what}{e.by ? ` (${e.by})` : ''}</li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
 function CategoryPicker({ value, categories, onPick, disabled }: {
   value: string | null; categories: Category[]; onPick: (key: string) => void; disabled: boolean
 }) {
@@ -65,6 +89,7 @@ function CategoryPicker({ value, categories, onPick, disabled }: {
 
 export function Transactions() {
   const { id = '' } = useParams()
+  const [params] = useSearchParams()  // drill-down links from Financials and Trust: ?month=YYYY-MM&category=key
   const [startup, setStartup] = useState<Startup | null>(null)
   const [accounts, setAccounts] = useState<BankAccount[] | null>(null)
   const [accountId, setAccountId] = useState('')
@@ -72,9 +97,10 @@ export function Transactions() {
   const [summary, setSummary] = useState<ReviewSummary | null>(null)
   const [items, setItems] = useState<Transaction[]>([])
   const [total, setTotal] = useState(0)
-  const [tab, setTab] = useState<'review' | 'all'>('review')
-  const [month, setMonth] = useState('')
-  const [category, setCategory] = useState('')
+  const [tab, setTab] = useState<'review' | 'all'>(params.get('month') || params.get('category') ? 'all' : 'review')
+  const [month, setMonth] = useState(params.get('month') ?? '')
+  const [category, setCategory] = useState(params.get('category') ?? '')
+  const [open, setOpen] = useState<string | null>(null)
   const [q, setQ] = useState('')
   const [remember, setRemember] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -174,6 +200,13 @@ export function Transactions() {
                 <strong>{result.filename}</strong>: {result.rows_added} new line{result.rows_added === 1 ? '' : 's'}
                 {result.rows_duplicate > 0 && <> ({result.rows_duplicate} already imported, skipped)</>}.{' '}
                 {result.auto_filed} filed automatically, {result.needs_review} need{result.needs_review === 1 ? 's' : ''} your review.
+                <div className="small"><CheckBadge status={result.balance_status} />{' '}
+                  {result.balance_status === 'verified' ? `All ${result.balance_checked} balances add up.`
+                    : result.balance_status === 'warnings' ? `${result.balance_breaks} of ${result.balance_checked} balances do not add up.`
+                    : 'This file could not be checked.'}{' '}
+                  <Link to={`/startups/${id}/trust`}>Details</Link></div>
+                {result.same_file_as && <div className="muted small">This is the same file as {result.same_file_as}, uploaded before.</div>}
+                {result.issues.slice(0, 3).map(n => <div key={n} className="muted small">{n}</div>)}
                 {result.notes.map(n => <div key={n} className="muted small">{n}</div>)}
               </div>
               <button className="btn ghost" onClick={() => setResult(null)} aria-label="Dismiss">✕</button>
@@ -233,7 +266,10 @@ export function Transactions() {
                     <li key={t.id} className={`card txn ${t.needs_review ? 'review' : ''}`}>
                       <div className="txn-main">
                         <div className="txn-desc">{t.description}</div>
-                        <div className="muted small">{day(t.txn_date)} · <span className={`src src-${t.category_source}`}>{SOURCE[t.category_source]}</span> · {t.reason}</div>
+                        <div className="muted small">{day(t.txn_date)} · <span className={`src src-${t.category_source}`}>{SOURCE[t.category_source]}</span> · {t.reason}
+                          {' · '}<button className="link-btn" aria-expanded={open === t.id} onClick={() => setOpen(open === t.id ? null : t.id)}>
+                            {open === t.id ? 'Hide history' : 'History'}</button></div>
+                        {open === t.id && <History startupId={id} txnId={t.id} />}
                         {t.needs_review && t.suggestions.length > 0 && (
                           <div className="chips">
                             {t.suggestions.map(s => (

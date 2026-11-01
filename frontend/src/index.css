@@ -406,3 +406,36 @@ h2[id], h1[id] { scroll-margin-top: 80px; }
 .vs-table th:first-child, .vs-table td:first-child { text-align: left; }
 .vs-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
 .about-list { margin: 0; padding-left: 18px; color: var(--ink-2); display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+
+/* ============ Trust ============ */
+.check { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 99px; white-space: nowrap; vertical-align: 1px; }
+.check-verified { background: var(--good-soft); color: var(--good); }
+.check-warnings { background: var(--warn-soft); color: var(--warn); }
+.check-unverified { background: var(--line-2); color: var(--ink-2); }
+.trust-status { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; }
+.trust-status > svg { flex: none; }
+.trust-verified > svg { color: var(--good); } .trust-warnings > svg { color: var(--warn); } .trust-unverified > svg { color: var(--ink-3); }
+.trust-headline { font-weight: 600; margin-top: 4px; }
+.checks { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; }
+.checks > li { padding: 14px 0; border-top: 1px solid var(--line-2); min-width: 0; }
+.check-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.check-head strong { overflow-wrap: anywhere; }
+.check-facts { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 6px; }
+.issues { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color: var(--warn); }
+.issues li + li { margin-top: 4px; }
+.hash { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11.5px; overflow-wrap: anywhere; word-break: break-all; }
+.trust-limits { margin-top: 18px; max-width: 760px; }
+.link-btn { font: inherit; border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; font-weight: 600; }
+.link-btn:hover { text-decoration: underline; }
+.txn-history { margin-top: 10px; padding: 10px 12px; background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 10px; min-width: 0; }
+.txn-history ol { margin: 6px 0 0; padding-left: 18px; }
+.cell-link { color: inherit; text-decoration: none; }
+.cell-link:hover { color: var(--accent); text-decoration: underline; }
+.print-only { display: none; }
+@media print {
+  .sidebar, .topbar, .no-print, .scrim, .skip { display: none !important; }
+  .main { margin-left: 0; }
+  .content { max-width: none; padding: 0; }
+  .print-only { display: block; }
+  .card { box-shadow: none; break-inside: avoid; }
+}

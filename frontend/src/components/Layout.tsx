@@ -49,6 +49,7 @@ export function GuestOnly() {
 const NAV: [string, string, IconName][] = [
   ['', 'Overview', 'overview'], ['transactions', 'Transactions', 'transactions'], ['financials', 'Financials', 'financials'],
   ['cap-table', 'Cap table', 'captable'], ['investors', 'Investors', 'investors'], ['market', 'Market outlook', 'market'],
+  ['trust', 'Trust', 'shield'],
 ]
 const TITLES: Record<string, string> = Object.fromEntries(NAV.map(([p, l]) => [p, l]))
 

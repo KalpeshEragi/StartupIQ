@@ -36,6 +36,7 @@ _RULES: list[tuple[re.Pattern, str | None, str, str]] = [
 ]
 # Money in through a transfer or cheque with no other signal is, for a business account, a customer paying.
 _TRANSFER = _C(r"^(neft|imps|rtgs|upi|by clg|clg|chq|cheque|inward|trf|transfer)")
+_CHEQUE_PAID = _C(r"^chq paid|^cheque paid")
 # A payment out whose narration is only a person's name (no purpose words) cannot be categorised from the text.
 _PERSON_NAME_ONLY = _C(r"^[a-z]+(?: [a-z]+){0,3}$")
 # Words a bank adds around the payee's name, removed before deciding whether only a name is left.
@@ -54,7 +55,8 @@ def classify(description: str, direction: str, cleaned: str | None = None) -> tu
             return category, reason
     if direction == "credit" and _TRANSFER.search(text.strip()):
         return "revenue", "money received by transfer or cheque"
-    if direction == "debit" and cleaned is not None:
+    # Only transfer formats name a payee; a bare card or merchant line ("AIRTEL BROADBAND") is not a person.
+    if direction == "debit" and cleaned is not None and (_TRANSFER.search(text.strip()) or _CHEQUE_PAID.search(text)):
         name = " ".join(_BANK_WORDS.sub(" ", cleaned).split())
         if name and _PERSON_NAME_ONLY.match(name) and not _PURPOSE_HINT.search(name):
             return "person_payment", "payment to a named person with no purpose given"

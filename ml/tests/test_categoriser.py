@@ -48,6 +48,10 @@ def test_ipsa_mapping(cost_type, category):
     ("FAILED-INSUFFICIENT FUNDS-ATM WDL-51689", "debit", "failed"),
     ("Chq Paid-MICR Inward Clearing-PADMA VARMA-HDFC BANK LTD.", "debit", "person_payment"),
     ("UPI/DR/655539332400/VARUN MEHTA/UPI-TRANSFER TO 6791527638", "debit", "person_payment"),
+    ("AIRTEL BROADBAND MONTHLY", "debit", None),                      # merchant lines are not payments to people
+    ("UBER TRIP CLIENT MEETING", "debit", None),
+    ("STATIONERY AND PRINTER TONER", "debit", None),
+    ("IMPS Dr-176955629159-DIVYA RAMAN", "debit", "person_payment"),
     ("NEFT Dr-347896958678-SOFTWARE SUBSCRIPTION", "debit", None),   # an expense: the learned model decides
     ("NEFT Dr-297219212621-CLOUD SERVICES", "debit", None),
 ])

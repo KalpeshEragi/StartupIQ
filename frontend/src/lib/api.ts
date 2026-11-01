@@ -13,6 +13,25 @@ export interface Startup {
 export type StartupInput = Omit<Startup, 'id' | 'created_at' | 'role'>
 export interface Activity { created_at: string; action: string; user_id: string | null; details: Record<string, unknown> }
 
+export interface Category { key: string; label: string; group: 'expense' | 'structural' }
+export interface BankAccount { id: string; name: string; bank_name: string | null; last4: string | null; currency: string }
+export type Source = 'founder' | 'memory' | 'rule' | 'model' | 'none'
+export interface Transaction {
+  id: string; bank_account_id: string; txn_date: string; description: string; direction: 'debit' | 'credit'
+  amount: number; balance: number | null; category: string | null; category_source: Source; confidence: number | null
+  needs_review: boolean; reason: string | null; suggestions: string[]
+}
+export interface TransactionPage { items: Transaction[]; total: number }
+export interface ImportResult {
+  id: string; filename: string; rows_read: number; rows_added: number; rows_duplicate: number; rows_skipped: number
+  period_start: string | null; period_end: string | null; columns: Record<string, string>; notes: string[]
+  auto_filed: number; needs_review: number; by_source: Record<string, number>
+}
+export interface ReviewSummary {
+  total: number; needs_review: number; auto_filed_share: number; by_source: Record<string, number>; model_version: string | null
+}
+export interface TransactionFilter { needs_review?: boolean; category?: string; month?: string; q?: string; limit?: number; offset?: number }
+
 export const STAGES: Record<Stage, string> = {
   idea: 'Idea', pre_seed: 'Pre-seed', seed: 'Seed', series_a: 'Series A', series_b_plus: 'Series B+',
 }
@@ -45,7 +64,7 @@ function message(body: unknown, status: number): string {
 
 async function raw<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers)
-  if (init.body) headers.set('Content-Type', 'application/json')
+  if (init.body && !(init.body instanceof FormData)) headers.set('Content-Type', 'application/json')  // the browser sets multipart
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
   const res = await fetch(`/api/v1${path}`, { ...init, headers, credentials: 'same-origin' })
   if (res.status === 204) return undefined as T
@@ -85,4 +104,20 @@ export const api = {
   createStartup: (data: StartupInput) => call<Startup>('/startups', json('POST', data)),
   updateStartup: (id: string, data: Partial<StartupInput>) => call<Startup>(`/startups/${id}`, json('PATCH', data)),
   activity: (id: string) => call<Activity[]>(`/startups/${id}/activity`),
+  categories: (id: string) => call<Category[]>(`/startups/${id}/categories`),
+  bankAccounts: (id: string) => call<BankAccount[]>(`/startups/${id}/bank-accounts`),
+  createBankAccount: (id: string, data: { name: string; bank_name?: string | null; last4?: string | null }) =>
+    call<BankAccount>(`/startups/${id}/bank-accounts`, json('POST', data)),
+  importStatement: (id: string, accountId: string, file: File) => {
+    const body = new FormData()
+    body.append('file', file)
+    return call<ImportResult>(`/startups/${id}/bank-accounts/${accountId}/imports`, { method: 'POST', body })
+  },
+  transactions: (id: string, f: TransactionFilter = {}) => {
+    const qs = new URLSearchParams(Object.entries(f).filter(([, v]) => v !== undefined && v !== '').map(([k, v]) => [k, String(v)]))
+    return call<TransactionPage>(`/startups/${id}/transactions?${qs}`)
+  },
+  reviewSummary: (id: string) => call<ReviewSummary>(`/startups/${id}/transactions/summary`),
+  categorise: (id: string, txnId: string, category: string, remember: boolean) =>
+    call<{ transaction: Transaction; also_updated: number }>(`/startups/${id}/transactions/${txnId}`, json('PATCH', { category, remember })),
 }

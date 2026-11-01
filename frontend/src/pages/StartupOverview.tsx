@@ -5,10 +5,12 @@ import { api, errorText, PRODUCT_TYPES, STAGES, type Activity, type Startup } fr
 import { StartupForm } from './StartupForm'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const ACTIONS: Record<string, string> = { 'startup.create': 'Startup created', 'startup.update': 'Details changed' }
+const ACTIONS: Record<string, string> = {
+  'startup.create': 'Startup created', 'startup.update': 'Details changed', 'bank_account.create': 'Bank account added',
+  'statement.import': 'Statement uploaded', 'transaction.categorise': 'Transaction categorised',
+}
 // What later phases add to this page, so the founder can see where the product is going.
 const COMING = [
-  ['Transactions', 'Upload a bank statement; every line is categorised automatically.'],
   ['Financials', 'Monthly P&L: revenue, gross profit, EBITDA, burn and runway.'],
   ['Cap table', 'Shareholders, rounds, SAFEs, ESOP and a dilution simulator.'],
   ['Forecast', 'Revenue and cash for the next 12 months, with a range.'],
@@ -42,7 +44,12 @@ export function StartupOverview() {
           <h1>{startup.name}</h1>
           <p className="muted">{startup.sector} · {STAGES[startup.stage]} · {PRODUCT_TYPES[startup.product_type]}</p>
         </div>
-        {!editing && <button className="btn" onClick={() => setEditing(true)}>Edit details</button>}
+        {!editing && (
+          <div className="upload-bar">
+            <Link to={`/startups/${startup.id}/transactions`} className="btn primary">Transactions</Link>
+            <button className="btn" onClick={() => setEditing(true)}>Edit details</button>
+          </div>
+        )}
       </div>
 
       {editing ? (

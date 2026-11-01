@@ -5,6 +5,7 @@ import { Login, Register } from './pages/Auth'
 import { NewStartup } from './pages/NewStartup'
 import { StartupOverview } from './pages/StartupOverview'
 import { Startups } from './pages/Startups'
+import { Transactions } from './pages/Transactions'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/" element={<Startups />} />
             <Route path="/startups/new" element={<NewStartup />} />
             <Route path="/startups/:id" element={<StartupOverview />} />
+            <Route path="/startups/:id/transactions" element={<Transactions />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

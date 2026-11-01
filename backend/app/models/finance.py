@@ -37,6 +37,8 @@ class BankAccount(IdMixin, TimestampMixin, Base):
     bank_name: Mapped[str | None] = mapped_column(String(80))
     last4: Mapped[str | None] = mapped_column(String(4))            # never the full account number
     currency: Mapped[str] = mapped_column(String(3), default="INR")
+    # Balance before the first imported line; only needed when the bank's export has no balance column.
+    opening_balance: Mapped[Decimal | None] = mapped_column(Numeric(16, 2))
 
 
 class StatementImport(IdMixin, Base):
@@ -112,3 +114,22 @@ class CategoryCorrection(IdMixin, Base):
     text: Mapped[str] = mapped_column(String(200))   # cleaned description at the time
     direction: Mapped[str] = mapped_column(String(8))
     amount: Mapped[Decimal] = mapped_column(Numeric(14, 2))
+
+
+class UnitMetric(IdMixin, TimestampMixin, Base):
+    """The few monthly numbers a bank statement cannot know. Every field is optional; ratios are computed (finance/)."""
+
+    __tablename__ = "unit_metrics"
+    __table_args__ = (UniqueConstraint("startup_id", "month", name="startup_month"),)
+
+    startup_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("startups.id", ondelete="CASCADE"), index=True)
+    month: Mapped[date] = mapped_column(Date)                         # first day of the month
+    # physical products
+    units_sold: Mapped[int | None] = mapped_column(Integer)
+    orders: Mapped[int | None] = mapped_column(Integer)
+    inventory_value: Mapped[Decimal | None] = mapped_column(Numeric(16, 2))
+    # digital products
+    customers: Mapped[int | None] = mapped_column(Integer)              # paying customers at month end
+    new_customers: Mapped[int | None] = mapped_column(Integer)
+    churned_customers: Mapped[int | None] = mapped_column(Integer)
+    mrr: Mapped[Decimal | None] = mapped_column(Numeric(16, 2))         # monthly recurring revenue at month end

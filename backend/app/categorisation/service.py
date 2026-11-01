@@ -10,6 +10,7 @@ Corrections are stored as training examples and, if the founder agrees, remember
 from __future__ import annotations
 
 import uuid
+from dataclasses import dataclass
 
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
@@ -25,13 +26,58 @@ def _label(key: str | None) -> str:
     return ALL_CATEGORIES.get(key or "", "uncategorised")
 
 
+@dataclass
+class Decision:
+    category: str | None
+    source: CategorySource
+    needs_review: bool
+    reason: str
+    confidence: float | None = None
+    suggestions: str | None = None
+    model_version: str | None = None
+
+
+def decide(lines: list[tuple[str, str, float]]) -> list[Decision]:
+    """Rules, then the model, for (description, direction, amount) lines; no founder memory. The product and the demo
+    checker both use this, so what is measured is what founders get."""
+    model = load_model()
+    out: list[Decision | None] = []
+    for_model: list[int] = []
+    for i, (description, direction, _amount) in enumerate(lines):
+        category, reason = formats.classify(description, direction, clean(description))
+        if category == "person_payment":  # who was paid, and for what, only the founder knows
+            out.append(Decision(category, CategorySource.rule, True, reason[0].upper() + reason[1:], 1.0,
+                                "people,professional_services"))  # salary or a contractor, in most startups
+        elif category is not None:
+            out.append(Decision(category, CategorySource.rule, False, reason[0].upper() + reason[1:], 1.0))
+        elif direction == "debit" and model is not None:
+            out.append(None)
+            for_model.append(i)
+        elif direction == "debit":
+            out.append(Decision(None, CategorySource.none, True, "The categoriser model is not installed, so this needs review"))
+        else:
+            out.append(Decision(None, CategorySource.none, True, "Money in that we could not recognise"))
+    if for_model:
+        predictions = model.predict([lines[i][0] for i in for_model], [float(lines[i][2]) for i in for_model])
+        for i, p in zip(for_model, predictions, strict=True):
+            if p.confident:
+                out[i] = Decision(p.category, CategorySource.model, False,
+                                  f"Looks like {_label(p.category)} from the description", round(p.confidence, 4), None,
+                                  model.version)
+            else:  # scores are margins, not probabilities, so founders see ranked suggestions rather than percentages
+                why = ("New vendor. Best guesses: " if not model.knows(lines[i][0]) else "Not sure. Best guesses: ")
+                out[i] = Decision(p.category, CategorySource.none, True, why + ", ".join(_label(c) for c, _ in p.alternatives),
+                                  round(p.confidence, 4), ",".join(c for c, _ in p.alternatives), model.version)
+    return out  # type: ignore[return-value]
+
+
 def categorise(db: Session, startup_id: uuid.UUID, txns: list[Transaction]) -> None:
     """Fill category, source, confidence, needs_review and reason on each transaction (founder-set ones are left alone)."""
     txns = [t for t in txns if t.category_source != CategorySource.founder]
     if not txns:
         return
     memory = {r.vendor_key: r for r in db.scalars(select(VendorRule).where(VendorRule.startup_id == startup_id))}
-    for_model: list[Transaction] = []
+    rest: list[Transaction] = []
     for t in txns:
         remembered = memory.get(t.vendor_key) if t.vendor_key else None
         if remembered is not None:
@@ -39,38 +85,11 @@ def categorise(db: Session, startup_id: uuid.UUID, txns: list[Transaction]) -> N
             t.needs_review, t.model_version, t.suggestions = False, None, None
             t.reason = f"You filed “{t.vendor_key}” as {_label(remembered.category)} before"
             remembered.times_applied += 1
-            continue
-        category, reason = formats.classify(t.description, str(t.direction), clean(t.description))
-        if category is not None:
-            t.category, t.category_source, t.confidence, t.model_version = category, CategorySource.rule, 1.0, None
-            t.suggestions = None
-            t.needs_review = category == "person_payment"  # who was paid, and for what, only the founder knows
-            t.reason = reason[0].upper() + reason[1:]
-            if t.needs_review:
-                t.suggestions = "people,professional_services"  # salary or a contractor, in most startups
-        elif str(t.direction) == "debit":
-            for_model.append(t)
         else:
-            t.category, t.category_source, t.confidence, t.needs_review = None, CategorySource.none, None, True
-            t.reason = "Money in that we could not recognise"
-    if not for_model:
-        return
-    model = load_model()
-    if model is None:
-        for t in for_model:
-            t.category, t.category_source, t.confidence, t.needs_review = None, CategorySource.none, None, True
-            t.reason = "The categoriser model is not installed, so this needs your review"
-        return
-    predictions = model.predict([t.description for t in for_model], [float(t.amount) for t in for_model])
-    for t, p in zip(for_model, predictions, strict=True):
-        t.category, t.confidence, t.model_version = p.category, round(p.confidence, 4), model.version
-        if p.confident:
-            t.category_source, t.needs_review, t.suggestions = CategorySource.model, False, None
-            t.reason = f"Looks like {_label(p.category)} from the description"
-        else:  # scores are margins, not probabilities, so founders see ranked suggestions rather than percentages
-            t.category_source, t.needs_review = CategorySource.none, True
-            t.suggestions = ",".join(c for c, _ in p.alternatives)
-            t.reason = "Not sure. Best guesses: " + ", ".join(_label(c) for c, _ in p.alternatives)
+            rest.append(t)
+    for t, d in zip(rest, decide([(t.description, str(t.direction), float(t.amount)) for t in rest]), strict=True):
+        t.category, t.category_source, t.needs_review, t.reason = d.category, d.source, d.needs_review, d.reason
+        t.confidence, t.suggestions, t.model_version = d.confidence, d.suggestions, d.model_version
 
 
 def correct(db: Session, txn: Transaction, new_category: str, user_id: uuid.UUID, remember: bool) -> int:

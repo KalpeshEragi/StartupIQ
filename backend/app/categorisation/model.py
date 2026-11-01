@@ -18,6 +18,11 @@ import numpy as np
 from app.categorisation.text import clean
 from app.core.config import get_settings
 
+# Words that say nothing about the kind of expense: bank formats, legal forms, places.
+GENERIC = frozenset("""india ltd limited pvt private inc llp co company the and of for payment payments bill monthly netbank upi
+ach pos debit credit dr cr transfer to by from nach ecom pur bil onl pcd card atmcard bangalore bengaluru mumbai delhi
+chennai hyderabad pune noida ref mmt imps neft rtgs yesb settlement services service online""".split())
+
 
 @dataclass
 class Prediction:
@@ -32,6 +37,11 @@ class ExpenseModel:
         self.a = artefact
         self.version: str = artefact["version"]
         self.threshold: float = artefact["threshold"]
+
+    def knows(self, description: str) -> bool:
+        """Did training see any meaningful word of this line? On unseen words the model can only guess from the amount."""
+        vocab = self.a["words"].vocabulary_
+        return any(t in vocab for t in clean(description).split() if t not in GENERIC and not t.isdigit() and len(t) > 1)
 
     def _features(self, texts: list[str], amounts: list[float]):
         from scipy import sparse
@@ -53,10 +63,10 @@ class ExpenseModel:
             scores = np.exp(z) / np.exp(z).sum(axis=1, keepdims=True)
         classes = est.classes_
         out = []
-        for row in scores:
+        for description, row in zip(descriptions, scores, strict=True):
             order = np.argsort(-row)[:3]
             best = float(row[order[0]])
-            out.append(Prediction(str(classes[order[0]]), best, best >= self.threshold,
+            out.append(Prediction(str(classes[order[0]]), best, best >= self.threshold and self.knows(description),
                                   [(str(classes[i]), float(row[i])) for i in order]))
         return out
 

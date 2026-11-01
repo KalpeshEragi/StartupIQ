@@ -127,6 +127,15 @@ def test_model_files_confident_expenses(setup, tiny_model):
     assert power["confidence"] >= 0.5 and "Utilities" in power["reason"] and power["suggestions"] == []
 
 
+def test_unseen_words_are_suggested_never_filed(setup, tiny_model):
+    """On words it never saw, a model can only guess from the amount: such lines go to review with suggestions."""
+    client, h, sid, acc = setup
+    upload(client, h, sid, acc, "Date,Narration,Withdrawal Amt.,Deposit Amt.\n01/11/26,ZORBLAX QUIMPLE,50000,\n")
+    line = by_desc(client, h, sid)["ZORBLAX QUIMPLE"]
+    assert line["needs_review"] and line["category_source"] == "none" and line["reason"].startswith("New vendor")
+    assert len(line["suggestions"]) == 3
+
+
 def test_review_filter_and_bad_category(setup, no_model):
     client, h, sid, acc = setup
     upload(client, h, sid, acc, OCTOBER)

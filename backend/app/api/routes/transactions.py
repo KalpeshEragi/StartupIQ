@@ -2,6 +2,7 @@
 import uuid
 from collections import Counter
 
+from datetime import date
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile, status
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
@@ -153,8 +154,7 @@ def list_transactions(access: Access = Depends(startup_access()), db: Session = 
         where.append(or_(func.lower(Transaction.description).like(like), Transaction.vendor_key.like(like)))
     if month:
         y, m = map(int, month.split("-"))
-        start = f"{y:04d}-{m:02d}-01"
-        end = f"{y + (m == 12):04d}-{m % 12 + 1:02d}-01"
+        start, end = date(y, m, 1), date(y + (m == 12), m % 12 + 1, 1)  # dates, not strings: PostgreSQL will not compare them
         where += [Transaction.txn_date >= start, Transaction.txn_date < end]
     total = db.scalar(select(func.count()).select_from(Transaction).where(*where)) or 0
     items = db.scalars(select(Transaction).where(*where).order_by(Transaction.txn_date.desc(), Transaction.created_at.desc())

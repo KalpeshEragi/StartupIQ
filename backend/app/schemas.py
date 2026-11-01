@@ -7,8 +7,8 @@ from pydantic import AfterValidator, BaseModel, ConfigDict, EmailStr, Field, fie
 
 from app.models import ProductType, Role, Stage
 
-# Stored times are UTC. SQLite hands them back without a timezone; mark them, so clients never read them as local time.
-UtcDatetime = Annotated[datetime, AfterValidator(lambda d: d if d.tzinfo else d.replace(tzinfo=UTC))]
+# Stored times are UTC. SQLite hands them back without a timezone, PostgreSQL in its session's timezone; send UTC always.
+UtcDatetime = Annotated[datetime, AfterValidator(lambda d: d.astimezone(UTC) if d.tzinfo else d.replace(tzinfo=UTC))]
 
 
 class RegisterIn(BaseModel):

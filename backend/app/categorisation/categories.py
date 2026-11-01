@@ -34,5 +34,10 @@ STRUCTURAL_CATEGORIES: dict[str, str] = {
     "failed": "Failed / not completed",
 }
 
-ALL_CATEGORIES: dict[str, str] = {**STRUCTURAL_CATEGORIES, **EXPENSE_CATEGORIES}
+# Expense categories only the founder assigns (the model was not trained on them); vendor memory then repeats the choice.
+MANUAL_CATEGORIES: dict[str, str] = {
+    "cogs": "Cost of goods (stock, materials, packaging)",
+}
+
+ALL_CATEGORIES: dict[str, str] = {**STRUCTURAL_CATEGORIES, **EXPENSE_CATEGORIES, **MANUAL_CATEGORIES}
 INCOME = {"revenue", "other_income", "refund", "financing"}  # money in; everything else is money out or neutral

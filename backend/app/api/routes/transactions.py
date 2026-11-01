@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import Access, startup_access
 from app.categorisation import service
-from app.categorisation.categories import ALL_CATEGORIES, EXPENSE_CATEGORIES
+from app.categorisation.categories import ALL_CATEGORIES, EXPENSE_CATEGORIES, MANUAL_CATEGORIES
 from app.categorisation.model import load_model
 from app.categorisation.statements import StatementError, parse_statement
 from app.core.db import get_db
@@ -33,7 +33,8 @@ ALLOWED = (".csv", ".txt", ".xlsx", ".xls", ".xlsm")
 
 @router.get("/categories", response_model=list[CategoryOut])
 def categories(access: Access = Depends(startup_access())) -> list[CategoryOut]:
-    return [CategoryOut(key=k, label=v, group="expense" if k in EXPENSE_CATEGORIES else "structural")
+    expense = EXPENSE_CATEGORIES | MANUAL_CATEGORIES
+    return [CategoryOut(key=k, label=v, group="expense" if k in expense else "structural")
             for k, v in ALL_CATEGORIES.items()]
 
 

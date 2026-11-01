@@ -57,7 +57,9 @@ _PURPOSE_HINT = _C(r"\b(?:ltd|limited|pvt|private|india|corp|inc|llp|llc|service
                    r"|membership|prime|domains?|swiggy|zomato|uber|ola\b|rapido|github|figma|notion|slack|atlassian"
                    r"|jira|zoho|freshworks|shopify|keka|naukri|vakilsearch|cleartax|blinkit|zepto|amazon|google|microsoft"
                    r"|adobe|godaddy|wework|awfis|makemytrip|irctc|indigo|oyo|starbucks|chaayos|blue dart|dtdc|croma|ikea"
-                   r"|acko|jio|airtel|vodafone|bsnl)")
+                   r"|acko|jio|airtel|vodafone|bsnl"
+                   r"|suppl|packag|traders?\b|trading|exports?\b|imports?\b|agenc|works\b|motors|distribut|wholesale"
+                   r"|materials|printers|press\b|chemicals|textiles|steel|plastics|electricals|hardware|enterprises?\b)")
 
 
 def phone_upi(description: str) -> bool:

@@ -200,6 +200,18 @@ All startup-owned rows carry `startup_id`; every query is scoped by membership (
 - Passwords never stored in plain text; tokens short-lived; HTTPS in deployment.
 - Tenant isolation enforced in the data layer and tested.
 - Audit log of logins, shares, role changes, month reopenings.
+- **Data trust** (Trust page, printable for investors):
+  - Each upload: SHA-256 file fingerprint, running-balance check per line (oldest- or newest-first), opening/closing
+    balance; gaps between statements of one account flagged.
+  - Each import's stored lines sealed with one hash, rechecked on every report: catches lines edited or deleted
+    directly in the database.
+  - Raw lines have no edit API; the app's first category decision is kept; every founder change is recorded.
+  - Startup audit log is a hash chain (each entry holds the previous entry's hash); the latest hash is printed on the
+    report so a holder of the report can detect a later rewrite.
+  - Limits, stated on the page: a file edited consistently before upload cannot be detected; an attacker with full
+    database write access could rebuild hashes after the last report was shared. Real proof of origin needs
+    bank-signed data (signed PDF statements, Account Aggregator). Planned: verify signed PDFs, anchor the chain head
+    outside the database, 2FA.
 - Investors see only what is explicitly shared.
 - India's DPDP Act 2023: consent, purpose limitation, deletion on request, data export.
 - **Bank connection**: v1 imports statements the founder downloads. Live connection requires the RBI Account

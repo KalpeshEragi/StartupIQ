@@ -121,6 +121,10 @@ React 19, TypeScript, Vite; Docker Compose, GitHub Actions CI; ruff and oxlint; 
    references, IFSC codes, UPI IDs, bank prefixes and long reference numbers; numbers become 0; drop bank-only tokens
    (UPI, NEFT, IMPS, RTGS, DR, CR, TRF, POS...); lower-case.
 5. **Vendor key:** a stable short key per counterparty, so "remember this vendor" can match future lines.
+6. **Verify** (`backend/app/services/verification.py`): SHA-256 fingerprint of the file; every line's balance must
+   equal the previous balance plus money in, minus money out (oldest-first or newest-first exports); breaks are reported
+   with their line number; the next statement must start where the last one ended; the stored lines are sealed with
+   one hash that is rechecked on every report.
 
 ### 4.2 Categoriser training data (IPSA)
 1. Map IPSA's **344 cost types onto 14 startup expense categories** (`ml/categoriser/taxonomy.py`).
@@ -246,10 +250,11 @@ Every line shows where its category came from (you, memory, rule, model) and why
 | **Sign in / Create account** | Email and password; split screen with the product promise. |
 | **Your startups** | Pick or add a company (one user can run several). |
 | **Overview** | The monthly brief (sentence written from the ledger), primary action changes to "Review N transactions" when lines are unsorted, revenue hero tile with 6-month bars, EBITDA, gross margin (shows "-" with a fix when no cost of goods is filed), cash and runway, revenue/expenses/cash chart, where the money went, unit economics, month-close checklist, recent activity. |
-| **Transactions** | Add bank account, upload statements, import summary, review inbox with suggestion chips, "remember this vendor", filters by month, category and text, provenance of every category. |
-| **Financials** | Monthly P&L and cash flow table, runway tile, opening-balance prompt when a statement has no balance column, unit-economics form (physical: units, orders, stock; digital: customers, churn, MRR) with derived metrics. |
+| **Transactions** | Add bank account, upload statements, import summary, review inbox with suggestion chips, "remember this vendor", filters by month, category and text, provenance of every category, statement check result on upload, per-line history (file, line number, every change). |
+| **Financials** | Monthly P&L and cash flow table (each revenue, cost and expense cell links to its transactions), runway tile, opening-balance prompt when a statement has no balance column, unit-economics form (physical: units, orders, stock; digital: customers, churn, MRR) with derived metrics. |
 | **Cap table** | One-time setup, fully diluted ownership bar and table, rounds history, SAFEs, ESOP grants with vesting, add shares by hand, dilution simulator, record a round in one click, undo a round. |
 | **Investors** | Current investors (from the cap table) and a fundraising pipeline by stage (contacted, meeting, due diligence, term sheet, closed, passed). |
+| **Trust** | Overall status, statement checks (fingerprint, balances, issues), possible missing statements, month-by-month share of verified, auto-filed and founder-set lines, audit-chain check with its latest hash; printable investor report; states its limits. |
 | **Market outlook** | Written headline for the sector's next 12 weeks, chart (26 weeks of history, dashed likely path inside its range), next 4 / 12 weeks, peak week, track record, "you vs your market", how the forecast is made, sector picker. |
 
 Design: one design system (`.interface-design/system.md`): indigo and emerald on lavender paper, Newsreader serif for
@@ -313,7 +318,13 @@ over 3%; each with the numbers behind it. Plus anomaly alerts (Isolation Forest 
 - **Tenant isolation:** every startup endpoint goes through one access check (`app/api/deps.py`); non-members get
   404 (not 403), so other startups' existence is never revealed. Tested.
 - **Roles:** founder role today; the data model (memberships) is ready for team members and read-only investors.
-- **Audit log:** every change (imports, categorisations, cap-table edits, rounds) records who, what and when.
+- **Audit log:** every change (imports, categorisations, cap-table edits, rounds) records who, what and when. Each
+  startup's log is a hash chain: editing or deleting an entry breaks it, and the Trust page shows the check.
+- **Tamper evidence for statements:** file fingerprint, running-balance check, gap check between statements, and a
+  seal over each import's stored lines rechecked on every report (catches edits made directly in the database). Raw
+  lines have no edit API; the app's first category decision is kept beside every correction.
+- **Honest limits:** a file edited consistently before upload is not detected; someone with full database write access
+  could rebuild every hash after the last shared report. Proof of origin needs bank-signed data.
 - **Minimal bank data:** only the last 4 digits of an account number are stored, never the full number; the uploaded
   file itself is not kept, only the parsed lines and import counts.
 - **Input limits:** 10 MB upload cap, validated schemas (Pydantic) on every request, length limits on text fields.
@@ -326,6 +337,7 @@ over 3%; each with the numbers behind it. Plus anomaly alerts (Isolation Forest 
 - Encryption at rest (managed PostgreSQL with disk encryption) and encrypted backups.
 - Data export and account/startup deletion on request.
 - Security review, dependency scanning, error tracking without personal data in logs.
+- Verify bank-signed PDF statements; anchor the audit-chain head outside the database; two-factor sign-in.
 - Live bank connection only through India's Account Aggregator framework (consent-based, regulated), never by
   collecting net-banking passwords.
 
@@ -363,6 +375,7 @@ over 3%; each with the numbers behind it. Plus anomaly alerts (Isolation Forest 
 | 2. Transactions and ML categorisation | Built |
 | 3. Financials and dashboard | Built |
 | 4. Cap table and investors | Built |
+| Data trust: statement checks, row seals, audit hash chain, Trust page | Built |
 | 5. Market behaviour forecasting (DL) + Market outlook tab | Built |
 | 6. Insights: anomaly alerts, health checks, investor update drafts, month close | Planned |
 | 7. Hardening: rate limits, encryption at rest, deletion, deployment, backups | Planned |

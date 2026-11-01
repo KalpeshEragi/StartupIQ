@@ -81,6 +81,20 @@ Most numbers come from the bank statement. The founder only types what a stateme
 - Investor list and fundraising pipeline (contacted, meeting, due diligence, term sheet, closed, passed)
 - Record a simulated round in one click (investor shares, SAFE conversions, pool top-up), and undo it
 
+**Data trust and verification**
+- Every uploaded statement gets a file fingerprint (SHA-256) and a running-balance check: each line's balance must
+  equal the previous balance plus money in, minus money out. Breaks are shown with their line number
+- Gaps between statements of the same account are flagged (one should start where the last one ended)
+- Each import's stored lines are sealed with one hash and rechecked on every report, so edits made directly in the
+  database are caught
+- Raw lines are never edited; the app's first category decision is kept beside the founder's corrections; each line
+  has a history (file, line number, every change)
+- The startup's audit log is a hash chain; the Trust page shows whether it is intact and prints its latest hash
+- Trust page: overall status, share of lines from statements that add up, auto-filed vs set by the founder, month by
+  month; printable as an investor report. P&L cells link to the transactions behind them
+- Statements uploaded before these checks show "Not checked" until the same file is uploaded again
+- Limits: cannot prove a file came from the bank (only bank-signed data can); details in docs/PRD.md section 9
+
 ### Planned
 
 **Phase 5: Market behaviour forecasting (deep learning)**
@@ -161,6 +175,7 @@ backend/
   app/api/             routes, and the access check every startup endpoint uses (deps.py)
   app/categorisation/  statement parsing, Indian bank-format rules, text cleaning, model loading, the categoriser
   app/finance/         P&L, cash, runway and unit economics
+  app/services/        audit log (hash chain) and statement verification
   alembic/             database migrations
   tests/               API, security, import, categorisation and migration tests
 frontend/              React + TypeScript + Vite

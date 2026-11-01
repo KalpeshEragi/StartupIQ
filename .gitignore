@@ -34,3 +34,12 @@ Thumbs.db
 
 # Local databases
 *.db
+
+# Generated market forecast (python -m market.forecast)
+backend/models/market_forecast.json
+
+# Data folders anywhere in the repo (ml/data/...), and local design-tool output
+**/data/raw/
+**/data/interim/
+**/data/processed/
+.taste-skill/

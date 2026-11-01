@@ -11,7 +11,7 @@ Earlier versions of the project live on the `legacy` branch.
 | Phase | Scope | State |
 | --- | --- | --- |
 | 1 Foundation | Accounts, sign-in, startups, membership-based access, audit log, Docker, CI | Done |
-| 2 Transactions + ML | Statement import, automatic categorisation, review inbox | Next |
+| 2 Transactions + ML | Statement import, automatic categorisation (ML), vendor memory, corrections | Backend and model done; screens next |
 | 3-8 | Financials, equity, forecasting, insights, hardening, roles | Planned |
 
 ## Layout
@@ -23,8 +23,10 @@ backend/    FastAPI + SQLAlchemy + Alembic (Python 3.12+)
   app/api/        routes, and the access check every startup endpoint uses (deps.py)
   alembic/        database migrations
   tests/          API, security and migration tests
+  app/categorisation/  statement parsing, Indian bank-format rules, the categoriser service and model loading
 frontend/   React + TypeScript + Vite
-docs/       product spec
+ml/         training the expense categoriser (data, model comparison, export)
+docs/       product spec and results
 ```
 
 ## Run with Docker

@@ -227,3 +227,29 @@ Models are trained and evaluated on public data only; demo data is never used to
 - Small startups have short histories; forecasts must widen their range and say so.
 - Live bank connection needs regulatory onboarding; out of scope for v1.
 - Scope is large for one builder; phases 1-3 and 5 are the term-work core.
+
+## 13. Future plans: market intelligence agents
+
+Planned after the core product (phases 1-8). Recorded here so they shape design decisions now.
+
+### 13.1 Competitor watch agent
+Keeps track of what the startup's named competitors are doing, and tells the founder what changed and why it matters.
+- **Watches:** new products and features, pricing and discount changes, sales and promotions, funding rounds, hiring,
+  launches and press coverage.
+- **Sources:** competitors' websites, changelogs, pricing pages, app-store listings, press releases, news, job boards.
+- **Output:** a weekly "competitor digest" plus instant alerts for big moves (a price cut, a funding round, a launch),
+  each with a link to the source.
+
+### 13.2 Customer voice agent
+Finds what customers want by reading what they say about competitors and the market.
+- **Sources:** customer reviews (app stores, Google, product review sites), Reddit, Quora, and other public forums.
+- **Output:** recurring complaints, most-requested features, what customers love, and gaps no competitor fills, each
+  with example quotes and links, and how often it comes up.
+- **Use in the product:** feeds goals and planning ("customers keep asking for X").
+
+### 13.3 Ground rules for both agents
+- Only public information; respect each site's terms of use and use official APIs where they exist (e.g. Reddit's API).
+- Every claim links to its source; summaries never invent facts.
+- Personal data of reviewers is not stored beyond what is needed to quote a public comment.
+
+More future ideas from the founder will be added to this section as they come up.

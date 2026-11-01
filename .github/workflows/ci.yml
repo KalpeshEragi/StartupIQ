@@ -31,6 +31,20 @@ jobs:
         env:
           SIQ_TEST_DATABASE_URL: postgresql+psycopg://startupiq:startupiq@localhost:5432/startupiq_test
 
+  ml:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -e ../backend -r requirements.txt ruff
+      - run: ruff check categoriser tests
+      - run: pytest -q
+
   frontend:
     runs-on: ubuntu-latest
     defaults:

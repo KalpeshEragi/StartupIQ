@@ -83,6 +83,12 @@ Non-goals: tax filing, payroll, accounting-standard statements (Ind AS), legal d
 - **Review** - accept, change category, or create a rule ("always file RAZORPAY SETTLEMENT as Revenue"). Every change
   is stored as a labelled example.
 - **Categories** - default chart of P&L categories, editable per startup.
+- **Input rules** - CSV/Excel up to 10 MB and 50,000 lines (longer files are refused, never cut short); UTF-8, UTF-16
+  and Windows-1252 read. Lines dated before 2000 or more than a week ahead, lines with both a withdrawal and a deposit,
+  and impossibly large amounts are left out with a note saying why. Only the file name is kept, never a path.
+- **Verification and history** - every upload is checked (file fingerprint, running balance, gaps between statements;
+  see 9); each line shows its source file, line number and every category change. Statements uploaded before checks
+  existed are checked by uploading the same file again.
 
 ### D. Financials (monthly P&L)
 - Built from categorised transactions, or entered/imported per month.

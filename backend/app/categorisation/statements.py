@@ -6,8 +6,10 @@ columns or one amount with a Dr/Cr column, ₹ signs and thousands separators, a
 """
 from __future__ import annotations
 
+import csv
 import hashlib
 import io
+import itertools
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -89,9 +91,12 @@ def _read_frames(data: bytes, filename: str) -> list[pd.DataFrame]:
             return list(sheets.values())
         text = data.decode("utf-8-sig", errors="replace")
         sep = max([",", ";", "\t", "|"], key=lambda s: text[:5000].count(s))
-        return [pd.read_csv(io.StringIO(text), sep=sep, header=None, dtype=str, engine="python", on_bad_lines="skip",
-                            nrows=MAX_ROWS + HEADER_SCAN)]
-    except (ValueError, UnicodeError, pd.errors.ParserError) as exc:
+        # Read row by row: title lines above the table are shorter than the table, and a strict CSV reader would take
+        # the first line's width and drop every real row as malformed.
+        rows = list(itertools.islice(csv.reader(io.StringIO(text), delimiter=sep), MAX_ROWS + HEADER_SCAN))
+        width = max((len(r) for r in rows), default=0)
+        return [pd.DataFrame([r + [None] * (width - len(r)) for r in rows], dtype=object)]
+    except (ValueError, UnicodeError, csv.Error, pd.errors.ParserError) as exc:
         raise StatementError("We could not open this file. Upload the CSV or Excel statement downloaded from your bank.") from exc
 
 

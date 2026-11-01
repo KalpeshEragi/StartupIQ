@@ -68,11 +68,20 @@ class StartupUpdate(BaseModel):
 
     name: str | None = Field(default=None, min_length=1, max_length=120)
     sector: str | None = Field(default=None, min_length=1, max_length=80)
+    market_sector: str | None = None
     stage: Stage | None = None
     product_type: ProductType | None = None
     founded_on: date | None = None
     currency: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
     fy_start_month: int | None = Field(default=None, ge=1, le=12)
+
+    @field_validator("market_sector")
+    @classmethod
+    def _known_market(cls, v: str | None) -> str | None:
+        from app.market.service import SECTORS
+        if v is not None and v not in SECTORS:
+            raise ValueError("unknown market sector")
+        return v
 
 
 class StartupOut(BaseModel):
@@ -81,6 +90,7 @@ class StartupOut(BaseModel):
     id: uuid.UUID
     name: str
     sector: str
+    market_sector: str | None = None
     stage: Stage
     product_type: ProductType
     founded_on: date | None

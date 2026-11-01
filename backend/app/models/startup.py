@@ -41,6 +41,7 @@ class Startup(IdMixin, TimestampMixin, Base):
 
     name: Mapped[str] = mapped_column(String(120))
     sector: Mapped[str] = mapped_column(String(80))
+    market_sector: Mapped[str | None] = mapped_column(String(40))  # one of app.market.service.SECTORS; None = suggest
     stage: Mapped[Stage] = mapped_column(_enum(Stage, "stage"))
     product_type: Mapped[ProductType] = mapped_column(_enum(ProductType, "product_type"))
     founded_on: Mapped[date | None] = mapped_column(Date)

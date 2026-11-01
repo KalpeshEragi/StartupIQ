@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api.routes import auth, equity, financials, startups, transactions
+from app.api.routes import auth, equity, financials, market, startups, transactions
 from app.core.config import get_settings
 from app.core.db import engine
 
@@ -17,6 +17,7 @@ app.include_router(startups.router, prefix="/api/v1")
 app.include_router(transactions.router, prefix="/api/v1")
 app.include_router(financials.router, prefix="/api/v1")
 app.include_router(equity.router, prefix="/api/v1")
+app.include_router(market.router, prefix="/api/v1")
 
 
 @app.get("/api/health", tags=["meta"])

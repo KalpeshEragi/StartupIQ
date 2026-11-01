@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     cookie_secure: bool = False  # True behind HTTPS
     # Trained expense categoriser (written by ml/categoriser). Missing file = no model; lines go to review instead.
     categoriser_path: str = str(Path(__file__).resolve().parents[2] / "models" / "categoriser.joblib")
+    # Sector forecasts written by ml/market (python -m market.forecast). Missing file = Market tab says so.
+    market_forecast_path: str = str(Path(__file__).resolve().parents[2] / "models" / "market_forecast.json")
 
     @model_validator(mode="after")
     def _production_needs_a_real_secret(self):

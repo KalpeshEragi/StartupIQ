@@ -11,8 +11,9 @@ Earlier versions of the project live on the `legacy` branch.
 | Phase | Scope | State |
 | --- | --- | --- |
 | 1 Foundation | Accounts, sign-in, startups, membership-based access, audit log, Docker, CI | Done |
-| 2 Transactions + ML | Statement import, automatic categorisation (ML), vendor memory, corrections | Backend and model done; screens next |
-| 3-8 | Financials, equity, forecasting, insights, hardening, roles | Planned |
+| 2 Transactions + ML | Statement import, automatic categorisation (ML), vendor memory, review inbox | Done |
+| 3 Financials | Monthly P&L, unit economics, dashboard | Next |
+| 4-8 | Equity, forecasting, insights, hardening, roles | Planned |
 
 ## Layout
 

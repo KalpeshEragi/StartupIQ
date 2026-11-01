@@ -14,6 +14,9 @@ from categoriser.text import clean
     ("NEFT Cr-197068208951-ICIC0SF0002-COMMERCE SOLUTIONS LTD--", "commerce solutions ltd"),
     ("POS DEBIT 222080699339 LOCALGYM", "localgym"),
     ("UPI/DR/886456578909/Nisha Desai/9723204789@pay", "nisha desai"),
+    ("TO TRANSFER-NEFT*HDFC0005949*N473860610*BLUE DART COURIER", "blue dart courier"),   # SBI wrapper words
+    ("DEBIT-ACH INSTAGRAM PROMOTION 59641958", "instagram promotion"),
+    ("UPI-LINKEDIN ADS-linkedin@hdfcbank-YESB0000001-592680656296-UPI", "linkedin ads"),   # keep words next to the UPI ID
     ("", ""),
 ])
 def test_clean_removes_bank_noise(raw, expected):
@@ -55,6 +58,13 @@ def test_ipsa_mapping(cost_type, category):
     ("UPI/DR/577110510426/SWIGGY/swiggy@icici", "debit", None),             # a business UPI ID: the model decides
     ("UPI/DR/691937865764/GOOGLE ADS/googleads@okaxis", "debit", None),
     ("UPI/DR/886456578909/Nisha Desai/9723204789@pay", "debit", "person_payment"),
+    ("UPI/954772172314/PRIYA SHARMA/8815454572@ybl/Payment", "debit", "person_payment"),   # phone-number UPI ID
+    ("NEFT DR-HDFC0003000-BIPLAB MUKHERJEE-NETBANK", "debit", "person_payment"),            # "BIPLAB" is not a "lab"
+    ("NEFT DR-HDFC0008139-GOOGLE ADS-NETBANK", "debit", None),                              # a business name
+    ("BY TRANSFER-NEFT*ICIC0005970*CMS06174356*NIMBUS FOODS LLP", "credit", "revenue"),     # SBI receipt
+    ("MMT/IMPS/149276023545/SUNRISE HOSPITALS LTD", "credit", "revenue"),                   # ICICI receipt
+    ("TO TRANSFER-UPI/DR/940780676878/CLEARTAX GST FILING/YESB/cleartax@okaxis/", "debit", None),  # a fee, not tax
+    ("GST PAYMENT/GSTIN 29ABCDE1234F1Z5/CPIN123456", "debit", "taxes"),
     ("NEFT Dr-347896958678-SOFTWARE SUBSCRIPTION", "debit", None),   # an expense: the learned model decides
     ("NEFT Dr-297219212621-CLOUD SERVICES", "debit", None),
 ])

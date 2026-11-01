@@ -19,7 +19,9 @@ _C = lambda p: re.compile(p, re.IGNORECASE)  # noqa: E731
 _RULES: list[tuple[re.Pattern, str | None, str, str]] = [
     (_C(r"^failed\b|insufficient funds|\breturned\b|\brtn\b"), None, "failed", "the bank marks this line as failed"),
     (_C(r"^reversal\b|\brefund\b|\brev\b-"), None, "refund", "the bank marks this line as a reversal or refund"),
-    (_C(r"\bgst\b|gstin|\btds\b|\bincome tax\b|advance tax|\bcbdt\b|\bchallan\b|\btin nsdl\b|\bpt challan|professional tax"),
+    # Tax *payments* only: "CLEARTAX GST FILING" is a service fee, not tax, so a bare "GST" is not enough.
+    (_C(r"gst ?(payment|pmt)|gstin|\bcpin|\btds (payment|challan)|challan 28[0-9]|\bincome tax\b|advance tax|\bcbdt\b"
+        r"|\bchallan\b|\btin nsdl\b|professional tax"),
      "debit", "taxes", "tax payment narration (GST / TDS / income tax challan)"),
     (_C(r"\bemi\b|loan\b.*(instal|repay|emi)|\bloan emi\b|nach.*loan|instal+ment"), "debit", "loan_repayment",
      "loan instalment narration"),
@@ -35,17 +37,33 @@ _RULES: list[tuple[re.Pattern, str | None, str, str]] = [
      "revenue", "payment-gateway settlement (customer payments)"),
 ]
 # Money in through a transfer or cheque with no other signal is, for a business account, a customer paying.
-_TRANSFER = _C(r"^(neft|imps|rtgs|upi|by clg|clg|chq|cheque|inward|trf|transfer)")
+_TRANSFER = _C(r"^(neft|imps|rtgs|upi|by clg|clg|chq|cheque|inward|trf|transfer|by transfer|to transfer|mmt)")
 _CHEQUE_PAID = _C(r"^chq paid|^cheque paid")
-_UPI_HANDLE = _C(r"([\w.\-]+)@[a-z]+")  # the payee's UPI ID; a phone number before @ means a person
+_UPI_HANDLE = _C(r"([\w.]+)@[a-z]+")  # the payee's UPI ID; a phone number before @ means a person
 # A payment out whose narration is only a person's name (no purpose words) cannot be categorised from the text.
 _PERSON_NAME_ONLY = _C(r"^[a-z]+(?: [a-z]+){0,3}$")
 # Words a bank adds around the payee's name, removed before deciding whether only a name is left.
 _BANK_WORDS = _C(r"\b(paid|micr|inward|clearing|chq|cheque|dr|cr|none|urgent|upi|transfer|to|from|sent"
                  r"|(hdfc|icici|axis|sbi|kotak|yes|canara|pnb|idfc"
                  r"|indusind|citi|federal|union) bank( ltd)?|bank ltd|state bank of india)\b")
-_PURPOSE_HINT = _C(r"ltd|limited|pvt|private|india|corp|services|solutions|systems|technolog|infotech|consult|industries"
-                   r"|subscription|payment|rent|utility|cloud|insurance|software|bill|invoice|store|mart|enterprise")
+# Words and brands that mark a business, so "GOOGLE ADS" or "SWIGGY" after NEFT is not taken for a person's name.
+# Each word must start a word in the name: "BIPLAB" is a person, not a "lab".
+_PURPOSE_HINT = _C(r"\b(?:ltd|limited|pvt|private|india|corp|inc|llp|llc|services|solutions|systems|technolog|infotech"
+                   r"|consult|industries|subscription|rent|utility|cloud|insurance|software|bill|invoice|store|mart"
+                   r"|enterprise|ads?\b|advert|marketing|labs?\b|digital|web|fiber|fibre|broadband|telecom|mobile"
+                   r"|postpaid|courier|logistics|express|airlines?|airways|travels?\b|hotels?\b|ergo|lombard|health"
+                   r"|foods?\b|kitchen|cafe|restaurant|cowork|springboard|electricity|power|water|gas\b|energy|estates?"
+                   r"|propert|realty|advocates|legal|associates|audit|chartered|payroll|recruit|academy|education|media"
+                   r"|membership|prime|domains?|swiggy|zomato|uber|ola\b|rapido|github|figma|notion|slack|atlassian"
+                   r"|jira|zoho|freshworks|shopify|keka|naukri|vakilsearch|cleartax|blinkit|zepto|amazon|google|microsoft"
+                   r"|adobe|godaddy|wework|awfis|makemytrip|irctc|indigo|oyo|starbucks|chaayos|blue dart|dtdc|croma|ikea"
+                   r"|acko|jio|airtel|vodafone|bsnl)")
+
+
+def phone_upi(description: str) -> bool:
+    """True when the payee's UPI ID is a phone number: a strong sign the money went to a person, not a business."""
+    handle = _UPI_HANDLE.search(description or "")
+    return handle is not None and handle.group(1).isdigit()
 
 
 def classify(description: str, direction: str, cleaned: str | None = None) -> tuple[str | None, str]:
@@ -56,9 +74,11 @@ def classify(description: str, direction: str, cleaned: str | None = None) -> tu
             return category, reason
     if direction == "credit" and _TRANSFER.search(text.strip()):
         return "revenue", "money received by transfer or cheque"
+    if direction == "debit" and phone_upi(text):  # a UPI ID that is a phone number belongs to a person
+        return "person_payment", "payment to a person's UPI ID with no purpose given"
     # Only transfer formats name a payee; a bare card or merchant line ("AIRTEL BROADBAND") is not a person.
     handle = _UPI_HANDLE.search(text)
-    business_upi = handle is not None and not handle.group(1).isdigit()  # swiggy@icici is a business; 98765...@ybl a person
+    business_upi = handle is not None and not handle.group(1).isdigit()  # swiggy@icici is a business
     if (direction == "debit" and cleaned is not None and not business_upi
             and (_TRANSFER.search(text.strip()) or _CHEQUE_PAID.search(text))):
         name = " ".join(_BANK_WORDS.sub(" ", cleaned).split())

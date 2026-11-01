@@ -149,6 +149,7 @@ class TransactionOut(BaseModel):
     needs_review: bool
     reason: str | None
     suggestions: list[str] = []
+    source_row: int | None = None
 
     @field_validator("suggestions", mode="before")
     @classmethod
@@ -175,6 +176,12 @@ class ImportOut(BaseModel):
     auto_filed: int        # added rows filed without review
     needs_review: int
     by_source: dict[str, int]
+    file_sha256: str
+    balance_status: str     # verified | warnings | unverified
+    balance_checked: int
+    balance_breaks: int
+    issues: list[str]
+    same_file_as: str | None = None  # an earlier upload of exactly this file
 
 
 class CorrectionIn(BaseModel):
@@ -193,3 +200,72 @@ class ReviewSummary(BaseModel):
     auto_filed_share: float
     by_source: dict[str, int]
     model_version: str | None
+
+
+class ImportCheckOut(BaseModel):
+    id: uuid.UUID
+    filename: str
+    account: str
+    uploaded_at: UtcDatetime
+    uploaded_by: str | None
+    period_start: date | None
+    period_end: date | None
+    rows_added: int
+    file_sha256: str | None
+    status: str             # verified | warnings | unverified
+    balance_checked: int
+    balance_breaks: int
+    opening_balance: float | None
+    closing_balance: float | None
+    issues: list[str]
+
+
+class AuditChainOut(BaseModel):
+    ok: bool
+    sealed: int
+    unsealed: int
+    head: str | None
+    problem: str | None
+
+
+class TrustCounts(BaseModel):
+    total: int
+    verified: int       # from statements whose balances add up
+    auto_filed: int     # filed by memory, rules or the model without review
+    founder_set: int    # set or confirmed by the founder
+    changed: int        # the founder's category differs from the app's first decision
+    needs_review: int
+
+
+class TrustMonth(TrustCounts):
+    month: str          # YYYY-MM
+
+
+class VerificationOut(BaseModel):
+    generated_at: UtcDatetime
+    status: str         # verified | warnings | unverified
+    headline: str
+    lines: TrustCounts
+    months: list[TrustMonth]
+    imports: list[ImportCheckOut]
+    continuity: list[str]
+    audit: AuditChainOut
+    limits: str
+
+
+class HistoryEvent(BaseModel):
+    at: UtcDatetime
+    what: str
+    by: str | None = None
+
+
+class TransactionHistory(BaseModel):
+    transaction: TransactionOut
+    file: str | None
+    file_sha256: str | None
+    statement_status: str | None
+    source_row: int | None
+    first_category: str | None
+    first_source: str | None
+    first_reason: str | None
+    events: list[HistoryEvent]

@@ -4,7 +4,21 @@ import uuid
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Boolean, Date, DateTime, Enum, Float, ForeignKey, Index, Integer, Numeric, String, UniqueConstraint, Uuid
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Date,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    Numeric,
+    String,
+    UniqueConstraint,
+    Uuid,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base, IdMixin, TimestampMixin, utcnow
@@ -57,6 +71,15 @@ class StatementImport(IdMixin, Base):
     rows_skipped: Mapped[int] = mapped_column(Integer, default=0)     # unreadable date or amount
     period_start: Mapped[date | None] = mapped_column(Date)
     period_end: Mapped[date | None] = mapped_column(Date)
+    # Verification (app/services/verification.py): the file's fingerprint and whether its balance column adds up.
+    file_sha256: Mapped[str | None] = mapped_column(String(64), index=True)
+    rows_sha256: Mapped[str | None] = mapped_column(String(64))       # seal over the lines this import added
+    balance_status: Mapped[str | None] = mapped_column(String(16))   # verified | warnings | unverified
+    balance_checked: Mapped[int] = mapped_column(Integer, default=0)  # consecutive line pairs checked
+    balance_breaks: Mapped[int] = mapped_column(Integer, default=0)   # pairs where the balance does not add up
+    opening_balance: Mapped[Decimal | None] = mapped_column(Numeric(16, 2))  # before the earliest line
+    closing_balance: Mapped[Decimal | None] = mapped_column(Numeric(16, 2))  # after the latest line
+    issues: Mapped[list] = mapped_column(JSON, default=list)          # plain-language findings shown to the founder
 
 
 class Transaction(IdMixin, TimestampMixin, Base):
@@ -69,6 +92,7 @@ class Transaction(IdMixin, TimestampMixin, Base):
     startup_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("startups.id", ondelete="CASCADE"))
     bank_account_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey("bank_accounts.id", ondelete="CASCADE"), index=True)
     import_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, ForeignKey("statement_imports.id", ondelete="SET NULL"))
+    source_row: Mapped[int | None] = mapped_column(Integer)  # line number in the uploaded file
     txn_date: Mapped[date] = mapped_column(Date)
     description: Mapped[str] = mapped_column(String(500))
     direction: Mapped[Direction] = mapped_column(_enum(Direction, "direction"))
@@ -84,6 +108,10 @@ class Transaction(IdMixin, TimestampMixin, Base):
     reason: Mapped[str | None] = mapped_column(String(300))
     suggestions: Mapped[str | None] = mapped_column(String(160))  # comma-separated category keys, best first, when unsure
     model_version: Mapped[str | None] = mapped_column(String(40))
+    # The app's first decision, kept as it was: corrections change category/source/reason above, never these.
+    auto_category: Mapped[str | None] = mapped_column(String(40))
+    auto_source: Mapped[str | None] = mapped_column(String(16))
+    auto_reason: Mapped[str | None] = mapped_column(String(300))
 
 
 class VendorRule(IdMixin, TimestampMixin, Base):

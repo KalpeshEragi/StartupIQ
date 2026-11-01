@@ -48,6 +48,7 @@ class ParsedRow:
     balance: Decimal | None
     fingerprint: str = ""
     vendor_key: str = ""
+    line: int = 0  # line number in the file (1 = first line), so every number can be traced back to it
 
 
 @dataclass
@@ -148,7 +149,9 @@ def _rows(body: pd.DataFrame, cols: dict[str, int], names: dict[str, str], heade
     rows: list[ParsedRow] = []
     skipped = 0
     seen: Counter[tuple] = Counter()
-    for values in body.itertuples(index=False):
+    for label, *values in body.itertuples(index=True):
+        values = tuple(values)
+
         def get(role: str, values: tuple = values) -> object:
             return values[cols[role]] if role in cols else None
         when = _date(get("date"))
@@ -183,7 +186,8 @@ def _rows(body: pd.DataFrame, cols: dict[str, int], names: dict[str, str], heade
         key = (when, direction, amount, desc.lower())
         seen[key] += 1  # identical lines on one statement are separate payments; the counter keeps them apart
         fingerprint = hashlib.sha256(f"{when}|{direction}|{amount:.2f}|{desc.lower()}|{seen[key]}".encode()).hexdigest()
-        rows.append(ParsedRow(when, desc, direction, amount.quantize(Decimal("0.01")), balance, fingerprint, vendor_key(desc)))
+        rows.append(ParsedRow(when, desc, direction, amount.quantize(Decimal("0.01")), balance, fingerprint, vendor_key(desc),
+                              int(label) + 1))
     if not rows:
         raise StatementError("No transactions could be read from this file.")
     notes = [f"Skipped {header_row} line(s) above the table."] if header_row else []
